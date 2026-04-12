@@ -1,0 +1,722 @@
+{
+	"info": {
+		"_postman_id": "6d9ed0b6-1234-5678-abcd-3450918cdead",
+		"name": "Manpower Hiring App API",
+		"description": "API Collection for the Manpower Hiring Platform (Laravel Sanctum Auth)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"John Doe\",\n    \"mobile\": \"9876543210\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"role\": \"employee\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Send OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/send-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"send-otp"
+							]
+						}
+					}
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"otp_code\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/verify-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"verify-otp"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if(jsonData.data && jsonData.data.access_token) {",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.data.access_token);",
+									"    pm.collectionVariables.set(\"refresh_token\", jsonData.data.refresh_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Public Modules",
+			"item": [
+				{
+					"name": "List Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					}
+				},
+				{
+					"name": "List Packages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/packages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"packages"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Employee Module",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/employee/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"employee",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"experience_type\": \"experienced\",\n    \"experience_field\": \"Software Development\",\n    \"preferred_locations\": [\"Mumbai\", \"Bangalore\"],\n    \"job_position\": \"Senior Developer\",\n    \"skills\": [\"PHP\", \"Laravel\", \"Vue\"],\n    \"expected_salary\": 80000,\n    \"age\": 25,\n    \"gender\": \"male\",\n    \"job_type\": [\"full-time\", \"wfh\"],\n    \"availability\": \"immediate\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/employee/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"employee",
+								"profile"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Employer Module",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/employer/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"employer",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_name\": \"TechCorp Global Pvt Ltd\",\n    \"work_email\": \"hr@techcorp.com\",\n\t\"industry_type\": \"Information Technology\",\n\t\"company_size\": \"50-200 Employees\",\n\t\"company_website\": \"https://techcorp.example.com\",\n\t\"company_description\": \"Leading software development agency based in Mumbai.\",\n\t\"employer_designation\": \"Technical Recruiter\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/employer/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"employer",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Dashboard Stats",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/employer/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"employer",
+								"dashboard"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Jobs",
+			"item": [
+				{
+					"name": "Search Jobs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs/search?title=Developer&location=Mumbai",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs",
+								"search"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Developer"
+								},
+								{
+									"key": "location",
+									"value": "Mumbai"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Post a Job (Employer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Senior PHP Developer\",\n\t\"category_id\": 1,\n    \"job_type\": \"full-time\",\n    \"location\": \"Mumbai\",\n    \"work_location_type\": \"wfh\",\n    \"pay_type\": \"range\",\n    \"salary_min\": 50000,\n    \"salary_max\": 90000,\n    \"description\": \"Looking for a Laravel expert...\",\n    \"skills_required\": [\"PHP\", \"Laravel\", \"MySQL\"],\n    \"experience_required\": \"3-5 years\",\n    \"perks\": [\"Health Insurance\", \"Flexible Timing\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/jobs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs"
+							]
+						}
+					}
+				},
+				{
+					"name": "Apply for Job (Employee)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs/1/apply",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs",
+								"1",
+								"apply"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Applications",
+			"item": [
+				{
+					"name": "My Applications (Employee)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/applications",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Applicant Status (Employer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"shortlisted\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/applications/1/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"applications",
+								"1",
+								"status"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Payments",
+			"item": [
+				{
+					"name": "Initiate Checkout (Employer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"package_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"checkout"
+							]
+						}
+					}
+				},
+				{
+					"name": "Payment Webhook (Gateway)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_id\": 1,\n    \"status\": \"success\",\n    \"transaction_id\": \"txn_98765xyz\",\n    \"payment_method\": \"upi\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/webhook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"webhook"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

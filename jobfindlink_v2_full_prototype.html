@@ -1,0 +1,1375 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito',sans-serif;background:#0a0c14;display:flex;flex-direction:column;align-items:center;padding:16px 8px 30px;}
+
+:root{
+  --p1:#2563EB;--p2:#1d4ed8;--p-light:#EFF6FF;--p-mid:#BFDBFE;
+  --ep1:#0F4C81;--ep2:#1E6FAA;--ep-light:#E8F4FD;
+  --g:#F0F4FF;--white:#fff;
+  --gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
+  --gray-400:#9CA3AF;--gray-600:#4B5563;--gray-900:#111827;
+  --green:#059669;--green-l:#ECFDF5;
+  --amber:#D97706;--amber-l:#FFFBEB;
+  --red:#DC2626;--red-l:#FEF2F2;
+}
+
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+
+.ctrl-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;justify-content:center;max-width:520px;}
+.ctrl-btn{padding:8px 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.15);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.6);background:transparent;transition:all 0.2s;letter-spacing:0.3px;}
+.ctrl-btn.on{background:var(--p1);border-color:var(--p1);color:#fff;}
+.ctrl-btn.emp-on{background:var(--ep1);border-color:var(--ep2);color:#fff;}
+
+.color-bar{display:flex;gap:6px;margin-bottom:8px;justify-content:center;}
+.color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:transform 0.15s;}
+.color-dot.sel{border-color:#fff;transform:scale(1.2);}
+
+.lang-bar{display:flex;gap:6px;margin-bottom:14px;justify-content:center;}
+.lang-btn{padding:5px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.15);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;}
+.lang-btn.on{background:rgba(255,255,255,0.15);color:#fff;}
+
+.type-tabs{display:flex;gap:6px;margin-bottom:10px;background:rgba(255,255,255,0.08);border-radius:14px;padding:5px;}
+.type-tab{padding:9px 22px;border-radius:10px;border:none;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;color:rgba(255,255,255,0.45);background:transparent;transition:all 0.2s;}
+.type-tab.on{background:#fff;color:#0D1B4D;}
+
+.nav-pills{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap;justify-content:center;max-width:540px;}
+.npill{padding:6px 12px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.12);font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;transition:all 0.2s;}
+.npill.on{background:var(--p1);border-color:var(--p1);color:#fff;}
+.npill.emp-on{background:var(--ep1);border-color:var(--ep2);color:#fff;}
+
+.phone{width:330px;background:#080a10;border-radius:46px;padding:11px;border:2px solid #23263a;position:relative;}
+.phone::before{content:'';position:absolute;top:17px;left:50%;transform:translateX(-50%);width:72px;height:5px;background:#13161f;border-radius:3px;z-index:10;}
+.screen{background:#F0F4FF;border-radius:36px;overflow:hidden;height:672px;position:relative;font-family:'Nunito',sans-serif;}
+.screen-inner{height:100%;overflow:hidden;display:flex;flex-direction:column;}
+
+.sb{display:flex;justify-content:space-between;align-items:center;padding:15px 20px 6px;font-size:11px;font-weight:700;flex-shrink:0;}
+.sb.lc{color:#fff;}
+.sb.dc{color:#111;}
+
+.body{flex:1;overflow-y:auto;padding:14px 14px 80px;}
+.body::-webkit-scrollbar{display:none;}
+.body-nopb{flex:1;overflow-y:auto;padding:14px;}
+.body-nopb::-webkit-scrollbar{display:none;}
+
+.hdr{padding:12px 18px 18px;flex-shrink:0;}
+.htitle{color:#fff;font-size:20px;font-weight:800;}
+.hsub{color:rgba(255,255,255,0.55);font-size:12px;margin-top:2px;font-weight:600;}
+.hback{color:rgba(255,255,255,0.65);font-size:18px;cursor:pointer;margin-bottom:10px;display:block;font-weight:700;}
+
+.fl{font-size:11px;font-weight:700;color:var(--gray-400);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:5px;}
+.fi{width:100%;background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--gray-900);font-family:inherit;margin-bottom:12px;outline:none;}
+.fi.act{border-color:var(--p1);background:var(--p-light);}
+.fi.eact{border-color:var(--ep1);background:var(--ep-light);}
+.fcard{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid var(--gray-100);}
+.fct{font-size:12px;font-weight:800;color:var(--gray-900);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;}
+.r2{display:flex;gap:10px;}
+.r2 .fc{flex:1;}
+
+.btn-p{width:100%;padding:14px;border-radius:14px;border:none;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;color:#fff;background:var(--p1);margin-bottom:10px;}
+.btn-ep{width:100%;padding:14px;border-radius:14px;border:none;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;color:#fff;background:var(--ep1);margin-bottom:10px;}
+.btn-o{width:100%;padding:13px;border-radius:14px;border:2px solid rgba(255,255,255,0.2);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.7);background:transparent;}
+
+.otp-row{display:flex;gap:7px;margin-bottom:14px;}
+.ob{flex:1;height:50px;border-radius:12px;border:1.5px solid var(--gray-200);background:var(--gray-50);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--gray-900);}
+.ob.f{border-color:var(--p1);background:var(--p-light);color:var(--p1);}
+.ob.ef{border-color:var(--ep1);background:var(--ep-light);color:var(--ep1);}
+
+.div-r{display:flex;align-items:center;gap:8px;margin:12px 0;}
+.div-l{flex:1;height:1px;background:var(--gray-200);}
+.div-t{font-size:11px;color:var(--gray-400);font-weight:700;}
+.sub-lnk{text-align:center;font-size:13px;color:var(--gray-400);margin-top:10px;font-weight:600;}
+.sub-lnk span{color:var(--p1);cursor:pointer;font-weight:800;}
+.sub-lnk span.e{color:var(--ep1);}
+
+.rchip-row{display:flex;gap:8px;margin-bottom:12px;}
+.rchip{flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--gray-200);font-size:12px;font-weight:700;text-align:center;cursor:pointer;color:var(--gray-400);background:var(--gray-50);font-family:inherit;}
+.rchip.on{border-color:var(--p1);background:var(--p-light);color:var(--p1);}
+.rchip.eon{border-color:var(--ep1);background:var(--ep-light);color:var(--ep1);}
+
+.ubx{border:2px dashed var(--gray-200);border-radius:14px;padding:18px;text-align:center;background:var(--gray-50);margin-bottom:12px;cursor:pointer;}
+.ubx.done{border-color:var(--green);background:var(--green-l);}
+.ubx-ic{font-size:28px;margin-bottom:6px;}
+.ubx-t{font-size:13px;font-weight:700;color:var(--gray-600);}
+.ubx-s{font-size:11px;color:var(--gray-400);margin-top:2px;}
+.ubx.done .ubx-t{color:var(--green);}
+
+.tag{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
+.tb{background:var(--p-light);color:var(--p1);}
+.tg{background:var(--green-l);color:var(--green);}
+.ta{background:var(--amber-l);color:var(--amber);}
+.tr{background:var(--red-l);color:var(--red);}
+
+.stat-row{display:flex;gap:8px;margin-bottom:16px;}
+.stat-c{flex:1;background:#fff;border-radius:16px;padding:12px 8px;text-align:center;border:1px solid var(--gray-100);}
+.stat-n{font-size:20px;font-weight:900;color:var(--gray-900);}
+.stat-l{font-size:10px;color:var(--gray-400);margin-top:2px;font-weight:700;}
+
+.jcard{background:#fff;border-radius:18px;padding:14px;margin-bottom:11px;border:1px solid var(--gray-100);}
+.jcard-top{display:flex;gap:11px;align-items:flex-start;margin-bottom:9px;}
+.jlogo{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
+.jtitle{font-size:14px;font-weight:800;color:var(--gray-900);}
+.jcomp{font-size:11px;color:var(--gray-400);margin-top:2px;font-weight:600;}
+.jtags{display:flex;gap:5px;flex-wrap:wrap;}
+.jfooter{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-100);}
+.jsal{font-size:14px;font-weight:800;color:var(--gray-900);}
+.abtn{border:none;border-radius:10px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;color:#fff;background:var(--p1);}
+.abtn.e{background:var(--ep1);}
+
+.bnav{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--gray-100);display:flex;padding:9px 0 13px;border-radius:0 0 36px 36px;}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:700;color:var(--gray-400);cursor:pointer;}
+.bni.on{color:var(--p1);}
+.bni.eon{color:var(--ep1);}
+.bni-ic{font-size:18px;line-height:1;}
+
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
+.sh-t{font-size:15px;font-weight:800;color:var(--gray-900);}
+.sh-a{font-size:12px;color:var(--p1);font-weight:700;cursor:pointer;}
+.sh-a.e{color:var(--ep1);}
+
+.cat-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;}
+.cat-scroll::-webkit-scrollbar{display:none;}
+.cchip{flex-shrink:0;padding:8px 14px;border-radius:20px;border:1.5px solid var(--gray-200);background:#fff;font-size:12px;font-weight:700;color:var(--gray-600);cursor:pointer;}
+.cchip.on{background:var(--p1);border-color:var(--p1);color:#fff;}
+
+.prow{display:flex;align-items:center;gap:12px;padding:13px 14px;background:#fff;border-radius:14px;margin-bottom:7px;border:1px solid var(--gray-100);}
+.prow-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.prow-t{font-size:13px;font-weight:700;color:var(--gray-900);}
+.prow-s{font-size:11px;color:var(--gray-400);font-weight:600;}
+.prow-arr{margin-left:auto;color:var(--gray-300);font-size:18px;}
+
+.tgl{width:38px;height:21px;border-radius:11px;position:relative;cursor:pointer;flex-shrink:0;}
+.tgl::after{content:'';position:absolute;width:15px;height:15px;background:#fff;border-radius:50%;top:3px;right:3px;}
+.tgl.off{background:var(--gray-200);}
+.tgl.off::after{right:20px;}
+
+.rs-row{display:flex;gap:8px;margin-bottom:12px;}
+.rs-c{flex:1;background:#fff;border-radius:14px;padding:11px;border:1px solid var(--gray-100);text-align:center;}
+.rs-n{font-size:18px;font-weight:900;color:var(--ep1);}
+.rs-l{font-size:10px;color:var(--gray-400);font-weight:700;}
+
+.chart-wrap{background:#fff;border-radius:18px;padding:15px;margin-bottom:12px;border:1px solid var(--gray-100);}
+.ct{font-size:13px;font-weight:800;color:var(--gray-900);margin-bottom:12px;}
+.bar-chart{display:flex;align-items:flex-end;gap:7px;height:72px;}
+.bc{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.bar{width:100%;border-radius:5px 5px 0 0;}
+.blbl{font-size:9px;color:var(--gray-400);font-weight:700;}
+.bval{font-size:9px;font-weight:800;color:var(--gray-600);}
+
+.plan-card{border-radius:20px;padding:18px;margin-bottom:12px;position:relative;}
+.plan-card.basic{background:var(--gray-50);border:2px solid var(--gray-200);}
+.plan-card.pro{background:var(--ep1);border:none;}
+.plan-badge{position:absolute;top:14px;right:14px;border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;}
+.plan-badge.pop{background:rgba(255,255,255,0.2);color:#fff;}
+.plan-badge.cur{background:#DCFCE7;color:#059669;}
+.pname{font-size:17px;font-weight:800;}
+.pprice{font-size:26px;font-weight:900;margin:6px 0 3px;}
+.pper{font-size:11px;opacity:0.65;font-weight:600;}
+.pfeats{margin-top:10px;}
+.pf{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:12px;font-weight:600;}
+.pbtn{width:100%;padding:12px;border-radius:12px;border:none;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;margin-top:12px;}
+
+.notif-item{display:flex;gap:11px;padding:13px 0;border-bottom:1px solid var(--gray-100);}
+.notif-item:last-child{border-bottom:none;}
+.nic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;}
+.undot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;border:1.5px solid #fff;}
+.nt{font-size:13px;font-weight:700;color:var(--gray-900);}
+.nb{font-size:11px;color:var(--gray-400);margin-top:2px;line-height:1.4;font-weight:600;}
+.ntime{font-size:10px;color:var(--gray-400);margin-top:3px;font-weight:700;}
+
+.modal-over{background:rgba(0,0,0,0.4);position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:flex-end;z-index:20;border-radius:0 0 36px 36px;}
+.modal-sheet{background:#fff;border-radius:24px 24px 0 0;padding:18px;width:100%;}
+.m-handle{width:36px;height:4px;background:var(--gray-200);border-radius:2px;margin:0 auto 14px;}
+.m-title{font-size:15px;font-weight:800;color:var(--gray-900);margin-bottom:14px;}
+
+.skill-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.skill{background:var(--p-light);color:var(--p1);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;}
+
+.tmpl-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;}
+.tmpl-row::-webkit-scrollbar{display:none;}
+.tmpl{flex-shrink:0;width:86px;border-radius:12px;overflow:hidden;border:2px solid var(--gray-200);cursor:pointer;}
+.tmpl.sel{border-color:var(--p1);}
+.tmpl-prev{height:114px;background:#fff;display:flex;flex-direction:column;padding:7px 5px;gap:2px;}
+.tl{height:4px;border-radius:2px;background:#e0e0e0;}
+.tl.th{height:16px;margin-bottom:3px;}
+.tl.s{width:60%;}
+.tmpl-name{font-size:9px;font-weight:700;color:var(--gray-600);text-align:center;padding:4px;background:#f9f9f9;}
+.sel-b{position:absolute;top:3px;right:3px;background:var(--p1);color:#fff;border-radius:5px;font-size:8px;font-weight:800;padding:2px 4px;}
+
+.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px;}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--gray-200);}
+.sdot.on{background:var(--p1);width:20px;border-radius:4px;}
+
+.info-box{border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start;}
+.info-box.blue{background:var(--p-light);}
+.info-box.green{background:var(--green-l);}
+.info-box.amber{background:var(--amber-l);}
+.info-t{font-size:12px;font-weight:700;line-height:1.5;}
+.info-t.blue{color:var(--p1);}
+.info-t.green{color:var(--green);}
+.info-t.amber{color:var(--amber);}
+
+.result-scr{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;}
+.res-ic{font-size:60px;margin-bottom:16px;}
+.res-t{font-size:20px;font-weight:900;margin-bottom:8px;}
+.res-s{font-size:13px;color:var(--gray-400);line-height:1.6;font-weight:600;}
+
+.job-manage-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.jm-btn{padding:7px 12px;border-radius:10px;border:none;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;}
+
+.applicant-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--gray-100);}
+.app-av{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.app-name{font-size:13px;font-weight:700;color:var(--gray-900);}
+.app-role{font-size:11px;color:var(--gray-400);font-weight:600;}
+.status-pill{border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;margin-left:auto;}
+.sp-green{background:var(--green-l);color:var(--green);}
+.sp-amber{background:var(--amber-l);color:var(--amber);}
+.sp-blue{background:var(--p-light);color:var(--p1);}
+.sp-red{background:var(--red-l);color:var(--red);}
+
+.view-meter{height:6px;background:var(--gray-100);border-radius:3px;margin-top:8px;overflow:hidden;}
+.view-fill{height:100%;border-radius:3px;background:var(--ep1);}
+
+.prof-hdr-wrap{flex-shrink:0;padding:20px 18px 24px;text-align:center;}
+.prof-av{width:68px;height:68px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin:0 auto 10px;border:3px solid rgba(255,255,255,0.3);}
+.prof-name-t{color:#fff;font-size:18px;font-weight:800;}
+.prof-role-t{color:rgba(255,255,255,0.55);font-size:11px;margin-top:3px;font-weight:600;}
+.prof-badges{display:flex;gap:7px;justify-content:center;margin-top:10px;}
+.pbadge{background:rgba(255,255,255,0.12);border-radius:20px;padding:4px 11px;font-size:11px;color:rgba(255,255,255,0.75);font-weight:600;}
+
+.search-bar{margin-top:12px;background:rgba(255,255,255,0.14);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;}
+.search-ph{color:rgba(255,255,255,0.45);font-size:13px;font-weight:600;flex:1;}
+.filt-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;border-radius:8px;padding:5px 10px;font-size:10px;font-weight:700;font-family:inherit;cursor:pointer;}
+
+.bell-btn{width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;font-size:16px;}
+.bell-dot{width:8px;height:8px;background:#EF4444;border-radius:50%;position:absolute;top:5px;right:5px;border:1.5px solid transparent;}
+
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cat-itm{background:#fff;border-radius:16px;padding:16px;border:1px solid var(--gray-100);text-align:center;cursor:pointer;}
+.cat-em{font-size:26px;margin-bottom:7px;}
+.cat-nm{font-size:13px;font-weight:700;color:var(--gray-900);}
+.cat-ct{font-size:11px;color:var(--gray-400);font-weight:600;}
+
+.post-form-area{flex:1;overflow-y:auto;padding:14px;padding-bottom:14px;}
+.post-form-area::-webkit-scrollbar{display:none;}
+.toggle-row{display:flex;gap:8px;margin-bottom:12px;}
+.trow-chip{flex:1;padding:9px 6px;border-radius:10px;border:1.5px solid var(--gray-200);font-size:12px;font-weight:700;text-align:center;cursor:pointer;color:var(--gray-400);background:var(--gray-50);font-family:inherit;}
+.trow-chip.on{border-color:var(--ep1);background:var(--ep-light);color:var(--ep1);}
+
+.skill-chip-ep{background:var(--ep-light);color:var(--ep1);border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px;margin:3px;}
+.add-skl{border:1.5px dashed var(--gray-200);border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;color:var(--gray-400);cursor:pointer;margin:3px;}
+
+</style>
+
+<h2 class="sr-only">JobFindLink v2 — Full interactive app prototype with color themes, language switcher, and all screens for Employee and Employer.</h2>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+
+<div class="ctrl-bar" id="colorBar">
+  <span style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:700;padding:8px 0;">Theme:</span>
+</div>
+<div class="lang-bar" id="langBar"></div>
+
+<div class="type-tabs">
+  <button class="type-tab on" onclick="switchType('e')">👷 Employee</button>
+  <button class="type-tab" onclick="switchType('em')">🏢 Employer</button>
+</div>
+
+<div class="nav-pills" id="navPills"></div>
+
+<div class="phone">
+  <div class="screen" id="appScreen"></div>
+</div>
+
+</div>
+
+<script>
+const THEMES = [
+  {name:'Blue',p1:'#2563EB',p2:'#1d4ed8',pl:'#EFF6FF',pm:'#BFDBFE',ep1:'#0F4C81',ep2:'#1E6FAA',epl:'#E8F4FD',dot:'#2563EB'},
+  {name:'Violet',p1:'#7C3AED',p2:'#6D28D9',pl:'#F5F3FF',pm:'#DDD6FE',ep1:'#5B21B6',ep2:'#7C3AED',epl:'#F5F3FF',dot:'#7C3AED'},
+  {name:'Rose',p1:'#E11D48',p2:'#BE123C',pl:'#FFF1F2',pm:'#FECDD3',ep1:'#9F1239',ep2:'#E11D48',epl:'#FFF1F2',dot:'#E11D48'},
+  {name:'Teal',p1:'#0D9488',p2:'#0F766E',pl:'#F0FDFA',pm:'#99F6E4',ep1:'#065F46',ep2:'#059669',epl:'#ECFDF5',dot:'#0D9488'},
+  {name:'Amber',p1:'#D97706',p2:'#B45309',pl:'#FFFBEB',pm:'#FDE68A',ep1:'#78350F',ep2:'#D97706',epl:'#FFFBEB',dot:'#D97706'},
+  {name:'Slate',p1:'#334155',p2:'#1e293b',pl:'#F1F5F9',pm:'#CBD5E1',ep1:'#0f172a',ep2:'#334155',epl:'#F1F5F9',dot:'#334155'},
+];
+
+const LANGS = {
+  en:{splash_tag:'India\'s Manpower Hiring Platform',find_jobs:'Find Jobs Now',employer:'I\'m an Employer',login:'Login',otp:'OTP Verification',register:'Create Account',dashboard:'Dashboard',search_ph:'Search jobs, companies...',categories:'Categories',profile:'Profile',apply:'Apply Now',notifications:'Notifications',settings:'Settings',post_job:'Post a Job',manage:'Manage',applicants:'Applicants',welcome:'Welcome back',good_morning:'Good morning'},
+  hi:{splash_tag:'भारत का मैनपावर हायरिंग प्लेटफॉर्म',find_jobs:'अभी नौकरी खोजें',employer:'मैं नियोक्ता हूँ',login:'लॉगिन',otp:'OTP सत्यापन',register:'खाता बनाएं',dashboard:'डैशबोर्ड',search_ph:'नौकरी खोजें...',categories:'श्रेणियाँ',profile:'प्रोफ़ाइल',apply:'अभी आवेदन करें',notifications:'सूचनाएं',settings:'सेटिंग',post_job:'नौकरी पोस्ट करें',manage:'प्रबंधन',applicants:'आवेदक',welcome:'वापसी पर स्वागत',good_morning:'सुप्रभात'},
+  gu:{splash_tag:'ભારતનો મેનપાવર હાયરિંગ પ્લેટફોર્મ',find_jobs:'હવે નોકરી શોધો',employer:'હું નોકરીદાતા છું',login:'લૉગિન',otp:'OTP ચકાસણી',register:'એકાઉન્ટ બનાવો',dashboard:'ડૅશબોર્ડ',search_ph:'નોકરી શોધો...',categories:'શ્રેણીઓ',profile:'પ્રોફાઇલ',apply:'હવે અરજી કરો',notifications:'સૂચનાઓ',settings:'સેટિંગ',post_job:'નોકરી પોસ્ટ કરો',manage:'સંચાલન',applicants:'અરજદારો',welcome:'પાછા સ્વાગત',good_morning:'સુપ્રભાત'},
+};
+
+let theme = THEMES[0];
+let lang = 'en';
+let curType = 'e';
+let curScreen = 'splash';
+let manageJobId = null;
+let manageTab = 'applicants';
+
+const EMP_SCREENS = {
+  splash:{label:'Splash'},login:{label:'Login'},register:{label:'Register'},
+  forgot:{label:'Forgot PW'},docverify:{label:'Doc Verify'},dashboard:{label:'Dashboard'},
+  categories:{label:'Categories'},profile:{label:'Profile'},
+  apply:{label:'Job Apply'},resume:{label:'Resume Builder'},
+  notifications:{label:'Notifications'},settings:{label:'Settings'}
+};
+const EMPR_SCREENS = {
+  login:{label:'Login'},register:{label:'Register'},subscription:{label:'Subscription'},
+  payment:{label:'Payment'},success:{label:'Success'},failure:{label:'Failure'},
+  dashboard:{label:'Dashboard'},postjob:{label:'Post Job'},managejob:{label:'Manage Job'},
+  subdetail:{label:'Sub Detail'},empprofile:{label:'Profile'},
+  empsettings:{label:'Settings'},empnotif:{label:'Notifications'}
+};
+
+function t(k){return LANGS[lang][k]||LANGS.en[k]||k;}
+
+function applyTheme(th){
+  theme = th;
+  const r = document.documentElement.style;
+  r.setProperty('--p1',th.p1);r.setProperty('--p2',th.p2);
+  r.setProperty('--p-light',th.pl);r.setProperty('--p-mid',th.pm);
+  r.setProperty('--ep1',th.ep1);r.setProperty('--ep2',th.ep2);
+  r.setProperty('--ep-light',th.epl);
+  document.querySelectorAll('.color-dot').forEach((d,i)=>{
+    d.classList.toggle('sel',THEMES[i]===th);
+  });
+  renderScreen();
+}
+
+function buildColorBar(){
+  const bar = document.getElementById('colorBar');
+  bar.innerHTML='<span style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:700;padding:8px 0;">Theme:</span>';
+  THEMES.forEach((th,i)=>{
+    const d=document.createElement('div');
+    d.className='color-dot'+(th===theme?' sel':'');
+    d.style.background=th.dot;
+    d.title=th.name;
+    d.onclick=()=>applyTheme(th);
+    bar.appendChild(d);
+  });
+}
+
+function buildLangBar(){
+  const bar=document.getElementById('langBar');
+  bar.innerHTML='';
+  [['en','EN'],['hi','हिं'],['gu','ગુ']].forEach(([k,lbl])=>{
+    const b=document.createElement('button');
+    b.className='lang-btn'+(lang===k?' on':'');
+    b.textContent=lbl;
+    b.onclick=()=>{lang=k;buildLangBar();renderScreen();};
+    bar.appendChild(b);
+  });
+}
+
+function buildNav(){
+  const pills=document.getElementById('navPills');
+  const map=curType==='e'?EMP_SCREENS:EMPR_SCREENS;
+  pills.innerHTML=Object.entries(map).map(([k,v])=>`
+    <button class="npill ${curScreen===k?(curType==='e'?'on':'emp-on'):''}" onclick="goTo('${k}')">${v.label}</button>
+  `).join('');
+}
+
+function switchType(t){
+  curType=t;
+  document.querySelectorAll('.type-tab').forEach((b,i)=>{
+    b.classList.toggle('on',(t==='e'&&i===0)||(t==='em'&&i===1));
+  });
+  curScreen=Object.keys(t==='e'?EMP_SCREENS:EMPR_SCREENS)[0];
+  buildNav();renderScreen();
+}
+
+function goTo(s,extra){
+  curScreen=s;
+  if(extra)manageJobId=extra;
+  buildNav();renderScreen();
+}
+
+function renderScreen(){
+  const sc=document.getElementById('appScreen');
+  sc.innerHTML='';
+  const fn = curType==='e' ? empScreens[curScreen] : emprScreens[curScreen];
+  if(fn) fn(sc);
+}
+
+const empScreens = {
+  splash(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:linear-gradient(160deg,#0a0c18 0%,${theme.p2} 45%,${theme.p1} 100%);">
+      <div class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 26px 38px;">
+        <div style="text-align:center;margin-top:20px;">
+          <div id="logoAnim" style="width:80px;height:80px;border-radius:24px;background:${theme.p1};display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 14px;border:3px solid rgba(255,255,255,0.2);animation:logoPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;">💼</div>
+          <div style="color:#fff;font-size:26px;font-weight:900;letter-spacing:-0.5px;">JobFindLink</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:5px;font-weight:600;">${t('splash_tag')}</div>
+        </div>
+        <div style="width:100%;background:rgba(255,255,255,0.07);border-radius:20px;padding:20px;border:1px solid rgba(255,255,255,0.1);margin:10px 0;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            ${['#E74694','#3EC6E0','#F7C948','#5FD068','#A78BFA','#F97316'].map((c,i)=>`
+            <div style="background:rgba(255,255,255,0.07);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;animation:fadeUp 0.4s ${0.1*i}s both;">
+              <div style="width:26px;height:26px;border-radius:50%;background:${c};"></div>
+              <div style="height:4px;border-radius:2px;background:rgba(255,255,255,0.15);width:85%;"></div>
+              <div style="height:4px;border-radius:2px;background:rgba(255,255,255,0.08);width:55%;"></div>
+            </div>`).join('')}
+          </div>
+          <div style="text-align:center;margin-top:14px;color:rgba(255,255,255,0.35);font-size:11px;font-weight:700;">● ● ●</div>
+        </div>
+        <div style="width:100%;">
+          <button class="btn-p" style="background:${theme.p1};margin-bottom:10px;" onclick="goTo('login')">${t('find_jobs')} →</button>
+          <button class="btn-o" onclick="switchType('em')">${t('employer')}</button>
+        </div>
+      </div>
+    </div>
+    <style>
+      @keyframes logoPop{from{transform:scale(0.4) rotate(-10deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+      @keyframes fadeUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    </style>`;
+  },
+
+  login(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
+        <span class="hback">←</span>
+        <div class="htitle">${t('welcome')} 👋</div>
+        <div class="hsub">${t('login')} to your account</div>
+      </div>
+      <div class="body">
+        <div class="rchip-row">
+          <button class="rchip on">👷 Employee</button>
+          <button class="rchip" onclick="switchType('em')">🏢 Employer</button>
+        </div>
+        <div class="fl">Mobile Number</div>
+        <input class="fi act" value="+91 98765 43210" readonly>
+        <button class="btn-p" style="background:${theme.p1};">Send OTP</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div class="fl" style="margin-bottom:0;">${t('otp')}</div>
+          <span style="font-size:12px;color:${theme.p1};font-weight:700;">Resend 0:42</span>
+        </div>
+        <div class="otp-row">
+          <div class="ob f">7</div><div class="ob f">4</div><div class="ob f">2</div>
+          <div class="ob">_</div><div class="ob">_</div><div class="ob">_</div>
+        </div>
+        <button class="btn-p" style="background:${theme.p1};" onclick="goTo('dashboard')">Verify & ${t('login')} →</button>
+        <div class="div-r"><div class="div-l"></div><div class="div-t">or</div><div class="div-l"></div></div>
+        <div class="sub-lnk">No account? <span style="color:${theme.p1};" onclick="goTo('register')">Register Free</span></div>
+        <div class="sub-lnk" style="margin-top:7px;"><span style="color:${theme.p1};" onclick="goTo('forgot')">Forgot Password?</span></div>
+      </div>
+    </div>`;
+  },
+
+  register(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
+        <span class="hback" onclick="goTo('login')">←</span>
+        <div class="htitle">${t('register')}</div>
+        <div class="hsub">Fill details to get started</div>
+      </div>
+      <div class="body">
+        <div class="step-dots"><div class="sdot on" style="background:${theme.p1};"></div><div class="sdot"></div><div class="sdot"></div></div>
+        <div class="fcard">
+          <div class="fct">Personal Info</div>
+          <div class="fl">Full Name</div><input class="fi act" value="John Doe" readonly>
+          <div class="r2">
+            <div class="fc"><div class="fl">Mobile</div><input class="fi" value="+91 9876543210" readonly></div>
+            <div class="fc"><div class="fl">Age</div><input class="fi" value="26" readonly></div>
+          </div>
+          <div class="fl">Email</div><input class="fi" value="john@example.com" readonly>
+          <div class="fl">Gender</div>
+          <div class="rchip-row"><button class="rchip on" style="border-color:${theme.p1};background:${theme.pl};color:${theme.p1};">Male</button><button class="rchip">Female</button><button class="rchip">Other</button></div>
+        </div>
+        <div class="fcard">
+          <div class="fct">Work Details</div>
+          <div class="fl">Seeking Position</div><input class="fi" value="PHP Developer" readonly>
+          <div class="rchip-row">
+            <button class="rchip on" style="border-color:${theme.p1};background:${theme.pl};color:${theme.p1};">Experienced</button>
+            <button class="rchip">Fresher</button>
+          </div>
+          <div class="fl">Preferred Locations</div><input class="fi" value="Mumbai, Bangalore" readonly>
+          <div class="fl">Expected Salary</div><input class="fi" value="₹ 60,000/month" readonly style="margin-bottom:0;">
+        </div>
+        <div class="fcard">
+          <div class="fct">Set Password</div>
+          <div class="fl">Password</div><input class="fi" type="password" value="password123" readonly>
+          <div class="fl">Confirm</div><input class="fi" type="password" value="password123" readonly style="margin-bottom:0;">
+        </div>
+        <button class="btn-p" style="background:${theme.p1};" onclick="goTo('docverify')">Continue to Verification →</button>
+        <div class="sub-lnk"><span style="color:${theme.p1};" onclick="goTo('login')">← Back to Login</span></div>
+      </div>
+    </div>`;
+  },
+
+  forgot(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div class="sb dc" style="background:#F6F7FB;"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div class="body" style="padding-top:18px;">
+        <div style="text-align:center;margin-bottom:22px;">
+          <div style="font-size:48px;margin-bottom:10px;">🔐</div>
+          <div style="font-size:20px;font-weight:800;color:var(--gray-900);">Forgot Password?</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:5px;font-weight:600;">Reset via your registered mobile</div>
+        </div>
+        <div class="step-dots"><div class="sdot on" style="background:${theme.p1};"></div><div class="sdot"></div><div class="sdot"></div></div>
+        ${[
+          {n:1,t:'Enter Mobile',body:`<input class="fi act" value="+91 98765 43210" readonly>`},
+          {n:2,t:'Verify OTP',body:`<div class="otp-row"><div class="ob f">3</div><div class="ob f">8</div><div class="ob">_</div><div class="ob">_</div><div class="ob">_</div><div class="ob">_</div></div>`},
+          {n:3,t:'Set New Password',body:`<input class="fi" placeholder="New Password" readonly><input class="fi" placeholder="Confirm" readonly style="margin-bottom:0;">`}
+        ].map((step,i)=>`
+        <div class="fcard" style="${i>0?'opacity:0.55;':''}">
+          <div style="width:26px;height:26px;background:${i===0?theme.p1:'var(--gray-200)'};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:${i===0?'#fff':'var(--gray-400)'};margin-bottom:9px;">${step.n}</div>
+          <div class="fct">${step.t}</div>
+          ${step.body}
+        </div>`).join('')}
+        <button class="btn-p" style="background:${theme.p1};" onclick="goTo('login')">Reset Password →</button>
+        <div class="sub-lnk"><span style="color:${theme.p1};" onclick="goTo('login')">← Back to Login</span></div>
+      </div>
+    </div>`;
+  },
+
+  docverify(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
+        <span class="hback" onclick="goTo('register')">←</span>
+        <div class="htitle">Aadhaar Verification</div>
+        <div class="hsub">Identity verification required</div>
+      </div>
+      <div class="body">
+        <div class="step-dots"><div class="sdot"></div><div class="sdot on" style="background:${theme.p1};"></div><div class="sdot"></div></div>
+        <div class="info-box blue"><span style="font-size:16px;">ℹ️</span><div class="info-t blue">Aadhaar details are encrypted and never stored. Required by government regulation.</div></div>
+        <div class="fcard">
+          <div class="fct">Aadhaar Details</div>
+          <div class="fl">Aadhaar Number</div><input class="fi act" value="XXXX XXXX 7823" readonly>
+          <div class="fl">Name on Aadhaar</div><input class="fi" value="JOHN DOE" readonly>
+          <div class="fl">Date of Birth</div><input class="fi" value="01 / 01 / 1998" readonly style="margin-bottom:0;">
+        </div>
+        <div class="fcard">
+          <div class="fct">Upload Aadhaar Card</div>
+          <div class="ubx done"><div class="ubx-ic">✅</div><div class="ubx-t">Front Side Uploaded</div><div class="ubx-s">aadhaar_front.jpg · 1.2 MB</div></div>
+          <div class="ubx"><div class="ubx-ic">📷</div><div class="ubx-t">Upload Back Side</div><div class="ubx-s">JPG, PNG or PDF · Max 5MB</div></div>
+        </div>
+        <div class="info-box green"><span style="font-size:16px;">✅</span><div class="info-t green">Aadhaar verified successfully!</div></div>
+        <button class="btn-p" style="background:${theme.p1};" onclick="goTo('dashboard')">Complete Registration →</button>
+      </div>
+    </div>`;
+  },
+
+  dashboard(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F0F4FF;">
+      <div style="background:linear-gradient(150deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div style="background:linear-gradient(150deg,${theme.p2},${theme.p1});padding:10px 18px 18px;flex-shrink:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;">JD</div>
+            <div><div style="color:rgba(255,255,255,0.55);font-size:10px;font-weight:700;">${t('good_morning')} 👋</div><div style="color:#fff;font-size:14px;font-weight:800;">John Doe</div></div>
+          </div>
+          <div class="bell-btn" onclick="goTo('notifications')">🔔<div class="bell-dot"></div></div>
+        </div>
+        <div class="search-bar"><span style="font-size:14px;">🔍</span><span class="search-ph">${t('search_ph')}</span><button class="filt-btn">Filter</button></div>
+      </div>
+      <div class="body">
+        <div class="stat-row">
+          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">12</div><div class="stat-l">Applied</div></div>
+          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">3</div><div class="stat-l">Shortlisted</div></div>
+          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">1</div><div class="stat-l">Offered</div></div>
+          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">48</div><div class="stat-l">Views</div></div>
+        </div>
+        <div class="sh"><div class="sh-t">${t('categories')}</div><div class="sh-a" style="color:${theme.p1};" onclick="goTo('categories')">See all →</div></div>
+        <div class="cat-scroll">
+          ${[['💻','IT & Tech'],['🏗️','Construction'],['🍽️','Hospitality'],['🏥','Healthcare'],['📦','Logistics'],['🏭','Mfg']].map((c,i)=>`
+          <div class="cchip ${i===0?'on':''}" style="${i===0?'background:'+theme.p1+';border-color:'+theme.p1+';':''}">${c[0]} ${c[1]}</div>`).join('')}
+        </div>
+        <div class="sh"><div class="sh-t">Recommended</div><div class="sh-a" style="color:${theme.p1};">See all →</div></div>
+        ${[
+          {l:'T',c:theme.p1,title:'Senior PHP Developer',comp:'TechCorp · Mumbai',tags:['Full-time','WFH','3-5 yrs'],sal:'₹50K–90K'},
+          {l:'A',c:'#059669',title:'React Native Dev',comp:'AppSolutions · Blr',tags:['Full-time','2-3 yrs'],sal:'₹40K–70K'}
+        ].map(j=>`
+        <div class="jcard">
+          <div class="jcard-top">
+            <div class="jlogo" style="background:${j.c};">${j.l}</div>
+            <div style="flex:1;"><div class="jtitle">${j.title}</div><div class="jcomp">${j.comp}</div></div>
+            <span style="font-size:16px;cursor:pointer;">♡</span>
+          </div>
+          <div class="jtags">${j.tags.map((tg,i)=>`<span class="tag ${['tb','tg','ta'][i%3]}">${tg}</span>`).join('')}</div>
+          <div class="jfooter"><div class="jsal">${j.sal}/mo</div><button class="abtn" style="background:${theme.p1};" onclick="goTo('apply')">${t('apply')}</button></div>
+        </div>`).join('')}
+      </div>
+      <div class="bnav">
+        <div class="bni on" style="color:${theme.p1};"><div class="bni-ic">🏠</div>Home</div>
+        <div class="bni" onclick="goTo('categories')"><div class="bni-ic">🔍</div>Search</div>
+        <div class="bni"><div class="bni-ic">📋</div>Applied</div>
+        <div class="bni" onclick="goTo('notifications')"><div class="bni-ic">🔔</div>Alerts</div>
+        <div class="bni" onclick="goTo('profile')"><div class="bni-ic">👤</div>Profile</div>
+      </div>
+    </div>`;
+  },
+
+  categories(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
+        <span class="hback" onclick="goTo('dashboard')">←</span>
+        <div class="htitle">${t('categories')}</div>
+        <div class="hsub">Browse by industry</div>
+      </div>
+      <div class="body">
+        <div class="fi" style="background:var(--gray-100);border-color:transparent;display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;">
+          <span style="font-size:14px;">🔍</span><span style="color:var(--gray-400);font-size:13px;font-weight:600;">Search categories...</span>
+        </div>
+        <div class="cat-grid">
+          ${[['💻','IT & Tech','1,240 jobs'],['🏗️','Construction','890 jobs'],['🍽️','Hospitality','654 jobs'],['🏥','Healthcare','432 jobs'],['📦','Logistics','780 jobs'],['🏭','Manufacturing','1,100 jobs'],['🎓','Education','320 jobs'],['🔧','Maintenance','456 jobs'],['🚗','Driver/Fleet','280 jobs'],['📞','Customer Support','620 jobs']].map(c=>`
+          <div class="cat-itm" onclick="goTo('dashboard')">
+            <div class="cat-em">${c[0]}</div>
+            <div class="cat-nm">${c[1]}</div>
+            <div class="cat-ct">${c[2]}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="bni" onclick="goTo('dashboard')"><div class="bni-ic">🏠</div>Home</div>
+        <div class="bni on" style="color:${theme.p1};"><div class="bni-ic">🔍</div>Search</div>
+        <div class="bni"><div class="bni-ic">📋</div>Applied</div>
+        <div class="bni" onclick="goTo('notifications')"><div class="bni-ic">🔔</div>Alerts</div>
+        <div class="bni" onclick="goTo('profile')"><div class="bni-ic">👤</div>Profile</div>
+      </div>
+    </div>`;
+  },
+
+  profile(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(150deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="prof-hdr-wrap" style="background:linear-gradient(150deg,${theme.p2},${theme.p1});">
+        <div class="prof-av" style="background:rgba(255,255,255,0.2);">JD</div>
+        <div class="prof-name-t">John Doe</div>
+        <div class="prof-role-t">Senior PHP Developer · Mumbai</div>
+        <div class="prof-badges"><div class="pbadge">✅ Verified</div><div class="pbadge">⚡ Active</div><div class="pbadge">3 yrs exp</div></div>
+      </div>
+      <div class="body">
+        <div class="fcard" style="margin-bottom:10px;">
+          <div class="fct">Skills</div>
+          <div class="skill-wrap">${['PHP','Laravel','Vue.js','MySQL','REST API','Docker'].map(sk=>`<div class="skill" style="background:${theme.pl};color:${theme.p1};">${sk}</div>`).join('')}</div>
+        </div>
+        ${[['📋','My Applications','12 applied, 3 shortlisted'],['📄','My Resume','Updated 2 days ago'],['💰','Salary Expectation','₹60K – ₹80K/month'],['📍','Preferred Locations','Mumbai, Bangalore, Pune'],['🔒','Change Password','Last changed 1 month ago'],['🚪','Logout','Sign out']].map(r=>`
+        <div class="prow">
+          <div class="prow-ic" style="background:${theme.pl};">${r[0]}</div>
+          <div><div class="prow-t">${r[1]}</div><div class="prow-s">${r[2]}</div></div>
+          <div class="prow-arr">›</div>
+        </div>`).join('')}
+      </div>
+      <div class="bnav">
+        <div class="bni" onclick="goTo('dashboard')"><div class="bni-ic">🏠</div>Home</div>
+        <div class="bni" onclick="goTo('categories')"><div class="bni-ic">🔍</div>Search</div>
+        <div class="bni"><div class="bni-ic">📋</div>Applied</div>
+        <div class="bni" onclick="goTo('notifications')"><div class="bni-ic">🔔</div>Alerts</div>
+        <div class="bni on" style="color:${theme.p1};"><div class="bni-ic">👤</div>Profile</div>
+      </div>
+    </div>`;
+  },
+
+  apply(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
+        <span class="hback" onclick="goTo('dashboard')">←</span>
+        <div class="htitle">Senior PHP Developer</div>
+        <div class="hsub">TechCorp · Mumbai · ₹50K–90K/mo</div>
+      </div>
+      <div class="body">
+        <div class="fcard">
+          <div class="fct">Job Overview</div>
+          <div class="jtags" style="margin-bottom:10px;"><span class="tag tb">Full-time</span><span class="tag tg">WFH</span><span class="tag ta">3–5 yrs</span></div>
+          <div style="font-size:13px;color:var(--gray-600);line-height:1.6;font-weight:600;">Looking for an experienced Laravel developer to lead backend. Strong skills in REST APIs and MySQL required.</div>
+          <div class="skill-wrap">${['PHP','Laravel','MySQL','Vue.js'].map(sk=>`<div class="skill" style="background:${theme.pl};color:${theme.p1};">${sk}</div>`).join('')}</div>
+        </div>
+        <div class="sh-t" style="margin-bottom:10px;">How do you want to apply?</div>
+        ${[
+          {ic:'📄',t:'Use Existing Resume',s:'john_doe_resume.pdf · Updated 2 days ago',sel:true},
+          {ic:'✨',t:'Build with Resume Builder',s:'Choose template & customize',sel:false,go:'resume'},
+          {ic:'📤',t:'Upload New Resume',s:'PDF, DOC · Max 5MB',sel:false}
+        ].map(o=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:13px;border-radius:14px;border:1.5px solid ${o.sel?theme.p1:'var(--gray-200)'};background:${o.sel?theme.pl:'#fff'};margin-bottom:9px;cursor:pointer;" onclick="${o.go?`goTo('${o.go}')`:''}" >
+          <span style="font-size:22px;">${o.ic}</span>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--gray-900);">${o.t}</div><div style="font-size:11px;color:var(--gray-400);font-weight:600;">${o.s}</div></div>
+          <span style="font-size:16px;color:${o.sel?theme.p1:'var(--gray-200)'};">${o.sel?'✓':'›'}</span>
+        </div>`).join('')}
+        <div class="fl" style="margin-top:8px;">Cover Note (Optional)</div>
+        <textarea class="fi" style="height:66px;resize:none;" readonly>I have 4 years of experience in Laravel and Vue.js...</textarea>
+        <button class="btn-p" style="background:${theme.p1};">Submit Application →</button>
+      </div>
+    </div>`;
+  },
+
+  resume(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
+        <span class="hback" onclick="goTo('apply')">←</span>
+        <div class="htitle">Resume Builder</div>
+        <div class="hsub">Create a professional resume</div>
+      </div>
+      <div class="body">
+        <div class="sh-t" style="margin-bottom:10px;">Choose Template</div>
+        <div class="tmpl-row">
+          ${[['Classic',theme.p1],['Modern','#059669'],['Bold','#D97706'],['Minimal','#7C3AED']].map((tm,i)=>`
+          <div class="tmpl ${i===0?'sel':''}" style="${i===0?'border-color:'+theme.p1+';':''};position:relative;">
+            <div class="tmpl-prev"><div class="tl th" style="background:${tm[1]};"></div><div class="tl"></div><div class="tl s"></div><div class="tl"></div><div class="tl s"></div><div class="tl"></div></div>
+            <div class="tmpl-name">${tm[0]}</div>
+            ${i===0?`<div class="sel-b" style="background:${theme.p1};">✓</div>`:''}
+          </div>`).join('')}
+        </div>
+        <div class="fcard">
+          <div class="fct">Personal Info</div>
+          <div class="fl">Full Name</div><input class="fi act" value="John Doe" readonly>
+          <div class="r2">
+            <div class="fc"><div class="fl">Mobile</div><input class="fi" value="+91 9876543210" readonly></div>
+            <div class="fc"><div class="fl">Email</div><input class="fi" value="john@example.com" readonly></div>
+          </div>
+          <div class="fl">Summary</div>
+          <textarea class="fi" style="height:58px;resize:none;" readonly>PHP Developer with 4 years in Laravel, Vue.js and REST APIs...</textarea>
+        </div>
+        <div class="fcard">
+          <div class="fct">Experience</div>
+          <div style="border-left:3px solid ${theme.p1};padding-left:11px;margin-bottom:10px;">
+            <div style="font-size:13px;font-weight:700;color:var(--gray-900);">PHP Developer</div>
+            <div style="font-size:12px;font-weight:700;color:${theme.p1};">WebSolutions Pvt Ltd</div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600;">Jan 2021 – Present</div>
+          </div>
+          <button style="width:100%;padding:9px;border:1.5px dashed var(--gray-200);border-radius:10px;background:transparent;color:${theme.p1};font-weight:700;font-family:inherit;cursor:pointer;font-size:12px;">+ Add Experience</button>
+        </div>
+        <button class="btn-p" style="background:${theme.p1};">Preview & Download →</button>
+      </div>
+    </div>`;
+  },
+
+  notifications(s){
+    const items=[
+      {ic:'💼',bg:theme.pl,title:'New Job Match!',body:'Senior PHP Developer at TechCorp matches your profile.',time:'2 min ago',u:true},
+      {ic:'✅',bg:'#ECFDF5',title:'Application Shortlisted',body:'You are shortlisted at AppSolutions.',time:'1 hr ago',u:true},
+      {ic:'👁️',bg:'#FFFBEB',title:'Profile Viewed',body:'An employer from Mumbai viewed your profile.',time:'3 hrs ago',u:false},
+      {ic:'🎯',bg:theme.pl,title:'Complete Profile',body:'Add skills to get 3x more views.',time:'Yesterday',u:false},
+      {ic:'❌',bg:'#FEF2F2',title:'Application Closed',body:'Your application at XYZ Corp was closed.',time:'2 days ago',u:false}
+    ];
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
+        <span class="hback" onclick="goTo('dashboard')">←</span>
+        <div class="htitle">${t('notifications')}</div>
+        <div class="hsub">2 unread alerts</div>
+      </div>
+      <div class="body">
+        <div style="background:#fff;border-radius:18px;padding:0 14px;">
+          ${items.map(n=>`
+          <div class="notif-item">
+            <div class="nic" style="background:${n.bg};">
+              <span style="font-size:15px;">${n.ic}</span>
+              ${n.u?`<div class="undot" style="background:${theme.p1};"></div>`:''}
+            </div>
+            <div style="flex:1;"><div class="nt">${n.title}</div><div class="nb">${n.body}</div><div class="ntime">${n.time}</div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  settings(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div class="sb dc" style="background:#F6F7FB;"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div class="body" style="padding-top:16px;">
+        <div style="font-size:20px;font-weight:900;color:var(--gray-900);margin-bottom:18px;">${t('settings')}</div>
+        ${[
+          {sec:'Account',items:[{ic:'👤',t:'Edit Profile'},{ic:'🔒',t:'Change Password'},{ic:'📱',t:'Change Mobile'}]},
+          {sec:'Notifications',items:[{ic:'🔔',t:'Job Alerts',tgl:true,on:true},{ic:'💬',t:'Application Updates',tgl:true,on:true},{ic:'📢',t:'Promotions',tgl:true,on:false}]},
+          {sec:'Privacy',items:[{ic:'👁️',t:'Profile Visibility',tgl:true,on:true},{ic:'📞',t:'Show Mobile',tgl:true,on:false}]},
+          {sec:'Support',items:[{ic:'❓',t:'Help & FAQ'},{ic:'⭐',t:'Rate App'},{ic:'🚪',t:'Logout'}]}
+        ].map(grp=>`
+        <div style="margin-bottom:18px;">
+          <div style="font-size:10px;font-weight:800;color:var(--gray-400);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:8px;padding-left:3px;">${grp.sec}</div>
+          ${grp.items.map(it=>`
+          <div class="prow">
+            <div class="prow-ic" style="background:${theme.pl};">${it.ic}</div>
+            <div class="prow-t" style="flex:1;">${it.t}</div>
+            ${it.tgl?`<div class="tgl ${it.on?'':'off'}" style="${it.on?'background:'+theme.p1+';':''}"></div>`:'<div class="prow-arr">›</div>'}
+          </div>`).join('')}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+};
+
+const emprScreens = {
+  login(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback">←</span>
+        <div class="htitle">Employer ${t('login')} 🏢</div>
+        <div class="hsub">Access your hiring dashboard</div>
+      </div>
+      <div class="body">
+        <div class="rchip-row">
+          <button class="rchip" onclick="switchType('e')">👷 Employee</button>
+          <button class="rchip eon" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">🏢 Employer</button>
+        </div>
+        <div class="fl">Registered Mobile</div>
+        <input class="fi eact" style="border-color:${theme.ep1};background:${theme.epl};" value="+91 98765 00001" readonly>
+        <button class="btn-ep" style="background:${theme.ep1};">Send OTP</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div class="fl" style="margin-bottom:0;">${t('otp')}</div>
+          <span style="font-size:12px;color:${theme.ep1};font-weight:700;">Resend 0:55</span>
+        </div>
+        <div class="otp-row">
+          <div class="ob ef" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">9</div>
+          <div class="ob ef" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">1</div>
+          <div class="ob ef" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">4</div>
+          <div class="ob">_</div><div class="ob">_</div><div class="ob">_</div>
+        </div>
+        <button class="btn-ep" style="background:${theme.ep1};" onclick="goTo('dashboard')">Verify & Login →</button>
+        <div class="div-r"><div class="div-l"></div><div class="div-t">or</div><div class="div-l"></div></div>
+        <div class="sub-lnk">New Employer? <span style="color:${theme.ep1};cursor:pointer;" onclick="goTo('register')">Register Company</span></div>
+      </div>
+    </div>`;
+  },
+
+  register(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback" onclick="goTo('login')">←</span>
+        <div class="htitle">Register Company</div>
+        <div class="hsub">Set up your hiring account</div>
+      </div>
+      <div class="body">
+        <div class="step-dots"><div class="sdot on" style="background:${theme.ep1};"></div><div class="sdot"></div><div class="sdot"></div></div>
+        <div class="fcard">
+          <div class="fct">Contact Person</div>
+          <div class="fl">Full Name</div><input class="fi eact" style="border-color:${theme.ep1};background:${theme.epl};" value="Rahul Sharma" readonly>
+          <div class="r2">
+            <div class="fc"><div class="fl">Mobile</div><input class="fi" value="+91 9800000001" readonly></div>
+            <div class="fc"><div class="fl">Designation</div><input class="fi" value="HR Manager" readonly></div>
+          </div>
+          <div class="fl">Work Email</div><input class="fi" value="hr@techcorp.com" readonly style="margin-bottom:0;">
+        </div>
+        <div class="fcard">
+          <div class="fct">Company Details</div>
+          <div class="fl">Company Name</div><input class="fi" value="TechCorp Global Pvt Ltd" readonly>
+          <div class="r2">
+            <div class="fc"><div class="fl">Industry</div><input class="fi" value="IT & Software" readonly></div>
+            <div class="fc"><div class="fl">Size</div><input class="fi" value="50–200" readonly></div>
+          </div>
+          <div class="fl">Website</div><input class="fi" value="https://techcorp.com" readonly>
+          <div class="fl">Description</div>
+          <textarea class="fi" style="height:58px;resize:none;" readonly>Leading software firm specializing in enterprise solutions...</textarea>
+        </div>
+        <div class="fcard">
+          <div class="fct">Documents (Optional)</div>
+          <div class="ubx done"><div class="ubx-ic">✅</div><div class="ubx-t">GST Certificate Uploaded</div><div class="ubx-s">gst_certificate.pdf · 450 KB</div></div>
+          <div class="ubx"><div class="ubx-ic">📄</div><div class="ubx-t">Upload Registration Certificate</div><div class="ubx-s">Optional · PDF, JPG · Max 5MB</div></div>
+        </div>
+        <button class="btn-ep" style="background:${theme.ep1};" onclick="goTo('subscription')">Continue to Subscription →</button>
+      </div>
+    </div>`;
+  },
+
+  subscription(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback" onclick="goTo('register')">←</span>
+        <div class="htitle">Choose a Plan</div>
+        <div class="hsub">Select the right plan for hiring</div>
+      </div>
+      <div class="body">
+        <div class="plan-card basic">
+          <div class="plan-badge cur">Current</div>
+          <div class="pname" style="color:var(--gray-900);">Basic</div>
+          <div class="pprice" style="color:var(--gray-900);">Free</div>
+          <div class="pper" style="color:var(--gray-400);">Forever</div>
+          <div class="pfeats">${['Post 2 jobs','View 10 resumes','Basic support'].map(f=>`<div class="pf" style="color:var(--gray-600);">✅ ${f}</div>`).join('')}${['Bulk hiring','Analytics','Priority listing'].map(f=>`<div class="pf" style="color:var(--gray-400);">❌ ${f}</div>`).join('')}</div>
+          <button class="pbtn" style="border:2px solid ${theme.ep1};color:${theme.ep1};background:transparent;">Current Plan</button>
+        </div>
+        <div class="plan-card pro" style="background:${theme.ep1};">
+          <div class="plan-badge pop">Most Popular</div>
+          <div class="pname" style="color:#fff;">Professional</div>
+          <div class="pprice" style="color:#fff;">₹2,999<span style="font-size:14px;font-weight:600;">/mo</span></div>
+          <div class="pper">Billed monthly</div>
+          <div class="pfeats">${['Post 20 jobs','Unlimited resumes','Priority listing','Analytics','Dedicated support'].map(f=>`<div class="pf" style="color:rgba(255,255,255,0.9);">✅ ${f}</div>`).join('')}</div>
+          <button class="pbtn" style="background:#fff;color:${theme.ep1};" onclick="goTo('payment')">Upgrade to Pro →</button>
+        </div>
+        <div class="plan-card" style="background:linear-gradient(135deg,#1B2A6B,#0D1B4D);">
+          <div class="pname" style="color:#fff;">Enterprise</div>
+          <div class="pprice" style="color:#fff;">₹7,999<span style="font-size:14px;font-weight:600;">/mo</span></div>
+          <div class="pper">Best for large teams</div>
+          <div class="pfeats">${['Unlimited posts','Bulk SMS','Account manager','Custom branding','API access'].map(f=>`<div class="pf" style="color:rgba(255,255,255,0.85);">✅ ${f}</div>`).join('')}</div>
+          <button class="pbtn" style="background:rgba(255,255,255,0.12);color:#fff;border:1.5px solid rgba(255,255,255,0.25);" onclick="goTo('payment')">Contact Sales →</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  payment(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback" onclick="goTo('subscription')">←</span>
+        <div class="htitle">Complete Payment</div>
+        <div class="hsub">Professional Plan · Monthly</div>
+      </div>
+      <div class="body">
+        <div class="fcard" style="text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--gray-400);">Amount Due</div>
+          <div style="font-size:34px;font-weight:900;color:var(--gray-900);">₹2,999</div>
+          <div style="font-size:12px;color:var(--gray-400);font-weight:600;">Professional Plan · 1 Month</div>
+          <div style="border-top:1px dashed var(--gray-200);margin-top:12px;padding-top:12px;">
+            ${[['Plan','₹2,999.00'],['GST 18%','₹539.82'],['Total','₹3,538.82']].map((r,i)=>`
+            <div style="display:flex;justify-content:space-between;font-size:${i===2?'14':'12'}px;font-weight:${i===2?'800':'600'};color:${i===2?'var(--gray-900)':'var(--gray-400)'};margin-bottom:5px;">
+              <span>${r[0]}</span><span style="color:${i===2?theme.ep1:'var(--gray-900)'};">${r[1]}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:var(--gray-900);margin-bottom:10px;">Payment Method</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          ${[['📱','UPI',true],['🏦','Net Banking',false],['💳','Card',false]].map(pm=>`
+          <div style="flex:1;border:1.5px solid ${pm[2]?theme.ep1:'var(--gray-200)'};border-radius:12px;padding:11px 6px;text-align:center;cursor:pointer;background:${pm[2]?theme.epl:'#fff'};">
+            <div style="font-size:18px;margin-bottom:3px;">${pm[0]}</div>
+            <div style="font-size:11px;font-weight:700;color:${pm[2]?theme.ep1:'var(--gray-600)'};">${pm[1]}</div>
+          </div>`).join('')}
+        </div>
+        <input class="fi eact" style="border-color:${theme.ep1};background:${theme.epl};" value="hr@techcorp@okhdfcbank" readonly>
+        <div class="info-box amber"><span style="font-size:14px;">⚠️</span><div class="info-t amber">Upload payment screenshot after completing UPI transfer for instant activation.</div></div>
+        <div class="ubx"><div class="ubx-ic">📸</div><div class="ubx-t">Upload Payment Screenshot</div><div class="ubx-s">PNG, JPG · Max 5MB</div></div>
+        <button class="btn-ep" style="background:${theme.ep1};" onclick="goTo('success')">Pay ₹3,538.82 →</button>
+        <button style="width:100%;padding:12px;border-radius:12px;border:none;background:transparent;color:var(--red);font-weight:700;font-family:inherit;cursor:pointer;font-size:13px;" onclick="goTo('failure')">Simulate Failure</button>
+      </div>
+    </div>`;
+  },
+
+  success(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div class="sb dc" style="background:#F6F7FB;"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div class="result-scr">
+        <div class="res-ic" style="animation:logoPop 0.5s ease both;">🎉</div>
+        <div class="res-t" style="color:var(--green);">Payment Successful!</div>
+        <div class="res-s">Your Professional Plan is now active. Start posting jobs today!</div>
+        <div style="background:var(--green-l);border-radius:16px;padding:16px;margin-top:18px;width:100%;text-align:left;">
+          ${[['Plan','Professional'],['Amount','₹3,538.82'],['Txn ID','TXN98765XYZ'],['Valid Until','12 May 2026']].map(r=>`
+          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:5px;">
+            <span style="color:var(--gray-400);">${r[0]}</span><span style="color:var(--gray-900);font-weight:700;">${r[1]}</span>
+          </div>`).join('')}
+        </div>
+        <button style="margin-top:20px;width:100%;padding:14px;border-radius:14px;border:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;background:var(--green);color:#fff;" onclick="goTo('dashboard')">Go to ${t('dashboard')} →</button>
+      </div>
+      <style>@keyframes logoPop{from{transform:scale(0.3);opacity:0;}to{transform:scale(1);opacity:1;}}</style>
+    </div>`;
+  },
+
+  failure(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div class="sb dc" style="background:#F6F7FB;"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div class="result-scr">
+        <div class="res-ic">😞</div>
+        <div class="res-t" style="color:var(--red);">Payment Failed</div>
+        <div class="res-s">Your payment could not be processed. No amount was deducted. Please try again.</div>
+        <div class="info-box amber" style="margin-top:16px;width:100%;"><span style="font-size:14px;">ℹ️</span><div class="info-t amber">If amount was debited, it will be refunded within 5–7 business days.</div></div>
+        <button style="margin-top:16px;width:100%;padding:14px;border-radius:14px;border:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;background:var(--red);color:#fff;" onclick="goTo('payment')">Try Again →</button>
+        <button style="margin-top:8px;width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--gray-200);background:transparent;color:var(--gray-600);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;" onclick="goTo('subscription')">Change Plan</button>
+      </div>
+    </div>`;
+  },
+
+  dashboard(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F0F4FF;">
+      <div style="background:linear-gradient(150deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div style="background:linear-gradient(150deg,${theme.ep2},${theme.ep1});padding:10px 18px 18px;flex-shrink:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;">TC</div>
+            <div><div style="color:rgba(255,255,255,0.55);font-size:10px;font-weight:700;">${t('welcome')} 🏢</div><div style="color:#fff;font-size:14px;font-weight:800;">TechCorp Global</div></div>
+          </div>
+          <div class="bell-btn" onclick="goTo('empnotif')">🔔<div class="bell-dot"></div></div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="rs-row">
+          <div class="rs-c"><div class="rs-n" style="color:${theme.ep1};">20</div><div class="rs-l">Jobs Posted</div></div>
+          <div class="rs-c"><div class="rs-n" style="color:${theme.ep1};">340</div><div class="rs-l">Applications</div></div>
+          <div class="rs-c"><div class="rs-n" style="color:${theme.ep1};">78</div><div class="rs-l">Approached</div></div>
+          <div class="rs-c"><div class="rs-n" style="color:${theme.ep1};">1.2K</div><div class="rs-l">Job Views</div></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="ct">Applications This Week</div>
+          <div class="bar-chart">
+            ${[['Mon',28,40],['Tue',45,64],['Wed',62,80],['Thu',38,54],['Fri',71,80],['Sat',20,29],['Sun',15,21]].map(b=>`
+            <div class="bc"><div class="bval">${b[1]}</div><div class="bar" style="height:${b[2]}px;background:${b[0]==='Fri'?theme.ep1:theme.epl};"></div><div class="blbl">${b[0]}</div></div>`).join('')}
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="ct">Application Status</div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <svg width="76" height="76" viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="28" fill="none" stroke="#E5E7EB" stroke-width="14"/>
+              <circle cx="38" cy="38" r="28" fill="none" stroke="${theme.ep1}" stroke-width="14" stroke-dasharray="88 88" stroke-dashoffset="-22" stroke-linecap="round"/>
+              <circle cx="38" cy="38" r="28" fill="none" stroke="${theme.ep2}" stroke-width="14" stroke-dasharray="42 134" stroke-dashoffset="66"/>
+              <circle cx="38" cy="38" r="28" fill="none" stroke="${theme.epl.replace('#','').length<7?theme.epl:theme.epl}" stroke-width="14" stroke-dasharray="46 130" stroke-dashoffset="0"/>
+              <text x="38" y="42" text-anchor="middle" font-size="11" font-weight="800" fill="${theme.ep1}">340</text>
+            </svg>
+            <div style="flex:1;">
+              ${[['Pending','150',theme.epl],['Shortlisted','120',theme.ep2],['Hired','70',theme.ep1]].map(d=>`
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:${d[2]};flex-shrink:0;"></div>
+                <div style="font-size:12px;color:var(--gray-600);font-weight:600;flex:1;">${d[0]}</div>
+                <div style="font-size:12px;font-weight:800;color:var(--gray-900);">${d[1]}</div>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="sh"><div class="sh-t">Active Job Posts</div><button class="abtn e" style="background:${theme.ep1};font-size:11px;" onclick="goTo('postjob')">+ ${t('post_job')}</button></div>
+        ${[
+          {id:'j1',l:'TC',c:theme.ep1,title:'Senior PHP Developer',apps:48,views:320,resumes:48},
+          {id:'j2',l:'TC',c:theme.ep2,title:'React Native Dev',apps:31,views:210,resumes:31}
+        ].map(j=>`
+        <div class="jcard">
+          <div class="jcard-top">
+            <div class="jlogo" style="background:${j.c};">${j.l}</div>
+            <div style="flex:1;"><div class="jtitle">${j.title}</div><div class="jcomp">Posted 3 days ago</div></div>
+            <span style="background:var(--green-l);color:var(--green);font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;">Active</span>
+          </div>
+          <div style="display:flex;gap:14px;font-size:11px;color:var(--gray-400);font-weight:600;">
+            <span>📋 ${j.apps} Applications</span>
+            <span>👁️ ${j.views} Views</span>
+          </div>
+          <div class="job-manage-row">
+            <button class="jm-btn" style="background:${theme.ep1};color:#fff;" onclick="goTo('managejob','${j.id}')">${t('manage')} →</button>
+            <button class="jm-btn" style="background:var(--green-l);color:var(--green);">View Resumes (${j.resumes})</button>
+            <button class="jm-btn" style="background:var(--amber-l);color:var(--amber);">Edit</button>
+            <button class="jm-btn" style="background:var(--red-l);color:var(--red);">Pause</button>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="bnav">
+        <div class="bni eon" style="color:${theme.ep1};"><div class="bni-ic">🏠</div>Home</div>
+        <div class="bni" onclick="goTo('postjob')"><div class="bni-ic">📋</div>Post Job</div>
+        <div class="bni" onclick="goTo('subdetail')"><div class="bni-ic">⭐</div>Plan</div>
+        <div class="bni" onclick="goTo('empnotif')"><div class="bni-ic">🔔</div>Alerts</div>
+        <div class="bni" onclick="goTo('empprofile')"><div class="bni-ic">👤</div>Profile</div>
+      </div>
+    </div>`;
+  },
+
+  postjob(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback" onclick="goTo('dashboard')">←</span>
+        <div class="htitle">${t('post_job')}</div>
+        <div class="hsub">Fill in job details below</div>
+      </div>
+      <div class="post-form-area">
+        <div class="fcard">
+          <div class="fct">Job Details</div>
+          <div class="fl">Job Title *</div><input class="fi eact" style="border-color:${theme.ep1};background:${theme.epl};" value="Senior PHP Developer" readonly>
+          <div class="fl">Category *</div><input class="fi" value="Information Technology" readonly>
+          <div class="r2">
+            <div class="fc"><div class="fl">Job Type</div>
+              <div class="toggle-row">
+                <button class="trow-chip on" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">Full-time</button>
+                <button class="trow-chip">Part-time</button>
+              </div>
+            </div>
+          </div>
+          <div class="fl">Work Mode</div>
+          <div class="toggle-row">
+            <button class="trow-chip on" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">Office</button>
+            <button class="trow-chip">WFH</button>
+            <button class="trow-chip">Hybrid</button>
+          </div>
+          <div class="fl">Location</div><input class="fi" value="Mumbai, Maharashtra" readonly>
+        </div>
+        <div class="fcard">
+          <div class="fct">Compensation</div>
+          <div class="fl">Pay Type</div>
+          <div class="toggle-row">
+            <button class="trow-chip on" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">Salary Range</button>
+            <button class="trow-chip">Fixed</button>
+            <button class="trow-chip">Negotiable</button>
+          </div>
+          <div class="r2">
+            <div class="fc"><div class="fl">Min (₹)</div><input class="fi" value="50,000" readonly></div>
+            <div class="fc"><div class="fl">Max (₹)</div><input class="fi" value="90,000" readonly></div>
+          </div>
+          <div class="fl">Experience Required</div><input class="fi" value="3–5 years" readonly style="margin-bottom:0;">
+        </div>
+        <div class="fcard">
+          <div class="fct">Skills Required</div>
+          <div style="display:flex;flex-wrap:wrap;margin-bottom:8px;">
+            ${['PHP','Laravel','MySQL','Vue.js'].map(sk=>`<div class="skill-chip-ep" style="background:${theme.epl};color:${theme.ep1};">${sk} <span style="opacity:0.5;cursor:pointer;">×</span></div>`).join('')}
+            <div class="add-skl">+ Add Skill</div>
+          </div>
+        </div>
+        <div class="fcard">
+          <div class="fct">Job Description</div>
+          <textarea class="fi" style="height:80px;resize:none;" readonly>Looking for an experienced Laravel developer to lead backend development. Strong skills in REST APIs, MySQL, and Vue.js are required. Must be comfortable working in an agile environment...</textarea>
+        </div>
+        <div class="fcard">
+          <div class="fct">Perks & Benefits</div>
+          <div style="display:flex;flex-wrap:wrap;">
+            ${['Health Insurance','Flexible Timing','Work from Home','Paid Leave','Provident Fund'].map(p=>`<div class="skill-chip-ep" style="background:${theme.epl};color:${theme.ep1};">${p}</div>`).join('')}
+            <div class="add-skl">+ Add Perk</div>
+          </div>
+        </div>
+        <div class="fcard">
+          <div class="fct">Application Settings</div>
+          <div class="fl">Application Deadline</div><input class="fi" value="30 April 2026" readonly>
+          <div class="fl">Max Applicants</div><input class="fi" value="100" readonly style="margin-bottom:0;">
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button class="btn-ep" style="background:${theme.ep1};flex:1;margin-bottom:0;" onclick="goTo('dashboard')">Publish Job →</button>
+          <button style="flex:0.5;padding:14px;border-radius:14px;border:1.5px solid ${theme.ep1};color:${theme.ep1};background:transparent;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;">Save Draft</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  managejob(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback" onclick="goTo('dashboard')">←</span>
+        <div class="htitle">${t('manage')} Job</div>
+        <div class="hsub">Senior PHP Developer</div>
+      </div>
+      <div class="body" style="padding-bottom:16px;">
+        <div style="display:flex;gap:0;background:#fff;border-radius:14px;padding:5px;margin-bottom:14px;border:1px solid var(--gray-100);">
+          ${[['applicants','Applicants (48)'],['resumes','Resumes'],['analytics','Analytics'],['details','Details']].map(tab=>`
+          <button onclick="manageTab='${tab[0]}';goTo('managejob');" style="flex:1;padding:8px 4px;border-radius:10px;border:none;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;background:${manageTab===tab[0]?theme.ep1:'transparent'};color:${manageTab===tab[0]?'#fff':'var(--gray-400)'};">${tab[1]}</button>`).join('')}
+        </div>
+        ${manageTab==='applicants'?`
+        <div style="background:#fff;border-radius:18px;padding:0 14px;margin-bottom:12px;">
+          ${[
+            {av:'JD',c:'#2563EB',name:'John Doe',role:'4 yrs PHP · Mumbai',status:'Shortlisted',sc:'sp-blue'},
+            {av:'PR',c:'#059669',name:'Priya Rao',role:'3 yrs Laravel · Pune',status:'Pending',sc:'sp-amber'},
+            {av:'AM',c:'#D97706',name:'Amit Mehta',role:'5 yrs PHP · Mumbai',status:'Hired',sc:'sp-green'},
+            {av:'SK',c:'#7C3AED',name:'Sneha K.',role:'2 yrs Dev · Blr',status:'Rejected',sc:'sp-red'},
+            {av:'RV',c:'#0F4C81',name:'Raj Verma',role:'6 yrs Senior · Delhi',status:'Pending',sc:'sp-amber'}
+          ].map(a=>`
+          <div class="applicant-row">
+            <div class="app-av" style="background:${a.c};">${a.av}</div>
+            <div style="flex:1;"><div class="app-name">${a.name}</div><div class="app-role">${a.role}</div></div>
+            <div class="${a.sc} status-pill">${a.status}</div>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="jm-btn" style="flex:1;background:var(--green-l);color:var(--green);padding:11px;">Export CSV</button>
+          <button class="jm-btn" style="flex:1;background:${theme.epl};color:${theme.ep1};padding:11px;">Bulk Message</button>
+        </div>`:''}
+        ${manageTab==='resumes'?`
+        <div style="background:#fff;border-radius:18px;padding:14px;margin-bottom:12px;">
+          ${[
+            {av:'JD',c:'#2563EB',name:'John Doe',exp:'4 yrs · PHP, Laravel',score:92},
+            {av:'AM',c:'#D97706',name:'Amit Mehta',exp:'5 yrs · PHP, MySQL',score:87},
+            {av:'PR',c:'#059669',name:'Priya Rao',exp:'3 yrs · Laravel, Vue',score:78}
+          ].map(r=>`
+          <div style="padding:12px 0;border-bottom:1px solid var(--gray-100);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div class="app-av" style="background:${r.c};">${r.av}</div>
+              <div style="flex:1;"><div class="app-name">${r.name}</div><div class="app-role">${r.exp}</div></div>
+              <div style="font-size:14px;font-weight:800;color:${theme.ep1};">${r.score}%</div>
+            </div>
+            <div class="view-meter"><div class="view-fill" style="width:${r.score}%;background:${theme.ep1};"></div></div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <button class="jm-btn" style="background:${theme.epl};color:${theme.ep1};">View Resume</button>
+              <button class="jm-btn" style="background:var(--green-l);color:var(--green);">Shortlist</button>
+              <button class="jm-btn" style="background:var(--red-l);color:var(--red);">Reject</button>
+            </div>
+          </div>`).join('')}
+        </div>`:''}
+        ${manageTab==='analytics'?`
+        <div class="chart-wrap">
+          <div class="ct">Views vs Applications</div>
+          <div class="bar-chart">
+            ${[['W1',45,62],['W2',62,80],['W3',38,54],['W4',71,80]].map(b=>`
+            <div class="bc">
+              <div class="bval">${b[1]}</div>
+              <div style="display:flex;gap:3px;align-items:flex-end;height:${b[2]}px;width:100%;">
+                <div style="flex:1;background:${theme.ep1};border-radius:4px 4px 0 0;height:${Math.round(b[1]/71*100)}%;"></div>
+                <div style="flex:1;background:${theme.epl};border-radius:4px 4px 0 0;height:100%;"></div>
+              </div>
+              <div class="blbl">${b[0]}</div>
+            </div>`).join('')}
+          </div>
+          <div style="display:flex;gap:12px;margin-top:10px;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--gray-600);"><div style="width:10px;height:10px;border-radius:2px;background:${theme.ep1};"></div>Applications</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--gray-600);"><div style="width:10px;height:10px;border-radius:2px;background:${theme.epl};"></div>Views</div>
+          </div>
+        </div>
+        <div class="fcard">
+          ${[['Total Views','1,240'],['Total Applications','48'],['Avg Match Score','84%'],['Conversion Rate','3.9%']].map(m=>`
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px solid var(--gray-100);">
+            <span style="color:var(--gray-400);font-weight:600;">${m[0]}</span>
+            <span style="font-weight:800;color:${theme.ep1};">${m[1]}</span>
+          </div>`).join('')}
+        </div>`:''}
+        ${manageTab==='details'?`
+        <div class="fcard">
+          ${[['Title','Senior PHP Developer'],['Category','Information Technology'],['Job Type','Full-time'],['Work Mode','WFH'],['Location','Mumbai'],['Salary','₹50K–90K/mo'],['Experience','3–5 years'],['Posted On','09 Apr 2026'],['Deadline','30 Apr 2026'],['Status','Active']].map(d=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--gray-100);">
+            <span style="font-size:12px;color:var(--gray-400);font-weight:600;">${d[0]}</span>
+            <span style="font-size:13px;font-weight:700;color:var(--gray-900);">${d[1]}</span>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-ep" style="background:${theme.ep1};flex:1;margin-bottom:0;" onclick="goTo('postjob')">Edit Job</button>
+          <button style="flex:0.5;padding:13px;border-radius:14px;border:1.5px solid var(--red);color:var(--red);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">Close Job</button>
+        </div>`:''}
+      </div>
+    </div>`;
+  },
+
+  subdetail(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback" onclick="goTo('dashboard')">←</span>
+        <div class="htitle">Subscription Details</div>
+        <div class="hsub">Manage your plan</div>
+      </div>
+      <div class="body">
+        <div style="background:${theme.ep1};border-radius:20px;padding:20px;margin-bottom:14px;color:#fff;">
+          <div style="font-size:11px;opacity:0.65;font-weight:700;margin-bottom:3px;">CURRENT PLAN</div>
+          <div style="font-size:22px;font-weight:900;">Professional</div>
+          <div style="font-size:26px;font-weight:900;margin:6px 0 3px;">₹2,999<span style="font-size:13px;font-weight:600;opacity:0.7;">/month</span></div>
+          <div style="display:flex;gap:16px;font-size:11px;opacity:0.75;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.2);">
+            <div>📅 Active Since<br><strong>12 Apr 2026</strong></div>
+            <div>⏰ Renews<br><strong>12 May 2026</strong></div>
+            <div>📋 Jobs<br><strong>12/20</strong></div>
+          </div>
+        </div>
+        <div class="fcard">
+          ${[['Jobs Posted','8','20'],['Resumes Viewed','145','999'],['Bulk SMS','50','200']].map(u=>`
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:5px;">
+              <span style="color:var(--gray-600);">${u[0]}</span>
+              <span style="color:${theme.ep1};">${u[1]} / ${u[2]}</span>
+            </div>
+            <div class="view-meter"><div class="view-fill" style="width:${Math.round(parseInt(u[1])/parseInt(u[2])*100)}%;background:${theme.ep1};"></div></div>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-ep" style="background:${theme.ep1};flex:1;margin-bottom:0;" onclick="goTo('subscription')">Upgrade Plan</button>
+          <button style="flex:0.5;padding:13px;border-radius:14px;border:1.5px solid var(--red);color:var(--red);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  empprofile(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="prof-hdr-wrap" style="background:linear-gradient(150deg,${theme.ep2},${theme.ep1});">
+        <div class="prof-av" style="background:rgba(255,255,255,0.15);font-size:20px;">🏢</div>
+        <div class="prof-name-t">TechCorp Global Pvt Ltd</div>
+        <div class="prof-role-t">Information Technology · 50–200 Employees</div>
+        <div class="prof-badges"><div class="pbadge">✅ Verified</div><div class="pbadge">⭐ Pro</div><div class="pbadge">20 Jobs</div></div>
+      </div>
+      <div class="body">
+        ${[['🏢','Company Details','TechCorp Global Pvt Ltd'],['👤','Contact Person','Rahul Sharma · HR Manager'],['📧','Work Email','hr@techcorp.com'],['🌐','Website','techcorp.com'],['📄','Documents','GST Certificate · Verified'],['⭐','Subscription','Professional Plan · Active'],['📊','Analytics','340 total applications'],['🔒','Change Password',''],['🚪','Logout','']].map(r=>`
+        <div class="prow">
+          <div class="prow-ic" style="background:${theme.epl};">${r[0]}</div>
+          <div><div class="prow-t">${r[1]}</div>${r[2]?`<div class="prow-s">${r[2]}</div>`:''}</div>
+          <div class="prow-arr">›</div>
+        </div>`).join('')}
+      </div>
+      <div class="bnav">
+        <div class="bni" onclick="goTo('dashboard')"><div class="bni-ic">🏠</div>Home</div>
+        <div class="bni" onclick="goTo('postjob')"><div class="bni-ic">📋</div>Post Job</div>
+        <div class="bni" onclick="goTo('subdetail')"><div class="bni-ic">⭐</div>Plan</div>
+        <div class="bni" onclick="goTo('empnotif')"><div class="bni-ic">🔔</div>Alerts</div>
+        <div class="bni eon" style="color:${theme.ep1};"><div class="bni-ic">👤</div>Profile</div>
+      </div>
+    </div>`;
+  },
+
+  empsettings(s){
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div class="sb dc" style="background:#F6F7FB;"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div class="body" style="padding-top:16px;">
+        <div style="font-size:20px;font-weight:900;color:var(--gray-900);margin-bottom:18px;">${t('settings')}</div>
+        ${[
+          {sec:'Company Account',items:[{ic:'🏢',t:'Edit Company Profile'},{ic:'📄',t:'Manage Documents'},{ic:'🔒',t:'Change Password'}]},
+          {sec:'Hiring Preferences',items:[{ic:'🔔',t:'Application Alerts',tgl:true,on:true},{ic:'📊',t:'Weekly Reports',tgl:true,on:true},{ic:'💬',t:'Candidate Msgs',tgl:true,on:false}]},
+          {sec:'Billing',items:[{ic:'⭐',t:'Manage Subscription'},{ic:'🧾',t:'Invoice History'},{ic:'💳',t:'Payment Methods'}]},
+          {sec:'Support',items:[{ic:'❓',t:'Help Center'},{ic:'📞',t:'Contact Support'},{ic:'🚪',t:'Logout'}]}
+        ].map(grp=>`
+        <div style="margin-bottom:18px;">
+          <div style="font-size:10px;font-weight:800;color:var(--gray-400);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;padding-left:3px;">${grp.sec}</div>
+          ${grp.items.map(it=>`
+          <div class="prow">
+            <div class="prow-ic" style="background:${theme.epl};">${it.ic}</div>
+            <div class="prow-t" style="flex:1;">${it.t}</div>
+            ${it.tgl?`<div class="tgl ${it.on?'':'off'}" style="${it.on?'background:'+theme.ep1+';':''}"></div>`:'<div class="prow-arr">›</div>'}
+          </div>`).join('')}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  },
+
+  empnotif(s){
+    const items=[
+      {ic:'📋',bg:theme.epl,title:'New Application',body:'Priya Sharma applied for Senior PHP Developer.',time:'5 min ago',u:true},
+      {ic:'⭐',bg:'#FFFBEB',title:'Plan Renewing Soon',body:'Professional Plan renews on 12 May 2026.',time:'2 hrs ago',u:true},
+      {ic:'👁️',bg:'#ECFDF5',title:'Job Getting Views',body:'Senior PHP Dev has 320 views — boost it!',time:'4 hrs ago',u:false},
+      {ic:'✅',bg:'#ECFDF5',title:'Document Verified',body:'GST Certificate successfully verified.',time:'Yesterday',u:false},
+      {ic:'💬',bg:theme.epl,title:'Candidate Message',body:'John Doe asked about the PHP Developer role.',time:'2 days ago',u:false}
+    ];
+    s.innerHTML=`
+    <div class="screen-inner" style="background:#F6F7FB;">
+      <div style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});" class="sb lc"><span>9:41</span><span>●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,${theme.ep2},${theme.ep1});">
+        <span class="hback" onclick="goTo('dashboard')">←</span>
+        <div class="htitle">${t('notifications')}</div>
+        <div class="hsub">2 new alerts</div>
+      </div>
+      <div class="body">
+        <div style="background:#fff;border-radius:18px;padding:0 14px;">
+          ${items.map(n=>`
+          <div class="notif-item">
+            <div class="nic" style="background:${n.bg};">
+              <span style="font-size:15px;">${n.ic}</span>
+              ${n.u?`<div class="undot" style="background:${theme.ep1};"></div>`:''}
+            </div>
+            <div style="flex:1;"><div class="nt">${n.title}</div><div class="nb">${n.body}</div><div class="ntime">${n.time}</div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+};
+
+manageTab='applicants';
+buildColorBar();
+buildLangBar();
+buildNav();
+renderScreen();
+</script>
