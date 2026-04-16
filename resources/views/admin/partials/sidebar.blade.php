@@ -58,6 +58,13 @@
                 </div>
 
                 <div class="menu-item">
+                    <a class="menu-link {{ request()->routeIs('admin.positions.*') ? 'active' : '' }}" href="{{ route('admin.positions.index') }}">
+                        <span class="menu-icon"><i class="bi bi-person-badge fs-3"></i></span>
+                        <span class="menu-title">Positions</span>
+                    </a>
+                </div>
+
+                <div class="menu-item">
                     <a class="menu-link {{ request()->routeIs('admin.applications.*') ? 'active' : '' }}" href="{{ route('admin.applications.index') }}">
                         <span class="menu-icon"><i class="bi bi-file-earmark-person fs-3"></i></span>
                         <span class="menu-title">Applications</span>

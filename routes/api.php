@@ -47,6 +47,8 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
 Route::get('/categories/{category}/jobs', [CategoryController::class, 'jobs']);
 
+Route::get('/positions', [\App\Http\Controllers\Api\PositionController::class, 'index']);
+
 // ========================
 // AUTHENTICATED ROUTES
 // ========================

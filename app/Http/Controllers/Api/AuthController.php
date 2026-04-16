@@ -5,18 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\OtpVerification;
 use App\Models\User;
-use App\Services\Msg91Service;
+use App\Services\TwilioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    protected Msg91Service $msg91;
+    protected TwilioService $smsService;
 
-    public function __construct(Msg91Service $msg91)
+    public function __construct(TwilioService $smsService)
     {
-        $this->msg91 = $msg91;
+        $this->smsService = $smsService;
     }
 
     /**
@@ -478,10 +478,10 @@ class AuthController extends Controller
             'is_used' => false,
         ]);
 
-        // Send via MSG91 in production
+        // Send via SMS Service in production
         $smsResult = null;
-        if ($this->msg91->isConfigured() && !app()->environment('local')) {
-            $smsResult = $this->msg91->sendOtp($mobile, $otpCode);
+        if ($this->smsService->isConfigured() && !app()->environment('local')) {
+            $smsResult = $this->smsService->sendOtp($mobile, $otpCode);
         }
 
         return response()->json([

@@ -133,6 +133,20 @@
                             "path": ["api", "categories"]
                         }
                     }
+                },
+                {
+                    "name": "List Positions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {"key": "Accept", "value": "application/json"}
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/positions",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "positions"]
+                        }
+                    }
                 }
             ]
         },

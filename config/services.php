@@ -35,10 +35,11 @@ return [
         ],
     ],
 
-    'msg91' => [
-        'auth_key' => env('MSG91_AUTH_KEY'),
-        'sender_id' => env('MSG91_SENDER_ID', 'JOBFND'),
-        'otp_template_id' => env('MSG91_OTP_TEMPLATE_ID'),
+    'twilio' => [
+        'sid' => env('TWILIO_ACCOUNT_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_PHONE_NUMBER'),
+        'messaging_service_sid' => env('TWILIO_MESSAGING_SERVICE_SID'),
     ],
 
 ];

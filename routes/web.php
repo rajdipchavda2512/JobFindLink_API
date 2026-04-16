@@ -62,6 +62,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
         Route::get('/packages/{package}/edit', [PackageController::class, 'edit'])->name('packages.edit');
         Route::put('/packages/{package}', [PackageController::class, 'update'])->name('packages.update');
+        
+        // Positions
+        Route::get('/positions', [\App\Http\Controllers\Admin\PositionController::class, 'index'])->name('positions.index');
+        Route::get('/positions/create', [\App\Http\Controllers\Admin\PositionController::class, 'create'])->name('positions.create');
+        Route::post('/positions', [\App\Http\Controllers\Admin\PositionController::class, 'store'])->name('positions.store');
+        Route::get('/positions/{position}/edit', [\App\Http\Controllers\Admin\PositionController::class, 'edit'])->name('positions.edit');
+        Route::put('/positions/{position}', [\App\Http\Controllers\Admin\PositionController::class, 'update'])->name('positions.update');
+        Route::delete('/positions/{position}', [\App\Http\Controllers\Admin\PositionController::class, 'destroy'])->name('positions.destroy');
         // Categories
         Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [\App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
