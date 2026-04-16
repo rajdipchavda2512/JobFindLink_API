@@ -1,5 +1,5 @@
 <?php
-$data = json_encode(['mobile' => '+918758140896', 'purpose' => 'verify']);
+$data = json_encode(['mobile' => '', 'purpose' => 'verify']);
 $options = [
     'http' => [
         'method'  => 'POST',
