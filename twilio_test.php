@@ -3,8 +3,8 @@ require 'vendor/autoload.php';
 use Twilio\Rest\Client;
 use Twilio\Http\CurlClient;
 
-$sid = 'AC6a397dae7eb3187ed820aaf02bcf78f4';
-$token = 'a219e1ba77f01b9300f794b5cc618c74';
+$sid = '';
+$token = '';
 
 $curl = new CurlClient([
     CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
