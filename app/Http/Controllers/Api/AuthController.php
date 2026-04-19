@@ -342,15 +342,77 @@ class AuthController extends Controller
     }
 
     /**
+     * GET /api/auth/profile
+     * 
+     * Get the currently logged-in user's profile (works for both employee and employer)
+     */
+    public function myProfile(Request $request)
+    {
+        $user = $request->user();
+        
+        $profileData = null;
+        if ($user->isEmployee()) {
+            $profileData = $user->employeeProfile;
+        } elseif ($user->isEmployer()) {
+            $profileData = $user->employerProfile;
+            // Also include subscription status for employer
+            $profileData->subscription = $user->activeSubscription() ? [
+                'is_active' => true,
+                'package_name' => $user->activeSubscription()->package->name ?? 'Standard',
+            ] : null;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'mobile' => $user->mobile,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'is_verified' => $user->is_verified,
+                ],
+                'profile' => $profileData,
+            ],
+        ]);
+    }
+
+    /**
      * POST /api/auth/forgot-password
      */
     public function forgotPassword(Request $request)
     {
         $request->validate([
-            'mobile' => 'required|string|exists:users,mobile',
+            'mobile' => 'nullable|string',
+            'email' => 'nullable|email',
         ]);
 
-        return $this->dispatchOtp($request->mobile, 'forgot_password');
+        if (!$request->mobile && !$request->email) {
+            return response()->json(['success' => false, 'message' => 'Please provide mobile or email.'], 422);
+        }
+
+        if ($request->email) {
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not found with this email.'], 404);
+            }
+            if ($user->role !== 'employer') {
+                return response()->json(['success' => false, 'message' => 'Email reset is only for employers. Employees must use mobile.'], 403);
+            }
+            return $this->dispatchEmailOtp($request->email, 'forgot_password');
+        }
+
+        if ($request->mobile) {
+            $user = User::where('mobile', $request->mobile)->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not found with this mobile.'], 404);
+            }
+            if ($user->role !== 'employee') {
+                return response()->json(['success' => false, 'message' => 'Mobile reset is only for employees. Employers must use email.'], 403);
+            }
+            return $this->dispatchOtp($request->mobile, 'forgot_password');
+        }
     }
 
     /**
@@ -359,17 +421,28 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'mobile' => 'required|string|exists:users,mobile',
+            'mobile' => 'nullable|string',
+            'email' => 'nullable|email',
             'otp_code' => 'required|string|size:6',
             'password' => 'required|string|min:6|confirmed',
         ]);
+        
+        if (!$request->mobile && !$request->email) {
+            return response()->json(['success' => false, 'message' => 'Please provide mobile or email.'], 422);
+        }
 
-        $otp = OtpVerification::where('mobile', $request->mobile)
-            ->where('otp_code', $request->otp_code)
+        $otpQuery = OtpVerification::where('otp_code', $request->otp_code)
             ->where('is_used', false)
             ->where('expires_at', '>', now())
-            ->latest()
-            ->first();
+            ->latest();
+
+        if ($request->email) {
+            $otp = $otpQuery->where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->first();
+        } else {
+            $otp = $otpQuery->where('mobile', $request->mobile)->first();
+            $user = User::where('mobile', $request->mobile)->first();
+        }
 
         if (!$otp) {
             return response()->json([
@@ -378,9 +451,11 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $otp->update(['is_used' => true]);
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not found.'], 404);
+        }
 
-        $user = User::where('mobile', $request->mobile)->first();
+        $otp->update(['is_used' => true]);
         $user->update(['password' => $request->password]);
 
         return response()->json([
@@ -487,9 +562,46 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'OTP sent successfully.',
-            'otp_code' => app()->environment('local') ? $otpCode : null, // Only in dev
+            'otp_code' => $otpCode, // Always returned for testing purposes
             'expires_in_seconds' => 300,
             'sms_status' => $smsResult['success'] ?? null,
+        ]);
+    }
+
+    /**
+     * Internal helper to generate, store, and send Email OTP
+     */
+    private function dispatchEmailOtp(string $email, string $purpose = 'verify')
+    {
+        $otpCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        OtpVerification::where('email', $email)
+            ->where('is_used', false)
+            ->update(['is_used' => true]);
+
+        OtpVerification::create([
+            'email' => $email,
+            'otp_code' => $otpCode,
+            'expires_at' => now()->addMinutes(5),
+            'is_used' => false,
+        ]);
+
+        if (!app()->environment('local')) {
+            try {
+                \Illuminate\Support\Facades\Mail::raw("Your OTP for Password Reset is: $otpCode", function($msg) use ($email) { 
+                    $msg->to($email)->subject('Password Reset OTP'); 
+                });
+            } catch (\Exception $e) {
+                // Log the email failure
+                \Illuminate\Support\Facades\Log::error('Failed to send OTP email: ' . $e->getMessage());
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP sent to email successfully.',
+            'otp_code' => $otpCode, // Always returned for testing purposes
+            'expires_in_seconds' => 300,
         ]);
     }
 }

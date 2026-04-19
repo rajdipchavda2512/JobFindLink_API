@@ -34,6 +34,7 @@ Route::prefix('auth')->group(function () {
         Route::post('/change-mobile', [AuthController::class, 'changeMobile']);
         Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/profile', [AuthController::class, 'myProfile']);
     });
 });
 

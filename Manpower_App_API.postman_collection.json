@@ -10,7 +10,7 @@
 			"name": "1. Authentication",
 			"item": [
 				{
-					"name": "Register User",
+					"name": "Register User (Employee)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -41,6 +41,37 @@
 					}
 				},
 				{
+					"name": "Register User (Employer)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"Jane Smith\",\n    \"mobile\": \"9876543211\",\n    \"email\": \"jane@techcorp.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"role\": \"employer\",\n    \"company_name\": \"TechCorp Global\",\n    \"designation\": \"HR Manager\",\n    \"industry_type\": \"IT Services\",\n    \"company_size\": \"50-200\",\n    \"company_website\": \"https://techcorp.com\",\n    \"company_description\": \"A leading tech company.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
 					"name": "Send OTP",
 					"request": {
 						"method": "POST",
@@ -52,7 +83,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"mobile\": \"9876543210\"\n}",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"purpose\": \"login\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -129,7 +160,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\"\n}",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\",\n    \"otp_code\": \"123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -144,6 +175,132 @@
 							"path": [
 								"auth",
 								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"email\": \"hr@techcorp.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/forgot-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"email\": \"hr@techcorp.com\",\n    \"otp_code\": \"123456\",\n    \"password\": \"newpassword123\",\n    \"password_confirmation\": \"newpassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/reset-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Auth Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
 							]
 						}
 					}

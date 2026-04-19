@@ -10,7 +10,7 @@
             "name": "1. Authentication",
             "item": [
                 {
-                    "name": "Register",
+                    "name": "Register (Employee)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -29,6 +29,37 @@
                                 {"key": "gender", "value": "male", "type": "text"},
                                 {"key": "seeking_position", "value": "PHP Developer", "type": "text"},
                                 {"key": "experience_type", "value": "experienced", "type": "text"}
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "register"]
+                        }
+                    }
+                },
+                {
+                    "name": "Register (Employer)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {"key": "Accept", "value": "application/json"}
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {"key": "full_name", "value": "Jane Smith", "type": "text"},
+                                {"key": "mobile", "value": "9876543211", "type": "text"},
+                                {"key": "email", "value": "jane@techcorp.com", "type": "text"},
+                                {"key": "password", "value": "password123", "type": "text"},
+                                {"key": "password_confirmation", "value": "password123", "type": "text"},
+                                {"key": "role", "value": "employer", "description": "Must be employer", "type": "text"},
+                                {"key": "company_name", "value": "TechCorp Global", "type": "text"},
+                                {"key": "designation", "value": "HR Manager", "type": "text"},
+                                {"key": "industry_type", "value": "IT Services", "type": "text"},
+                                {"key": "company_size", "value": "50-200", "type": "text"},
+                                {"key": "company_website", "value": "https://techcorp.com", "type": "text"},
+                                {"key": "company_description", "value": "A leading tech company.", "type": "text"}
                             ]
                         },
                         "url": {
@@ -98,6 +129,81 @@
                             "raw": "{{base_url}}/api/auth/login",
                             "host": ["{{base_url}}"],
                             "path": ["api", "auth", "login"]
+                        }
+                    }
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {"key": "Accept", "value": "application/json"}
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {"key": "mobile", "value": "9876543210", "type": "text", "description": "For employees"},
+                                {"key": "email", "value": "hr@techcorp.com", "type": "text", "description": "For employers"}
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/forgot-password",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "forgot-password"]
+                        }
+                    }
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {"key": "Accept", "value": "application/json"}
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {"key": "mobile", "value": "9876543210", "type": "text", "description": "For employees"},
+                                {"key": "email", "value": "hr@techcorp.com", "type": "text", "description": "For employers"},
+                                {"key": "otp_code", "value": "123456", "type": "text"},
+                                {"key": "password", "value": "newpassword123", "type": "text"},
+                                {"key": "password_confirmation", "value": "newpassword123", "type": "text"}
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/reset-password",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "reset-password"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {"key": "Accept", "value": "application/json"},
+                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/profile",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "profile"]
+                        }
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {"key": "Accept", "value": "application/json"},
+                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/logout",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "logout"]
                         }
                     }
                 }
