@@ -85,6 +85,39 @@
                         </div>
                     </div>
 
+                    <div id="employee_fields" style="display: {{ old('role', $user->role) === 'employee' ? 'block' : 'none' }};" class="mt-10 mb-10 border-top pt-10">
+                        <h4 class="mb-5 text-gray-800">Employee KYC & ID Verification</h4>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6">Aadhaar Number</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" class="form-control form-control-lg form-control-solid" value="{{ optional($user->employeeProfile)->aadhaar_number_masked ?: 'Not Provided' }}" readonly />
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6">ID Documents</label>
+                            <div class="col-lg-8 fv-row d-flex align-items-center">
+                                @if(optional($user->employeeProfile)->id_document_url)
+                                    <a href="{{ url(optional($user->employeeProfile)->id_document_url) }}" target="_blank" class="btn btn-sm btn-light-primary me-3">View Front</a>
+                                @else
+                                    <span class="badge badge-light-danger me-3">No Front ID</span>
+                                @endif
+                                
+                                @if(optional($user->employeeProfile)->id_document_back_url)
+                                    <a href="{{ url(optional($user->employeeProfile)->id_document_back_url) }}" target="_blank" class="btn btn-sm btn-light-primary">View Back</a>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6">KYC Status</label>
+                            <div class="col-lg-8 d-flex align-items-center">
+                                <div class="form-check form-check-solid form-switch fv-row">
+                                    <input class="form-check-input w-45px h-30px" type="checkbox" name="id_verified" value="1" {{ old('id_verified', optional($user->employeeProfile)->id_verified) ? 'checked' : '' }} />
+                                    <label class="form-check-label fw-bold fs-6">ID Verified (Govt Check)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row mb-6 border-top pt-8 mt-8 border-dashed">
                         <label class="col-lg-4 col-form-label fw-bold fs-6">Account Status</label>
                         <div class="col-lg-8 d-flex align-items-center">
@@ -114,12 +147,18 @@
     document.addEventListener('DOMContentLoaded', function() {
         const roleSelect = document.querySelector('select[name="role"]');
         const employerFields = document.getElementById('employer_fields');
+        const employeeFields = document.getElementById('employee_fields');
 
         roleSelect.addEventListener('change', function() {
             if (this.value === 'employer') {
                 employerFields.style.display = 'block';
+                if(employeeFields) employeeFields.style.display = 'none';
+            } else if (this.value === 'employee') {
+                employerFields.style.display = 'none';
+                if(employeeFields) employeeFields.style.display = 'block';
             } else {
                 employerFields.style.display = 'none';
+                if(employeeFields) employeeFields.style.display = 'none';
             }
         });
     });

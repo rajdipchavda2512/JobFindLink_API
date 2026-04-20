@@ -26,6 +26,16 @@ class EmployeeProfile extends Model
         'id_document_url',
         'id_verified',
         'profile_complete',
+        'resume_template',
+        'resume_data',
+        'id_document_back_url',
+        'aadhaar_number_masked',
+        'profile_visible',
+        'show_mobile',
+        'job_alerts',
+        'application_updates',
+        'promotions',
+        'views_count',
     ];
 
     protected function casts(): array
@@ -34,8 +44,14 @@ class EmployeeProfile extends Model
             'preferred_locations' => 'array',
             'skills' => 'array',
             'job_type' => 'array',
+            'resume_data' => 'array',
             'id_verified' => 'boolean',
             'profile_complete' => 'boolean',
+            'profile_visible' => 'boolean',
+            'show_mobile' => 'boolean',
+            'job_alerts' => 'boolean',
+            'application_updates' => 'boolean',
+            'promotions' => 'boolean',
         ];
     }
 

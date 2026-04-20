@@ -186,37 +186,85 @@ class AuthController extends Controller
     /**
      * POST /api/auth/login
      *
-     * Supports two login modes matching the mockup:
-     * 1. Mobile + OTP (primary, as shown in mockup)
-     * 2. Mobile + Password (fallback)
+     * Employee Login: Mobile + OTP
+     * Employer Login: Email + Password
      */
     public function login(Request $request)
     {
         $request->validate([
-            'mobile' => 'required|string',
+            'mobile' => 'nullable|string',
+            'email' => 'nullable|email',
             'otp_code' => 'nullable|string|size:6',
             'password' => 'nullable|string',
         ]);
 
-        // Must provide either OTP or password
-        if (!$request->otp_code && !$request->password) {
+        if (!$request->mobile && !$request->email) {
             return response()->json([
                 'success' => false,
-                'message' => 'Please provide either OTP or password.',
+                'message' => 'Please provide either mobile (for employee) or email (for employer).',
             ], 422);
         }
 
-        $user = User::where('mobile', $request->mobile)->first();
+        $user = null;
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No account found with this mobile number.',
-            ], 404);
+        // Employer Login Flow: Email + Password
+        if ($request->email) {
+            if (!$request->password) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Password is required for employer login.',
+                ], 422);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No employer account found with this email.',
+                ], 404);
+            }
+
+            if ($user->role !== 'employer') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only employers can login with email.',
+                ], 403);
+            }
+
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid credentials.',
+                ], 401);
+            }
         }
+        // Employee Login Flow: Mobile + OTP
+        elseif ($request->mobile) {
+            if (!$request->otp_code) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'OTP code is required for employee login.',
+                ], 422);
+            }
 
-        // OTP-based login (primary flow from mockup)
-        if ($request->otp_code) {
+            $user = User::where('mobile', $request->mobile)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No employee account found with this mobile number.',
+                ], 404);
+            }
+
+            if ($user->role !== 'employee') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Employers must log in using email and password.',
+                ], 403);
+            }
+
+            // Verify OTP
             $otp = OtpVerification::where('mobile', $request->mobile)
                 ->where('otp_code', $request->otp_code)
                 ->where('is_used', false)
@@ -236,15 +284,6 @@ class AuthController extends Controller
             // Verify user on successful OTP login
             if (!$user->is_verified) {
                 $user->update(['is_verified' => true]);
-            }
-        }
-        // Password-based login (fallback)
-        elseif ($request->password) {
-            if (!Hash::check($request->password, $user->password)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid credentials.',
-                ], 401);
             }
         }
 

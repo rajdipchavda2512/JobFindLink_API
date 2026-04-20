@@ -51,6 +51,8 @@ class UserController extends Controller
             'company_website' => 'nullable|string|max:255',
             'company_description' => 'nullable|string',
             'employer_designation' => 'nullable|string|max:100',
+            // Employee specific
+            'id_verified' => 'boolean',
         ]);
 
         $user->update([
@@ -60,6 +62,12 @@ class UserController extends Controller
             'is_active' => $request->boolean('is_active'),
             'is_verified' => $request->boolean('is_verified'),
         ]);
+
+        if ($request->role === 'employee' && $request->has('id_verified')) {
+            $user->employeeProfile()->update([
+                'id_verified' => $request->boolean('id_verified')
+            ]);
+        }
 
         if ($request->role === 'employer') {
             $user->employerProfile()->updateOrCreate(

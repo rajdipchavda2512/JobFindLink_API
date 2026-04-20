@@ -217,7 +217,7 @@ class EmployeeController extends Controller
             'aadhaar_name' => 'nullable|string|max:100',
             'date_of_birth' => 'nullable|date',
             'id_document_front' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'id_document_back' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'id_document_back' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $user = $request->user();
