@@ -14,27 +14,77 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "full_name", "value": "John Doe", "type": "text"},
-                                {"key": "mobile", "value": "9876543210", "type": "text"},
-                                {"key": "email", "value": "john@example.com", "type": "text"},
-                                {"key": "password", "value": "password123", "type": "text"},
-                                {"key": "password_confirmation", "value": "password123", "type": "text"},
-                                {"key": "role", "value": "employee", "description": "employee / employer", "type": "text"},
-                                {"key": "age", "value": "26", "type": "text"},
-                                {"key": "gender", "value": "male", "type": "text"},
-                                {"key": "seeking_position", "value": "PHP Developer", "type": "text"},
-                                {"key": "experience_type", "value": "experienced", "type": "text"}
+                                {
+                                    "key": "full_name",
+                                    "value": "John Doe",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543210",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "john@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "password123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password_confirmation",
+                                    "value": "password123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "employee",
+                                    "description": "employee / employer",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "age",
+                                    "value": "26",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "gender",
+                                    "value": "male",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "seeking_position",
+                                    "value": "PHP Developer",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "experience_type",
+                                    "value": "experienced",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/auth/register",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "register"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
                         }
                     }
                 },
@@ -43,29 +93,87 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "full_name", "value": "Jane Smith", "type": "text"},
-                                {"key": "mobile", "value": "9876543211", "type": "text"},
-                                {"key": "email", "value": "jane@techcorp.com", "type": "text"},
-                                {"key": "password", "value": "password123", "type": "text"},
-                                {"key": "password_confirmation", "value": "password123", "type": "text"},
-                                {"key": "role", "value": "employer", "description": "Must be employer", "type": "text"},
-                                {"key": "company_name", "value": "TechCorp Global", "type": "text"},
-                                {"key": "designation", "value": "HR Manager", "type": "text"},
-                                {"key": "industry_type", "value": "IT Services", "type": "text"},
-                                {"key": "company_size", "value": "50-200", "type": "text"},
-                                {"key": "company_website", "value": "https://techcorp.com", "type": "text"},
-                                {"key": "company_description", "value": "A leading tech company.", "type": "text"}
+                                {
+                                    "key": "full_name",
+                                    "value": "Jane Smith",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543211",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "jane@techcorp.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "password123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password_confirmation",
+                                    "value": "password123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "employer",
+                                    "description": "Must be employer",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company_name",
+                                    "value": "TechCorp Global",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "designation",
+                                    "value": "HR Manager",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "industry_type",
+                                    "value": "IT Services",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company_size",
+                                    "value": "50-200",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company_website",
+                                    "value": "https://techcorp.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company_description",
+                                    "value": "A leading tech company.",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/auth/register",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "register"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
                         }
                     }
                 },
@@ -74,19 +182,36 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "mobile", "value": "9876543210", "type": "text"},
-                                {"key": "purpose", "value": "login", "type": "text"}
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543210",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "purpose",
+                                    "value": "login",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/auth/send-otp",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "send-otp"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "send-otp"
+                            ]
                         }
                     }
                 },
@@ -95,19 +220,36 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "mobile", "value": "9876543210", "type": "text"},
-                                {"key": "otp_code", "value": "123456", "type": "text"}
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543210",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "otp_code",
+                                    "value": "123456",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/auth/verify-otp",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "verify-otp"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "verify-otp"
+                            ]
                         }
                     }
                 },
@@ -116,19 +258,37 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "mobile", "value": "9876543210", "type": "text"},
-                                {"key": "otp_code", "value": "123456", "description": "Pass OTP code or password", "type": "text"}
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543210",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "otp_code",
+                                    "value": "123456",
+                                    "description": "Pass OTP code or password",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/auth/login",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "login"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
                         }
                     }
                 },
@@ -137,19 +297,38 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "mobile", "value": "9876543210", "type": "text", "description": "For employees"},
-                                {"key": "email", "value": "hr@techcorp.com", "type": "text", "description": "For employers"}
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543210",
+                                    "type": "text",
+                                    "description": "For employees"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "hr@techcorp.com",
+                                    "type": "text",
+                                    "description": "For employers"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/auth/forgot-password",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "forgot-password"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "forgot-password"
+                            ]
                         }
                     }
                 },
@@ -158,22 +337,53 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "mobile", "value": "9876543210", "type": "text", "description": "For employees"},
-                                {"key": "email", "value": "hr@techcorp.com", "type": "text", "description": "For employers"},
-                                {"key": "otp_code", "value": "123456", "type": "text"},
-                                {"key": "password", "value": "newpassword123", "type": "text"},
-                                {"key": "password_confirmation", "value": "newpassword123", "type": "text"}
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543210",
+                                    "type": "text",
+                                    "description": "For employees"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "hr@techcorp.com",
+                                    "type": "text",
+                                    "description": "For employers"
+                                },
+                                {
+                                    "key": "otp_code",
+                                    "value": "123456",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "newpassword123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password_confirmation",
+                                    "value": "newpassword123",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/auth/reset-password",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "reset-password"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "reset-password"
+                            ]
                         }
                     }
                 },
@@ -182,13 +392,25 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/auth/profile",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "profile"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "profile"
+                            ]
                         }
                     }
                 },
@@ -197,13 +419,25 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/auth/logout",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "auth", "logout"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "logout"
+                            ]
                         }
                     }
                 }
@@ -217,12 +451,20 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/packages",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "packages"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "packages"
+                            ]
                         }
                     }
                 },
@@ -231,12 +473,20 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/categories",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "categories"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "categories"
+                            ]
                         }
                     }
                 },
@@ -245,12 +495,20 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/positions",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "positions"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "positions"
+                            ]
                         }
                     }
                 }
@@ -264,13 +522,25 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/employee/dashboard",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employee", "dashboard"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employee",
+                                "dashboard"
+                            ]
                         }
                     }
                 },
@@ -279,23 +549,55 @@
                     "request": {
                         "method": "PUT",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "urlencoded",
                             "urlencoded": [
-                                {"key": "experience_type", "value": "experienced", "type": "text"},
-                                {"key": "job_position", "value": "PHP Developer", "type": "text"},
-                                {"key": "expected_salary", "value": "60000", "type": "text"},
-                                {"key": "preferred_locations[0]", "value": "Mumbai", "type": "text"},
-                                {"key": "skills[0]", "value": "Laravel", "type": "text"}
+                                {
+                                    "key": "experience_type",
+                                    "value": "experienced",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "job_position",
+                                    "value": "PHP Developer",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "expected_salary",
+                                    "value": "60000",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "preferred_locations[0]",
+                                    "value": "Mumbai",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "skills[0]",
+                                    "value": "Laravel",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/employee/profile",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employee", "profile"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employee",
+                                "profile"
+                            ]
                         }
                     }
                 },
@@ -304,19 +606,35 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "resume", "type": "file", "src": []}
+                                {
+                                    "key": "resume",
+                                    "type": "file",
+                                    "src": []
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/employee/upload-resume",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employee", "upload-resume"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employee",
+                                "upload-resume"
+                            ]
                         }
                     }
                 },
@@ -325,20 +643,40 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "urlencoded",
                             "urlencoded": [
-                                {"key": "template", "value": "classic", "type": "text"},
-                                {"key": "summary", "value": "Experienced developer...", "type": "text"}
+                                {
+                                    "key": "template",
+                                    "value": "classic",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "summary",
+                                    "value": "Experienced developer...",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/employee/build-resume",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employee", "build-resume"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employee",
+                                "build-resume"
+                            ]
                         }
                     }
                 },
@@ -347,20 +685,94 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "aadhaar_number", "value": "123412341234", "type": "text"},
-                                {"key": "id_document_front", "type": "file", "src": []}
+                                {
+                                    "key": "aadhaar_number",
+                                    "value": "123412341234",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "id_document_front",
+                                    "type": "file",
+                                    "src": []
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/employee/verify-id",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employee", "verify-id"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employee",
+                                "verify-id"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "My Applications",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/employee/applications",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employee",
+                                "applications"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Saved Jobs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/employee/saved-jobs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employee",
+                                "saved-jobs"
+                            ]
                         }
                     }
                 }
@@ -374,13 +786,25 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/employer/dashboard",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employer", "dashboard"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employer",
+                                "dashboard"
+                            ]
                         }
                     }
                 },
@@ -389,21 +813,45 @@
                     "request": {
                         "method": "PUT",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "urlencoded",
                             "urlencoded": [
-                                {"key": "company_name", "value": "TechCorp Global", "type": "text"},
-                                {"key": "work_email", "value": "hr@techcorp.com", "type": "text"},
-                                {"key": "industry_type", "value": "Information Technology", "type": "text"}
+                                {
+                                    "key": "company_name",
+                                    "value": "TechCorp Global",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "work_email",
+                                    "value": "hr@techcorp.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "industry_type",
+                                    "value": "Information Technology",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/employer/profile",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employer", "profile"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employer",
+                                "profile"
+                            ]
                         }
                     }
                 },
@@ -412,20 +860,143 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "document_type", "value": "gst_certificate", "type": "text"},
-                                {"key": "document", "type": "file", "src": []}
+                                {
+                                    "key": "document_type",
+                                    "value": "gst_certificate",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "document",
+                                    "type": "file",
+                                    "src": []
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/employer/upload-document",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "employer", "upload-document"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employer",
+                                "upload-document"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "My Posted Jobs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/employer/jobs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employer",
+                                "jobs"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Employer Applications",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/employer/applications?job_id=1&status=pending",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employer",
+                                "applications"
+                            ],
+                            "query": [
+                                {
+                                    "key": "job_id",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "pending"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Application Status",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "status",
+                                    "value": "shortlisted",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/employer/applications/1/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "employer",
+                                "applications",
+                                "1",
+                                "status"
+                            ]
                         }
                     }
                 }
@@ -439,15 +1010,30 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/jobs/search?q=developer&work_location_type=wfh",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "jobs", "search"],
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "search"
+                            ],
                             "query": [
-                                {"key": "q", "value": "developer"},
-                                {"key": "work_location_type", "value": "wfh"}
+                                {
+                                    "key": "q",
+                                    "value": "developer"
+                                },
+                                {
+                                    "key": "work_location_type",
+                                    "value": "wfh"
+                                }
                             ]
                         }
                     }
@@ -457,27 +1043,74 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "urlencoded",
                             "urlencoded": [
-                                {"key": "title", "value": "Senior PHP Developer", "type": "text"},
-                                {"key": "job_type", "value": "full-time", "type": "text"},
-                                {"key": "location", "value": "Mumbai", "type": "text"},
-                                {"key": "work_location_type", "value": "hybrid", "type": "text"},
-                                {"key": "pay_type", "value": "range", "type": "text"},
-                                {"key": "salary_min", "value": "50000", "type": "text"},
-                                {"key": "salary_max", "value": "90000", "type": "text"},
-                                {"key": "description", "value": "We need an advanced developer.", "type": "text"},
-                                {"key": "is_draft", "value": "0", "type": "text"}
+                                {
+                                    "key": "title",
+                                    "value": "Senior PHP Developer",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "job_type",
+                                    "value": "full-time",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "Mumbai",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "work_location_type",
+                                    "value": "hybrid",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "pay_type",
+                                    "value": "range",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "salary_min",
+                                    "value": "50000",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "salary_max",
+                                    "value": "90000",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "We need an advanced developer.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "is_draft",
+                                    "value": "0",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/jobs",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "jobs"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs"
+                            ]
                         }
                     }
                 },
@@ -486,13 +1119,26 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/jobs/1/analytics",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "jobs", "1", "analytics"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "1",
+                                "analytics"
+                            ]
                         }
                     }
                 },
@@ -501,20 +1147,231 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                {"key": "apply_method", "value": "existing", "type": "text"},
-                                {"key": "cover_note", "value": "I am perfect for this role.", "type": "text"}
+                                {
+                                    "key": "apply_method",
+                                    "value": "existing",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "cover_note",
+                                    "value": "I am perfect for this role.",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/jobs/1/apply",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "jobs", "1", "apply"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "1",
+                                "apply"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "All Jobs Feed",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}",
+                                "description": "Optional for employees"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/jobs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Single Job Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}",
+                                "description": "Optional for employees"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/jobs/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit Job Post (Employer)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "title",
+                                    "value": "Updated Developer Job",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "is_draft",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/jobs/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Toggle Job Status (Employer)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "status",
+                                    "value": "paused",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/jobs/1/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "1",
+                                "status"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Job Post (Employer)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/jobs/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Save/Unsave Job (Employee)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/jobs/1/save",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jobs",
+                                "1",
+                                "save"
+                            ]
                         }
                     }
                 }
@@ -528,13 +1385,24 @@
                     "request": {
                         "method": "GET",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/notifications",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "notifications"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications"
+                            ]
                         }
                     }
                 },
@@ -543,13 +1411,53 @@
                     "request": {
                         "method": "PUT",
                         "header": [
-                            {"key": "Accept", "value": "application/json"},
-                            {"key": "Authorization", "value": "Bearer {{auth_token}}"}
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
                         ],
                         "url": {
                             "raw": "{{base_url}}/api/notifications/read-all",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "notifications", "read-all"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "read-all"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark Single Notification Read",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/notifications/1/read",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "1",
+                                "read"
+                            ]
                         }
                     }
                 }

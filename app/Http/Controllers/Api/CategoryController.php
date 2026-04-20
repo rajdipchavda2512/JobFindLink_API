@@ -27,7 +27,7 @@ class CategoryController extends Controller
         $categories = $query->withCount(['jobs' => function ($q) {
             $q->where('status', 'active');
         }])
-        ->orderBy('sort_order')
+        ->orderBy('name')
         ->get()
         ->map(function ($category) {
             return [

@@ -162,11 +162,10 @@ class JobController extends Controller
      *
      * Matches Search bar + Filter in Dashboard header
      */
-    public function search(Request $request)
+    public function index(Request $request)
     {
         $query = Job::where('status', 'active');
 
-        // Combined text search (search bar in mockup)
         if ($request->filled('q')) {
             $searchTerm = $request->q;
             $query->where(function ($q) use ($searchTerm) {
@@ -176,37 +175,85 @@ class JobController extends Controller
                   ->orWhere('description', 'like', "%{$searchTerm}%");
             });
         }
-
-        if ($request->filled('title')) {
-            $query->where('title', 'like', "%{$request->title}%");
-        }
-        if ($request->filled('company')) {
-            $query->where('company_name', 'like', "%{$request->company}%");
-        }
-        if ($request->filled('location')) {
-            $query->where('location', 'like', "%{$request->location}%");
-        }
-        if ($request->filled('job_type')) {
-            $query->where('job_type', $request->job_type);
-        }
-        if ($request->filled('salary_min')) {
-            $query->where('salary_max', '>=', $request->salary_min);
-        }
-        if ($request->filled('work_location_type')) {
-            $query->where('work_location_type', $request->work_location_type);
-        }
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-        if ($request->filled('experience')) {
-            $query->where('experience_required', 'like', "%{$request->experience}%");
+        if ($request->filled('title')) $query->where('title', 'like', "%{$request->title}%");
+        if ($request->filled('company')) $query->where('company_name', 'like', "%{$request->company}%");
+        if ($request->filled('location')) $query->where('location', 'like', "%{$request->location}%");
+        if ($request->filled('job_type')) $query->where('job_type', $request->job_type);
+        if ($request->filled('salary_min')) $query->where('salary_max', '>=', $request->salary_min);
+        if ($request->filled('work_location_type')) $query->where('work_location_type', $request->work_location_type);
+        if ($request->filled('category_id')) $query->where('category_id', $request->category_id);
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->category}%");
+            });
         }
 
-        $jobs = $query->with('category')->latest()->paginate(15);
+        $perPage = $request->input('per_page', 15);
+        $jobs = $query->latest()->paginate($perPage);
+
+        $user = auth('sanctum')->user();
+        $savedJobIds = [];
+        if ($user && $user->role === 'employee') {
+            $savedJobIds = \App\Models\SavedJob::where('employee_id', $user->id)
+                ->pluck('job_id')->toArray();
+        }
+
+        $formatted = collect($jobs->items())->map(function ($job) use ($savedJobIds) {
+            return [
+                'id' => $job->id,
+                'title' => $job->title,
+                'company_name' => $job->company_name,
+                'location' => $job->location,
+                'work_location_type' => $job->work_location_type,
+                'job_type' => $job->job_type,
+                'salary_min' => $job->salary_min,
+                'salary_max' => $job->salary_max,
+                'is_saved' => in_array($job->id, $savedJobIds),
+                'posted_at' => $job->created_at->toIso8601String(),
+            ];
+        });
 
         return response()->json([
             'success' => true,
-            'data' => $jobs,
+            'data' => $formatted,
+            'meta' => [
+                'current_page' => $jobs->currentPage(),
+                'total' => $jobs->total(),
+                'per_page' => $jobs->perPage()
+            ]
+        ]);
+    }
+
+    public function toggleSave(Request $request, Job $job)
+    {
+        $user = $request->user();
+
+        if ($user->role !== 'employee') {
+            return response()->json(['success' => false, 'message' => 'Only employees can save jobs.'], 403);
+        }
+
+        $savedJob = \App\Models\SavedJob::where('employee_id', $user->id)
+            ->where('job_id', $job->id)
+            ->first();
+
+        if ($savedJob) {
+            $savedJob->delete();
+            return response()->json([
+                'success' => true,
+                'saved' => false,
+                'message' => 'Job unsaved successfully.',
+            ]);
+        }
+
+        \App\Models\SavedJob::create([
+            'employee_id' => $user->id,
+            'job_id' => $job->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'saved' => true,
+            'message' => 'Job saved successfully.',
         ]);
     }
 
@@ -227,17 +274,35 @@ class JobController extends Controller
         $job->increment('views_count');
         $job->load(['employer.employerProfile', 'category']);
 
+        $user = auth('sanctum')->user();
+        $isSaved = false;
+        $alreadyApplied = false;
+
+        if ($user && $user->role === 'employee') {
+            $isSaved = \App\Models\SavedJob::where('employee_id', $user->id)
+                ->where('job_id', $job->id)->exists();
+            $alreadyApplied = Application::where('employee_id', $user->id)
+                ->where('job_id', $job->id)->exists();
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
-                'job' => $job,
-                'company' => $job->employer->employerProfile ? [
-                    'name' => $job->employer->employerProfile->company_name,
-                    'industry' => $job->employer->employerProfile->industry_type,
-                    'size' => $job->employer->employerProfile->company_size,
-                    'website' => $job->employer->employerProfile->company_website,
-                ] : null,
-                'category' => $job->category,
+                'id' => $job->id,
+                'title' => $job->title,
+                'description' => $job->description,
+                'requirements' => implode(', ', $job->skills_required ?? []) . ($job->experience_required ? ' (' . $job->experience_required . ')' : ''),
+                'company_name' => $job->company_name,
+                'company_logo' => $job->employer->employerProfile ? $job->employer->employerProfile->company_logo : null,
+                'location' => $job->location,
+                'work_location_type' => $job->work_location_type,
+                'job_type' => $job->job_type,
+                'salary_min' => $job->salary_min,
+                'salary_max' => $job->salary_max,
+                'is_saved' => $isSaved,
+                'already_applied' => $alreadyApplied,
+                'posted_at' => $job->created_at->toIso8601String(),
+                'expires_at' => $job->application_deadline ?? Carbon\Carbon::parse($job->created_at)->addDays(30)->toIso8601String(),
             ],
         ]);
     }
@@ -381,6 +446,11 @@ class JobController extends Controller
             'application_deadline', 'max_applicants',
         ]));
 
+        if ($request->has('is_draft')) {
+            $status = filter_var($request->is_draft, FILTER_VALIDATE_BOOLEAN) ? 'draft' : 'pending';
+            $job->update(['status' => $status]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Job updated successfully.',
@@ -405,15 +475,15 @@ class JobController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:active,paused,closed',
+            'status' => 'required|in:active,paused,draft,closed',
         ]);
 
         $job->update(['status' => $request->status]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Job status updated to ' . $request->status . '.',
-            'data' => $job->fresh(),
+            'message' => 'Job ' . $request->status . ' successfully.',
+            'data' => ['status' => $job->status],
         ]);
     }
 
@@ -431,11 +501,11 @@ class JobController extends Controller
             ], 403);
         }
 
-        $job->update(['status' => 'closed']);
+        $job->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Job closed successfully.',
+            'message' => 'Job deleted successfully.',
         ]);
     }
 

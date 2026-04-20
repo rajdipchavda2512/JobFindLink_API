@@ -28,26 +28,15 @@ class EmployerController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'full_name' => $user->full_name,
-                    'mobile' => $user->mobile,
-                    'email' => $user->email,
-                    'is_verified' => $user->is_verified,
-                ],
-                'profile' => $profile,
-                'subscription' => $subscription ? [
-                    'package_name' => $subscription->package->name,
-                    'is_active' => $subscription->is_active,
-                    'expires_at' => $subscription->expires_at->toDateTimeString(),
-                ] : null,
-                'stats' => [
-                    'total_jobs' => $user->jobs()->count(),
-                    'total_applications' => $user->jobs()
-                        ->withCount('applications')
-                        ->get()
-                        ->sum('applications_count'),
-                ],
+                'company_name' => $profile->company_name ?? null,
+                'work_email' => $profile->work_email ?? null,
+                'industry_type' => $profile->industry_type ?? null,
+                'company_size' => $profile->company_size ?? null,
+                'company_website' => $profile->company_website ?? null,
+                'company_description' => $profile->company_description ?? null,
+                'employer_designation' => $profile->employer_designation ?? null,
+                'is_verified' => (bool) $user->is_verified,
+                'documents' => $profile->documents ?? null,
             ],
         ]);
     }
@@ -242,9 +231,30 @@ class EmployerController extends Controller
 
         $jobs = $query->latest()->paginate(15);
 
+        $formatted = collect($jobs->items())->map(function ($job) {
+            return [
+                'id' => $job->id,
+                'title' => $job->title,
+                'job_type' => $job->job_type,
+                'location' => $job->location,
+                'work_location_type' => $job->work_location_type,
+                'salary_min' => $job->salary_min,
+                'salary_max' => $job->salary_max,
+                'status' => $job->status,
+                'total_applications' => $job->applications_count,
+                'views' => $job->views_count ?? 0,
+                'posted_at' => $job->created_at->toIso8601String(),
+            ];
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $jobs,
+            'data' => $formatted,
+            'meta' => [
+                'current_page' => $jobs->currentPage(),
+                'total' => $jobs->total(),
+                'per_page' => $jobs->perPage()
+            ]
         ]);
     }
 
@@ -315,6 +325,82 @@ class EmployerController extends Controller
             'success' => true,
             'message' => 'Settings updated successfully.',
             'data' => $profile->fresh(),
+        ]);
+    }
+
+    /**
+     * GET /api/employer/applications
+     */
+    public function employerApplications(Request $request)
+    {
+        $user = $request->user();
+        
+        $query = Application::whereHas('job', function ($q) use ($user) {
+            $q->where('employer_id', $user->id);
+        })->with(['employee', 'job']);
+
+        if ($request->filled('job_id')) {
+            $query->where('job_id', $request->job_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $applications = $query->latest()->paginate(15);
+
+        $formatted = collect($applications->items())->map(function ($app) {
+            return [
+                'id' => $app->id,
+                'applicant' => $app->employee ? [
+                    'id' => $app->employee->id,
+                    'full_name' => $app->employee->full_name,
+                    'mobile' => $app->employee->mobile,
+                    'email' => $app->employee->email,
+                ] : null,
+                'job' => $app->job ? [
+                    'id' => $app->job->id,
+                    'title' => $app->job->title,
+                ] : null,
+                'status' => $app->status,
+                'cover_note' => $app->cover_note,
+                'apply_method' => $app->apply_method ?? 'existing',
+                'applied_at' => $app->created_at->toIso8601String(),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $formatted,
+            'meta' => [
+                'current_page' => $applications->currentPage(),
+                'total' => $applications->total(),
+                'per_page' => $applications->perPage()
+            ]
+        ]);
+    }
+
+    /**
+     * PUT /api/employer/applications/{id}/status
+     */
+    public function updateApplicationStatus(Request $request, Application $application)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,under_review,shortlisted,hired,rejected',
+        ]);
+
+        $user = $request->user();
+
+        if ($application->job->employer_id !== $user->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized.'], 403);
+        }
+
+        $application->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Application status updated.',
+            'data' => ['status' => $application->status],
         ]);
     }
 }

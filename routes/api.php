@@ -50,6 +50,10 @@ Route::get('/categories/{category}/jobs', [CategoryController::class, 'jobs']);
 
 Route::get('/positions', [\App\Http\Controllers\Api\PositionController::class, 'index']);
 
+Route::get('/jobs', [JobController::class, 'index']);
+Route::get('/jobs/search', [JobController::class, 'search']);
+Route::get('/jobs/{job}', [JobController::class, 'show']);
+
 // ========================
 // AUTHENTICATED ROUTES
 // ========================
@@ -66,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/build-resume', [EmployeeController::class, 'buildResume']);
         Route::post('/verify-id', [EmployeeController::class, 'verifyId']);
         Route::get('/applications', [EmployeeController::class, 'myApplications']);
+        Route::get('/saved-jobs', [EmployeeController::class, 'savedJobs']);
         Route::put('/settings', [EmployeeController::class, 'updateSettings']);
     });
 
@@ -78,6 +83,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/profile', [EmployerController::class, 'updateProfile']);
         Route::post('/upload-document', [EmployerController::class, 'uploadDocument']);
         Route::get('/jobs', [EmployerController::class, 'myJobs']);
+        Route::get('/applications', [EmployerController::class, 'employerApplications']);
+        Route::put('/applications/{application}/status', [EmployerController::class, 'updateApplicationStatus']);
         Route::get('/subscription', [EmployerController::class, 'subscription']);
         Route::put('/settings', [EmployerController::class, 'updateSettings']);
     });
@@ -86,9 +93,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // JOB MODULE
     // ========================
     Route::get('/jobs/matching', [JobController::class, 'matching']);
-    Route::get('/jobs/search', [JobController::class, 'search']);
-    Route::get('/jobs/{job}', [JobController::class, 'show']);
     Route::post('/jobs/{job}/apply', [JobController::class, 'apply']);
+    Route::post('/jobs/{job}/save', [JobController::class, 'toggleSave'])->middleware('role:employee');
 
     // Employer only jobs management
     Route::middleware('role:employer')->group(function () {
@@ -105,7 +111,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // ========================
     Route::get('/applications', [ApplicationController::class, 'index']); // Generic list (fallback)
     Route::get('/applications/{application}/status', [ApplicationController::class, 'status']);
-    Route::put('/applications/{application}/status', [ApplicationController::class, 'updateStatus']); // Employer only
 
     // ========================
     // PAYMENT MODULE

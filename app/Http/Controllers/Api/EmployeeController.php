@@ -21,14 +21,13 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'full_name' => $user->full_name,
-                    'mobile' => $user->mobile,
-                    'email' => $user->email,
-                    'is_verified' => $user->is_verified,
-                ],
-                'profile' => $profile,
+                'experience_type' => $profile->experience_type ?? null,
+                'job_position' => $profile->job_position ?? null,
+                'expected_salary' => $profile->expected_salary ?? null,
+                'preferred_locations' => $profile->preferred_locations ?? [],
+                'skills' => $profile->skills ?? [],
+                'resume_url' => $profile->resume_url ?? null,
+                'aadhaar_verified' => (bool) ($profile->id_verified ?? false)
             ],
         ]);
     }
@@ -266,9 +265,62 @@ class EmployeeController extends Controller
             ->latest()
             ->paginate(15);
 
+        $formatted = collect($applications->items())->map(function ($app) {
+            return [
+                'id' => $app->id,
+                'job' => $app->job ? [
+                    'id' => $app->job->id,
+                    'title' => $app->job->title,
+                    'company_name' => $app->job->company_name,
+                    'location' => $app->job->location,
+                    'job_type' => $app->job->job_type,
+                    'salary_min' => $app->job->salary_min,
+                    'salary_max' => $app->job->salary_max,
+                ] : null,
+                'status' => $app->status,
+                'cover_note' => $app->cover_note,
+                'applied_at' => $app->created_at->toIso8601String(),
+            ];
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $applications,
+            'data' => $formatted,
+        ]);
+    }
+
+    /**
+     * GET /api/employee/saved-jobs
+     */
+    public function savedJobs(Request $request)
+    {
+        $user = $request->user();
+
+        $savedJobs = \App\Models\SavedJob::where('employee_id', $user->id)
+            ->with('job')
+            ->latest()
+            ->get();
+
+        $formatted = $savedJobs->map(function ($saved) {
+            return [
+                'id' => $saved->id,
+                'job' => $saved->job ? [
+                    'id' => $saved->job->id,
+                    'title' => $saved->job->title,
+                    'company_name' => $saved->job->company_name,
+                    'location' => $saved->job->location,
+                    'job_type' => $saved->job->job_type,
+                    'salary_min' => $saved->job->salary_min,
+                    'salary_max' => $saved->job->salary_max,
+                    'posted_at' => $saved->job->created_at->toIso8601String(),
+                ] : null,
+                'saved_at' => $saved->created_at->toIso8601String(),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $formatted,
         ]);
     }
 
