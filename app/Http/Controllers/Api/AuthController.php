@@ -175,11 +175,52 @@ class AuthController extends Controller
         $user = User::where('mobile', $request->mobile)->first();
         if ($user) {
             $user->update(['is_verified' => true]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No account found with this mobile number.',
+            ], 404);
+        }
+
+        if (!$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Account is deactivated. Contact support.',
+            ], 403);
+        }
+
+        // Revoke old tokens
+        $user->tokens()->delete();
+
+        // Create access token
+        $accessToken = $user->createToken('access_token', ['*'], now()->addMinutes(15))->plainTextToken;
+        $refreshToken = $user->createToken('refresh_token', ['refresh'], now()->addDays(7))->plainTextToken;
+
+        // Load profile data based on role
+        $profileData = null;
+        if ($user->isEmployee()) {
+            $profileData = $user->employeeProfile;
+        } elseif ($user->isEmployer()) {
+            $profileData = $user->employerProfile;
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Mobile number verified successfully.',
+            'message' => 'Mobile number verified successfully. You are now logged in.',
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'mobile' => $user->mobile,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'is_verified' => $user->is_verified,
+                ],
+                'profile' => $profileData,
+                'access_token' => $accessToken,
+                'refresh_token' => $refreshToken,
+                'token_type' => 'Bearer',
+            ],
         ]);
     }
 

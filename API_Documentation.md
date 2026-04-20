@@ -63,7 +63,20 @@ This document outlines the API flows, highlighting exactly **when to call** each
 ```json
 {
   "success": true,
-  "message": "Mobile number verified successfully."
+  "message": "Mobile number verified successfully. You are now logged in.",
+  "data": {
+    "user": {
+      "id": 1,
+      "full_name": "John Doe",
+      "mobile": "9876543210",
+      "role": "employee",
+      "is_verified": true
+    },
+    "profile": { ... },
+    "access_token": "1|eyJ...",
+    "refresh_token": "2|fk8...",
+    "token_type": "Bearer"
+  }
 }
 ```
 
