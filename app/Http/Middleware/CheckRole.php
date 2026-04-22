@@ -9,7 +9,9 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, string $role)
     {
-        if (!auth()->check() || auth()->user()->role !== $role) {
+        $user = $request->user();
+
+        if (!$user || $user->role !== $role) {
             return response()->json(['message' => 'Unauthorized. ' . ucfirst($role) . ' access required.'], 403);
         }
 

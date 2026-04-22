@@ -429,11 +429,11 @@ const empScreens = {
   login(s){
     s.innerHTML=`
     <div class="screen-inner" style="background:#F6F7FB;">
-      <div style="background:linear-gradient(135deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
-      <div class="hdr" style="background:linear-gradient(135deg,${theme.p2},${theme.p1});">
-        <span class="hback">←</span>
-        <div class="htitle">${t('welcome')} 👋</div>
-        <div class="hsub">${t('login')} to your account</div>
+      <div style="background:linear-gradient(135deg,\${theme.p2},\${theme.p1});" class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div class="hdr" style="background:linear-gradient(135deg,\${theme.p2},\${theme.p1});">
+        <span class="hback" onclick="goTo('splash')">←</span>
+        <div class="htitle">\${t('welcome')} 👋</div>
+        <div class="hsub">\${t('login')} to your account</div>
       </div>
       <div class="body">
         <div class="rchip-row">
@@ -441,20 +441,19 @@ const empScreens = {
           <button class="rchip" onclick="switchType('em')">🏢 Employer</button>
         </div>
         <div class="fl">Mobile Number</div>
-        <input class="fi act" value="+91 98765 43210" readonly>
-        <button class="btn-p" style="background:${theme.p1};">Send OTP</button>
+        <input class="fi act" id="emp-mobile" value="9876543210">
+        <button class="btn-p" style="background:\${theme.p1};" onclick="apiSendOtp('e')">Send OTP</button>
+        
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div class="fl" style="margin-bottom:0;">${t('otp')}</div>
-          <span style="font-size:12px;color:${theme.p1};font-weight:700;">Resend 0:42</span>
+          <div class="fl" style="margin-bottom:0;">\${t('otp')}</div>
         </div>
-        <div class="otp-row">
-          <div class="ob f">7</div><div class="ob f">4</div><div class="ob f">2</div>
-          <div class="ob">_</div><div class="ob">_</div><div class="ob">_</div>
-        </div>
-        <button class="btn-p" style="background:${theme.p1};" onclick="goTo('dashboard')">Verify & ${t('login')} →</button>
+        
+        <input class="fi act" id="emp-otp" placeholder="Enter 6-digit OTP" style="letter-spacing:10px;text-align:center;font-size:20px;font-weight:800;color:var(--p1);" maxlength="6">
+
+        <button class="btn-p" style="background:\${theme.p1};" onclick="apiLogin('e')">Verify & \${t('login')} →</button>
         <div class="div-r"><div class="div-l"></div><div class="div-t">or</div><div class="div-l"></div></div>
-        <div class="sub-lnk">No account? <span style="color:${theme.p1};" onclick="goTo('register')">Register Free</span></div>
-        <div class="sub-lnk" style="margin-top:7px;"><span style="color:${theme.p1};" onclick="goTo('forgot')">Forgot Password?</span></div>
+        <div class="sub-lnk">No account? <span style="color:\${theme.p1};" onclick="goTo('register')">Register Free</span></div>
+        <div class="sub-lnk" style="margin-top:7px;"><span style="color:\${theme.p1};" onclick="goTo('forgot')">Forgot Password?</span></div>
       </div>
     </div>`;
   },
@@ -559,48 +558,51 @@ const empScreens = {
   },
 
   dashboard(s){
+    let userName = window.currentUser ? window.currentUser.full_name : 'Guest User';
+    let userInitials = userName.substring(0,2).toUpperCase();
+    
     s.innerHTML=`
     <div class="screen-inner" style="background:#F0F4FF;">
-      <div style="background:linear-gradient(150deg,${theme.p2},${theme.p1});" class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
-      <div style="background:linear-gradient(150deg,${theme.p2},${theme.p1});padding:10px 18px 18px;flex-shrink:0;">
+      <div style="background:linear-gradient(150deg,\${theme.p2},\${theme.p1});" class="sb lc"><span>9:41</span><span style="font-size:10px;">●●●</span></div>
+      <div style="background:linear-gradient(150deg,\${theme.p2},\${theme.p1});padding:10px 18px 18px;flex-shrink:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;">JD</div>
-            <div><div style="color:rgba(255,255,255,0.55);font-size:10px;font-weight:700;">${t('good_morning')} 👋</div><div style="color:#fff;font-size:14px;font-weight:800;">John Doe</div></div>
+            <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;">\${userInitials}</div>
+            <div><div style="color:rgba(255,255,255,0.55);font-size:10px;font-weight:700;">\${t('good_morning')} 👋</div><div style="color:#fff;font-size:14px;font-weight:800;">\${userName}</div></div>
           </div>
           <div class="bell-btn" onclick="goTo('notifications')">🔔<div class="bell-dot"></div></div>
         </div>
-        <div class="search-bar"><span style="font-size:14px;">🔍</span><span class="search-ph">${t('search_ph')}</span><button class="filt-btn">Filter</button></div>
+        <div class="search-bar"><span style="font-size:14px;">🔍</span><span class="search-ph">\${t('search_ph')}</span><button class="filt-btn">Filter</button></div>
       </div>
       <div class="body">
         <div class="stat-row">
-          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">12</div><div class="stat-l">Applied</div></div>
-          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">3</div><div class="stat-l">Shortlisted</div></div>
-          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">1</div><div class="stat-l">Offered</div></div>
-          <div class="stat-c"><div class="stat-n" style="color:${theme.p1};">48</div><div class="stat-l">Views</div></div>
+          <div class="stat-c"><div class="stat-n" style="color:\${theme.p1};">12</div><div class="stat-l">Applied</div></div>
+          <div class="stat-c"><div class="stat-n" style="color:\${theme.p1};">3</div><div class="stat-l">Shortlisted</div></div>
+          <div class="stat-c"><div class="stat-n" style="color:\${theme.p1};">1</div><div class="stat-l">Offered</div></div>
+          <div class="stat-c"><div class="stat-n" style="color:\${theme.p1};">48</div><div class="stat-l">Views</div></div>
         </div>
-        <div class="sh"><div class="sh-t">${t('categories')}</div><div class="sh-a" style="color:${theme.p1};" onclick="goTo('categories')">See all →</div></div>
+        <div class="sh"><div class="sh-t">\${t('categories')}</div><div class="sh-a" style="color:\${theme.p1};" onclick="goTo('categories')">See all →</div></div>
         <div class="cat-scroll">
-          ${[['💻','IT & Tech'],['🏗️','Construction'],['🍽️','Hospitality'],['🏥','Healthcare'],['📦','Logistics'],['🏭','Mfg']].map((c,i)=>`
-          <div class="cchip ${i===0?'on':''}" style="${i===0?'background:'+theme.p1+';border-color:'+theme.p1+';':''}">${c[0]} ${c[1]}</div>`).join('')}
+          \${[['💻','IT & Tech'],['🏗️','Construction'],['🍽️','Hospitality'],['🏥','Healthcare'],['📦','Logistics'],['🏭','Mfg']].map((c,i)=>\`
+          <div class="cchip \${i===0?'on':''}" style="\${i===0?'background:'+theme.p1+';border-color:'+theme.p1+';':''}">\${c[0]} \${c[1]}</div>\`).join('')}
         </div>
-        <div class="sh"><div class="sh-t">Recommended</div><div class="sh-a" style="color:${theme.p1};">See all →</div></div>
-        ${[
+        <div class="sh"><div class="sh-t">Recommended</div><div class="sh-a" style="color:\${theme.p1};">See all →</div></div>
+        \${[
           {l:'T',c:theme.p1,title:'Senior PHP Developer',comp:'TechCorp · Mumbai',tags:['Full-time','WFH','3-5 yrs'],sal:'₹50K–90K'},
           {l:'A',c:'#059669',title:'React Native Dev',comp:'AppSolutions · Blr',tags:['Full-time','2-3 yrs'],sal:'₹40K–70K'}
-        ].map(j=>`
+        ].map(j=>\`
         <div class="jcard">
           <div class="jcard-top">
-            <div class="jlogo" style="background:${j.c};">${j.l}</div>
-            <div style="flex:1;"><div class="jtitle">${j.title}</div><div class="jcomp">${j.comp}</div></div>
+            <div class="jlogo" style="background:\${j.c};">\${j.l}</div>
+            <div style="flex:1;"><div class="jtitle">\${j.title}</div><div class="jcomp">\${j.comp}</div></div>
             <span style="font-size:16px;cursor:pointer;">♡</span>
           </div>
-          <div class="jtags">${j.tags.map((tg,i)=>`<span class="tag ${['tb','tg','ta'][i%3]}">${tg}</span>`).join('')}</div>
-          <div class="jfooter"><div class="jsal">${j.sal}/mo</div><button class="abtn" style="background:${theme.p1};" onclick="goTo('apply')">${t('apply')}</button></div>
-        </div>`).join('')}
+          <div class="jtags">\${j.tags.map((tg,i)=>\`<span class="tag \${['tb','tg','ta'][i%3]}">\${tg}</span>\`).join('')}</div>
+          <div class="jfooter"><div class="jsal">\${j.sal}/mo</div><button class="abtn" style="background:\${theme.p1};" onclick="goTo('apply')">\${t('apply')}</button></div>
+        </div>\`).join('')}
       </div>
       <div class="bnav">
-        <div class="bni on" style="color:${theme.p1};"><div class="bni-ic">🏠</div>Home</div>
+        <div class="bni on" style="color:\${theme.p1};"><div class="bni-ic">🏠</div>Home</div>
         <div class="bni" onclick="goTo('categories')"><div class="bni-ic">🔍</div>Search</div>
         <div class="bni"><div class="bni-ic">📋</div>Applied</div>
         <div class="bni" onclick="goTo('notifications')"><div class="bni-ic">🔔</div>Alerts</div>
@@ -820,22 +822,19 @@ const emprScreens = {
       <div class="body">
         <div class="rchip-row">
           <button class="rchip" onclick="switchType('e')">👷 Employee</button>
-          <button class="rchip eon" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">🏢 Employer</button>
+          <button class="rchip eon" style="border-color:\${theme.ep1};background:\${theme.epl};color:\${theme.ep1};">🏢 Employer</button>
         </div>
-        <div class="fl">Registered Mobile</div>
-        <input class="fi eact" style="border-color:${theme.ep1};background:${theme.epl};" value="+91 98765 00001" readonly>
-        <button class="btn-ep" style="background:${theme.ep1};">Send OTP</button>
+        <div class="fl">Registered Mobile (or Email if Email-Login implemented)</div>
+        <input class="fi eact" id="empr-mobile" style="border-color:\${theme.ep1};background:\${theme.epl};" value="9876543210">
+        <button class="btn-ep" style="background:\${theme.ep1};" onclick="apiSendOtp('em')">Send OTP</button>
+        
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div class="fl" style="margin-bottom:0;">${t('otp')}</div>
-          <span style="font-size:12px;color:${theme.ep1};font-weight:700;">Resend 0:55</span>
+          <div class="fl" style="margin-bottom:0;">\${t('otp')}</div>
         </div>
-        <div class="otp-row">
-          <div class="ob ef" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">9</div>
-          <div class="ob ef" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">1</div>
-          <div class="ob ef" style="border-color:${theme.ep1};background:${theme.epl};color:${theme.ep1};">4</div>
-          <div class="ob">_</div><div class="ob">_</div><div class="ob">_</div>
-        </div>
-        <button class="btn-ep" style="background:${theme.ep1};" onclick="goTo('dashboard')">Verify & Login →</button>
+        
+        <input class="fi eact" id="empr-otp" placeholder="Enter 6-digit OTP" style="letter-spacing:10px;text-align:center;font-size:20px;font-weight:800;color:\${theme.ep1};" maxlength="6">
+
+        <button class="btn-ep" style="background:\${theme.ep1};" onclick="apiLogin('em')">Verify & Login →</button>
         <div class="div-r"><div class="div-l"></div><div class="div-t">or</div><div class="div-l"></div></div>
         <div class="sub-lnk">New Employer? <span style="color:${theme.ep1};cursor:pointer;" onclick="goTo('register')">Register Company</span></div>
       </div>
@@ -1371,5 +1370,100 @@ manageTab='applicants';
 buildColorBar();
 buildLangBar();
 buildNav();
-renderScreen();
+
+// --- API Integration Setup ---
+const API_BASE = 'http://localhost:8000/api';
+
+window.currentUser = null;
+window.currentProfile = null;
+
+async function apiSendOtp(role) {
+  const isEmp = role === 'e';
+  const mobile = document.getElementById(isEmp ? 'emp-mobile' : 'empr-mobile').value;
+  if(!mobile) return alert('Please enter mobile number');
+
+  try {
+    let res = await fetch(API_BASE + '/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ mobile: mobile })
+    });
+    let data = await res.json();
+    if(data.success) {
+      alert('OTP Sent! ' + (data.otp_code ? ('(Dev OTP: ' + data.otp_code + ')') : 'Check SMS'));
+      // In dev we auto-fill the OTP because it's returned
+      if(data.otp_code) {
+         let otpEl = document.getElementById(isEmp ? 'emp-otp' : 'empr-otp');
+         if(otpEl) otpEl.value = data.otp_code;
+      }
+    } else {
+      alert('Error: ' + (data.message || JSON.stringify(data.errors)));
+    }
+  } catch(e) {
+    alert('Failed to connect to API: ' + e);
+  }
+}
+
+async function apiLogin(role) {
+  const isEmp = role === 'e';
+  const mobile = document.getElementById(isEmp ? 'emp-mobile' : 'empr-mobile').value;
+  const otp = document.getElementById(isEmp ? 'emp-otp' : 'empr-otp')?.value;
+  
+  if(!mobile || !otp) return alert('Please enter mobile and OTP');
+
+  try {
+    let res = await fetch(API_BASE + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ mobile: mobile, otp_code: otp })
+    });
+    let data = await res.json();
+    if(data.success && data.data.access_token) {
+      localStorage.setItem('jobfindlink_token', data.data.access_token);
+      window.currentUser = data.data.user;
+      window.currentProfile = data.data.profile;
+      alert('Login successful! Welcome ' + window.currentUser.full_name);
+      goTo('dashboard');
+    } else {
+      alert('Login failed: ' + (data.message || 'Invalid OTP'));
+    }
+  } catch(e) {
+    alert('Login error: ' + e);
+  }
+}
+
+async function apiLoadProfile() {
+  const token = localStorage.getItem('jobfindlink_token');
+  if(!token) {
+     renderScreen();
+     return;
+  }
+  
+  try {
+    let res = await fetch(API_BASE + '/auth/profile', {
+      headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token }
+    });
+    let data = await res.json();
+    if(data.success) {
+      window.currentUser = data.data.user;
+      window.currentProfile = data.data.profile;
+      
+      // Check role to set app context
+      if(window.currentUser.role === 'employer') {
+         curType = 'em';
+         curScreen = 'dashboard';
+      } else {
+         curType = 'e';
+         curScreen = 'dashboard';
+      }
+      buildNav();
+    }
+  } catch(e) {
+    console.warn('Silent auth check fail: ' + e);
+  }
+  renderScreen();
+}
+
+// Kick off
+apiLoadProfile();
 </script>

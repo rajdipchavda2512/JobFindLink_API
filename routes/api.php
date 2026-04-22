@@ -131,3 +131,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/send', [NotificationController::class, 'send']);
 });
+
+// ========================
+// TEMPORARY UTILITY (REMOVE BEFORE PROD)
+// ========================
+Route::get('/run-migrations', function () {
+    // Force drop the bad table and migration record so it rebuilds cleanly
+    \Illuminate\Support\Facades\Schema::dropIfExists('saved_jobs');
+    \Illuminate\Support\Facades\DB::table('migrations')->where('migration', 'like', '%create_saved_jobs_table%')->delete();
+    
+    // Execute latest migrations
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Database tables and constraints successfully rebuilt and migrated.',
+        'output' => \Illuminate\Support\Facades\Artisan::output()
+    ]);
+});

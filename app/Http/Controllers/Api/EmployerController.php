@@ -383,13 +383,19 @@ class EmployerController extends Controller
     /**
      * PUT /api/employer/applications/{id}/status
      */
-    public function updateApplicationStatus(Request $request, Application $application)
+    public function updateApplicationStatus(Request $request, $id)
     {
         $request->validate([
             'status' => 'required|in:pending,under_review,shortlisted,hired,rejected',
         ]);
 
         $user = $request->user();
+        
+        $application = Application::find($id);
+
+        if (!$application) {
+            return response()->json(['success' => false, 'message' => 'Application not found.'], 404);
+        }
 
         if ($application->job->employer_id !== $user->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized.'], 403);
