@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\EmployerController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PackageController;
+use App\Http\Controllers\Api\PositionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,7 +49,11 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
 Route::get('/categories/{category}/jobs', [CategoryController::class, 'jobs']);
 
-Route::get('/positions', [\App\Http\Controllers\Api\PositionController::class, 'index']);
+// ========================
+// POSITIONS MODULE (Public read)
+// ========================
+Route::get('/positions', [PositionController::class, 'index']);
+Route::get('/positions/{position}', [PositionController::class, 'show']);
 
 Route::get('/jobs', [JobController::class, 'index']);
 Route::get('/jobs/search', [JobController::class, 'search']);
@@ -130,6 +135,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::put('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/send', [NotificationController::class, 'send']);
+    // ========================
+    // POSITIONS MODULE (Authenticated write)
+    // ========================
+    // Any logged-in user (admin / employer / employee) can suggest a new position
+    Route::post('/positions', [PositionController::class, 'store']);
+
+    // Only admin can edit, toggle status, or delete positions
+    Route::middleware('role:admin')->group(function () {
+        Route::put('/positions/{position}', [PositionController::class, 'update']);
+        Route::patch('/positions/{position}/toggle-status', [PositionController::class, 'toggleStatus']);
+        Route::delete('/positions/{position}', [PositionController::class, 'destroy']);
+    });
 });
 
 // ========================

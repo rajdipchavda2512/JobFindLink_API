@@ -501,13 +501,54 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/positions",
+                            "raw": "{{base_url}}/api/positions?search=&per_page=50",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "positions"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Filter by name (partial match)"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "50",
+                                    "description": "Paginate results. Remove to get full list."
+                                },
+                                {
+                                    "key": "all",
+                                    "value": "1",
+                                    "description": "Admin only: include inactive positions",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Single Position",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/positions/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "positions",
+                                "1"
                             ]
                         }
                     }
@@ -1458,6 +1499,153 @@
                                 "1",
                                 "read"
                             ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "7. Positions",
+            "description": "Positions management. All authenticated users can suggest positions; only admins can edit/delete.",
+            "item": [
+                {
+                    "name": "List Positions (Public)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/positions?search=&per_page=50",
+                            "host": [ "{{base_url}}" ],
+                            "path": [ "api", "positions" ],
+                            "query": [
+                                { "key": "search", "value": "", "description": "Filter by name" },
+                                { "key": "per_page", "value": "50", "description": "Remove for full list" },
+                                { "key": "all", "value": "1", "description": "Admin: include inactive", "disabled": true }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Single Position (Public)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/positions/1",
+                            "host": [ "{{base_url}}" ],
+                            "path": [ "api", "positions", "1" ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Position (Admin / Employee / Employer)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "name",
+                                    "value": "Software Engineer",
+                                    "description": "Required. Must be unique.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Responsible for backend development.",
+                                    "description": "Optional.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "is_active",
+                                    "value": "1",
+                                    "description": "Admin only. Non-admins always get is_active=false (pending approval).",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/positions",
+                            "host": [ "{{base_url}}" ],
+                            "path": [ "api", "positions" ]
+                        },
+                        "description": "Any authenticated user can suggest a position. Non-admins will have pending_approval=true and is_active=false until approved by admin."
+                    }
+                },
+                {
+                    "name": "Update Position (Admin only)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "name",
+                                    "value": "Senior Software Engineer",
+                                    "description": "Optional. Must be unique.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Updated description.",
+                                    "description": "Optional.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "is_active",
+                                    "value": "1",
+                                    "description": "Optional. 1 = active, 0 = inactive.",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/positions/1",
+                            "host": [ "{{base_url}}" ],
+                            "path": [ "api", "positions", "1" ]
+                        }
+                    }
+                },
+                {
+                    "name": "Toggle Position Status (Admin only)",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/positions/1/toggle-status",
+                            "host": [ "{{base_url}}" ],
+                            "path": [ "api", "positions", "1", "toggle-status" ]
+                        },
+                        "description": "Approve a pending position or deactivate an active one. No body required."
+                    }
+                },
+                {
+                    "name": "Delete Position (Admin only)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            { "key": "Accept", "value": "application/json" },
+                            { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/positions/1",
+                            "host": [ "{{base_url}}" ],
+                            "path": [ "api", "positions", "1" ]
                         }
                     }
                 }
