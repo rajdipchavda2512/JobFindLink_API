@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -24,12 +27,38 @@ class UserController extends Controller
                   ->orWhere('mobile', 'like', "%{$search}%");
             });
         }
-
+$roles = Role::orderBy("name")->get();
         $users = $query->latest()->paginate(15);
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('users','roles'));
+    }
+ public function create()
+    {
+        $roles = Role::all();
+        return view('admin.users.create', compact('roles'));
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'role'     => 'required'
+        ]);
+
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'=> $request->role,
+        ]);
+
+        $user->assignRole($request->role);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User created successfully.');
+    }
     public function edit(User $user)
     {
         $user->load(['employeeProfile', 'employerProfile']);
@@ -85,7 +114,13 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
+public function toggleStatus(User $user)
+{
+    $user->is_active = !$user->is_active;
+    $user->save();
 
+    return back()->with('success', 'User status updated successfully.');
+}
     public function destroy(User $user)
     {
         if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
@@ -96,4 +131,20 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
+
+
+
+   public function assignRole(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+
+    $request->validate([
+        'role' => 'required|exists:roles,name'
+    ]);
+
+    $user->syncRoles([$request->role]);
+
+    return back()->with('success', 'Role Assigned');
+}
+    
 }

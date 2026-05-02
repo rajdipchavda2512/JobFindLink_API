@@ -90,6 +90,12 @@
                         <span class="menu-title">Payments</span>
                     </a>
                 </div>
+                 <div class="menu-item">
+                    <a class="menu-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">
+                        <span class="menu-icon"><i class="bi bi-credit-card fs-3"></i></span>
+                        <span class="menu-title">Roles</span>
+                    </a>
+                </div>
 
             </div>
         </div>

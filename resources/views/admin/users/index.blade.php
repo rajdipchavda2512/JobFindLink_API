@@ -3,27 +3,49 @@
 @section('title', 'Users Management')
 @section('page_title', 'Users')
 
+
 @section('content')
 <div class="card mb-5 mb-xl-8">
+     <div class="card-toolbar">
+            <a href="{{ route('admin.users.create') }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus-lg"></i> Create User
+            </a>
+        </div>
     <div class="card-header border-0 pt-5">
         <h3 class="card-title align-items-start flex-column">
             <span class="card-label fw-bolder fs-3 mb-1">Users List</span>
         </h3>
         <div class="card-toolbar">
-            <form action="{{ route('admin.users.index') }}" method="GET" class="d-flex align-items-center position-relative my-1">
-                <select name="role" class="form-select form-select-sm form-select-solid w-150px me-3" onchange="this.form.submit()">
-                    <option value="">All Roles</option>
-                    <option value="employee" {{ request('role') == 'employee' ? 'selected' : '' }}>Employee</option>
-                    <option value="employer" {{ request('role') == 'employer' ? 'selected' : '' }}>Employer</option>
-                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                </select>
-                <div class="position-relative">
-                    <span class="svg-icon svg-icon-1 position-absolute ms-4 mt-2">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm form-control-solid w-250px ps-14" placeholder="Search users" />
-                </div>
-            </form>
+          <form action="{{ route('admin.users.index') }}" method="GET" class="d-flex align-items-center position-relative my-1">
+
+    <select name="role"
+            class="form-select form-select-sm form-select-solid w-150px me-3"
+            onchange="this.form.submit()">
+
+        <option value="">All Roles</option>
+
+        @foreach($roles as $role)
+            <option value="{{ $role->name }}"
+                {{ request('role') == $role->name ? 'selected' : '' }}>
+                {{ ucfirst($role->name) }}
+            </option>
+        @endforeach
+
+    </select>
+
+    <div class="position-relative">
+        <span class="svg-icon svg-icon-1 position-absolute ms-4 mt-2">
+            <i class="bi bi-search"></i>
+        </span>
+
+        <input type="text"
+               name="search"
+               value="{{ request('search') }}"
+               class="form-control form-control-sm form-control-solid w-250px ps-14"
+               placeholder="Search users..." />
+    </div>
+
+</form>
         </div>
     </div>
 
@@ -61,26 +83,46 @@
                                 <span class="text-muted fw-bold d-block fs-7">{{ $user->email ?? 'No email' }}</span>
                             </div>
                         </td>
-                        <td>
-                            @if($user->role === 'admin')
-                                <span class="badge badge-light-danger fs-7 fw-bolder">Admin</span>
-                            @elseif($user->role === 'employer')
-                                <span class="badge badge-light-info fs-7 fw-bolder">Employer</span>
-                            @else
-                                <span class="badge badge-light-primary fs-7 fw-bolder">Employee</span>
-                            @endif
+                      <td>
+                            <div class="d-flex flex-column">
+                                <span class="text-dark fw-bolder fs-6">{{ $user->role }}</span>
+                            </div>
                         </td>
-                        <td>
-                            @if($user->is_active)
-                                <span class="badge badge-light-success fs-7 fw-bold mb-1">Active</span>
-                            @else
-                                <span class="badge badge-light-danger fs-7 fw-bold mb-1">Inactive</span>
-                            @endif
-                            
-                            @if($user->is_verified)
-                                <br><span class="badge badge-light-primary fs-8 fw-bold">Verified</span>
-                            @endif
-                        </td>
+                     <td>
+
+    <form action="{{ route('admin.users.toggle-status', $user) }}"
+          method="POST"
+          class="d-inline">
+        @csrf
+
+        @if($user->is_active)
+
+            <button type="submit"
+                    class="btn btn-sm btn-light-success"
+                    onclick="return confirm('Make this user inactive?')">
+                Active
+            </button>
+
+        @else
+
+            <button type="submit"
+                    class="btn btn-sm btn-light-danger"
+                    onclick="return confirm('Make this user active?')">
+                Inactive
+            </button>
+
+        @endif
+
+    </form>
+
+    @if($user->is_verified)
+        <br>
+        <span class="badge badge-light-primary fs-8 fw-bold mt-2">
+            Verified
+        </span>
+    @endif
+
+</td>
                         <td class="text-end">
                             <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <i class="bi bi-pencil"></i>
