@@ -51,13 +51,27 @@
                                 @endif
                             </div>
                         </td>
-                        <td>
-                            @if($package->is_active)
-                                <span class="badge badge-light-success fs-7 fw-bold">Active</span>
-                            @else
-                                <span class="badge badge-light-danger fs-7 fw-bold">Inactive</span>
-                            @endif
-                        </td>
+                       {{-- STATUS COLUMN --}}
+<td>
+    <form action="{{ route('admin.packages.toggle-status', $package->id) }}" method="POST">
+        @csrf
+
+        @if($package->is_active)
+            <button type="submit"
+                class="btn btn-sm btn-light-success fw-bold"
+                onclick="return confirm('Change package to Inactive?')">
+                Active
+            </button>
+        @else
+            <button type="submit"
+                class="btn btn-sm btn-light-danger fw-bold"
+                onclick="return confirm('Change package to Active?')">
+                Inactive
+            </button>
+        @endif
+
+    </form>
+</td>
                         <td class="text-end">
                             <a href="{{ route('admin.packages.edit', $package) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <i class="bi bi-pencil"></i>

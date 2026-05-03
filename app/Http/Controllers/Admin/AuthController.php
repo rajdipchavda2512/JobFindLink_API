@@ -12,43 +12,53 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        if (Auth::check() && Auth::user()->isAdmin()) {
-            return redirect()->route('admin.dashboard');
+        if (Auth::check()) {
+            if (Auth::user()->hasAnyRole(['admin','manager','hr'])) {
+                return redirect()->route('admin.dashboard');
+            }
         }
+
         return view('admin.auth.login');
     }
 
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|min:6',
         ]);
 
-        $user = User::where('email', $request->email)->where('role', 'admin')->first();
+        $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
-                'email' => 'Invalid credentials or not an admin account.',
-            ])->withInput($request->only('email'));
+                'email' => 'Invalid login credentials.'
+            ]);
         }
 
         if (!$user->is_active) {
             return back()->withErrors([
-                'email' => 'Your account has been deactivated.',
-            ])->withInput($request->only('email'));
+                'email' => 'Your account is inactive.'
+            ]);
+        }
+
+        if (!$user->hasAnyRole(['admin','manager','hr'])) {
+            return back()->withErrors([
+                'email' => 'No panel access permission.'
+            ]);
         }
 
         Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('admin.dashboard'));
+        return redirect()->route('admin.dashboard');
     }
 
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

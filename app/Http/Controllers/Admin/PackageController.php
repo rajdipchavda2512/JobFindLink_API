@@ -76,4 +76,13 @@ class PackageController extends Controller
         $package->update(['is_active' => false]);
         return redirect()->route('admin.packages.index')->with('success', 'Package deactivated successfully.');
     }
+    public function toggleStatus($id)
+{
+    $package = Package::findOrFail($id);
+
+    $package->is_active = !$package->is_active;
+    $package->save();
+
+    return back()->with('success', 'Package status updated successfully.');
+}
 }
