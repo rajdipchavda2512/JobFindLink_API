@@ -13,11 +13,13 @@ class EmployerProfile extends Model
         'user_id',
         'company_name',
         'work_email',
+        'location',
         'industry_type',
         'company_size',
         'company_website',
         'company_description',
         'employer_designation',
+        'logo_url',
         'is_verified',
     ];
 

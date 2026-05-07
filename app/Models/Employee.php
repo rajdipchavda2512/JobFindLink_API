@@ -12,36 +12,57 @@ class Employee extends Model
     protected $table = 'employees';
 
     protected $fillable = [
-        'user_id', 'full_name', 'email', 'mobile_number', 'gender', 'profile_photo',
-        'age', 'location_id', 'job_title_id',
-        'skills', 'skills_json', 'description',
-        'total_experience', 'experience_type', 'exp_years', 'exp_months', 'total_experience_years',
-        'current_salary', 'expected_salary', 'preferred_locations',
+        // Identity
+        'user_id', 'full_name', 'email', 'mobile_number', 'gender',
+        'profile_photo', 'profile_photo_path', 'age',
+
+        // Job Preference (Step 2)
+        'seeking_position', 'job_title_id', 'location_id',
+        'experience_type', 'exp_years', 'exp_months', 'total_experience', 'total_experience_years',
+
+        // Location & Salary (Step 3)
+        'preferred_locations', 'current_salary', 'expected_salary',
+
+        // Skills & Languages (Step 4)
+        'skills', 'skills_json', 'languages', 'description',
+
+        // Education (Step 5)
         'education_level', 'college_name', 'degree_id', 'specialisation',
-        'education_start_date', 'education_end_date',
+        'education_start_date', 'education_end_date', 'educations_json', 'highest_qualification',
+
+        // Work Experience (Step 6)
         'company_name', 'industry_id', 'employment_type',
         'work_start_date', 'work_end_date', 'currently_working', 'notice_period',
-        'resume', 'availability', 'profile_step',
-        // New JSON fields
-        'educations_json', 'experiences_json', 'highest_qualification',
-        
+        'experiences_json',
+
+        // Resume & Availability (Step 0 & 7)
+        'resume', 'resume_path', 'resume_skipped', 'availability',
+
+        // Profile Tracking
+        'profile_step', 'profile_completed',
     ];
 
     protected $casts = [
-        'birthdate' => 'date',
+        'birthdate'           => 'date',
         'preferred_locations' => 'array',
-        'skills_json' => 'array',
-        'educations_json' => 'array',
-        'experiences_json' => 'array',
+        'skills_json'         => 'array',
+        'languages'           => 'array',
+        'educations_json'     => 'array',
+        'experiences_json'    => 'array',
         'education_start_date' => 'date',
-        'education_end_date' => 'date',
-        'work_start_date' => 'date',
-        'work_end_date' => 'date',
-        'currently_working' => 'boolean',
-        'profile_step' => 'integer'
+        'education_end_date'  => 'date',
+        'work_start_date'     => 'date',
+        'work_end_date'       => 'date',
+        'currently_working'   => 'boolean',
+        'resume_skipped'      => 'boolean',
+        'profile_step'        => 'integer',
+        'profile_completed'   => 'boolean',
     ];
 
-    // Relationships
+    // ========================
+    // RELATIONSHIPS
+    // ========================
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -56,7 +77,7 @@ class Employee extends Model
     {
         return $this->belongsTo(Position::class, 'job_title_id');
     }
-    
+
     public function degree()
     {
         return $this->belongsTo(Degree::class);
@@ -67,70 +88,83 @@ class Employee extends Model
         return $this->belongsTo(Industry::class);
     }
 
-    // Helper method to get educations as array
-    public function getEducationsAttribute()
-    {
-        return $this->educations_json ?? [];
-    }
-
-    // Helper method to get experiences as array
-    public function getExperiencesAttribute()
-    {
-        return $this->experiences_json ?? [];
-    }
-
-    public function languages()
+    public function employeeLanguages()
     {
         return $this->hasMany(EmployeeLanguage::class);
     }
 
-    // Accessor for full name
+    // ========================
+    // HELPERS / ACCESSORS
+    // ========================
+
     public function getFullNameAttribute($value)
     {
-        return $value ?: $this->user->name ?? 'Not Set';
+        return $value ?: ($this->user->full_name ?? $this->user->name ?? 'Not Set');
     }
 
-    // Accessor for email
     public function getEmailAttribute($value)
     {
-        return $value ?: $this->user->email;
+        return $value ?: ($this->user->email ?? null);
     }
 
-    // Accessor for formatted salary
+    public function getResumeUrlAttribute()
+    {
+        if ($this->attributes['resume'] ?? null) {
+            return $this->attributes['resume'];
+        }
+        if ($this->resume_path) {
+            return asset('storage/' . $this->resume_path);
+        }
+        return null;
+    }
+
     public function getFormattedCurrentSalaryAttribute()
     {
         if (!$this->current_salary) return 'Not specified';
-        return '₹ ' . number_format($this->current_salary, 2);
+        return '₹ ' . number_format($this->current_salary, 0);
     }
 
     public function getFormattedExpectedSalaryAttribute()
     {
         if (!$this->expected_salary) return 'Not specified';
-        return '₹ ' . number_format($this->expected_salary, 2);
+        return '₹ ' . number_format($this->expected_salary, 0);
     }
 
-    // Accessor for resume URL
-    public function getResumeUrlAttribute()
+    /**
+     * Next step for the app to navigate to
+     */
+    public function getNextStepAttribute(): string
     {
-        if ($this->resume) {
-            return asset('storage/' . $this->resume);
-        }
-        return null;
+        $step = $this->profile_step ?? 0;
+        $steps = [
+            0 => 'upload_resume',
+            1 => 'job_preference',
+            2 => 'location_salary',
+            3 => 'skills_languages',
+            4 => 'education',
+            5 => 'work_experience',
+            6 => 'resume_availability',
+            7 => 'complete',
+        ];
+        return $steps[$step + 1] ?? 'complete';
     }
 
-    // Scope for active employees
+    // ========================
+    // SCOPES
+    // ========================
+
     public function scopeActive($query)
     {
-        return $query->whereHas('user', function ($q) {
-            $q->where('is_active', true);
-        });
+        return $query->whereHas('user', fn ($q) => $q->where('is_active', true));
     }
 
-    // Scope for verified employees
     public function scopeVerified($query)
     {
-        return $query->whereHas('user', function ($q) {
-            $q->where('is_verified', true);
-        });
+        return $query->whereHas('user', fn ($q) => $q->where('is_verified', true));
+    }
+
+    public function scopeProfileComplete($query)
+    {
+        return $query->where('profile_completed', true);
     }
 }

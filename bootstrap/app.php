@@ -7,10 +7,9 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\CheckPermission;
 
-use Spatie\Permission\Middleware\PermissionMiddleware;
-use Spatie\Permission\Middleware\RoleMiddleware;
-use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+// Removed Spatie imports
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,16 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
 
         $middleware->alias([
-
-            // custom
-            'admin' => AdminMiddleware::class,
-            'rolecheck' => CheckRole::class,
-
-            // spatie
-            'role' => RoleMiddleware::class,
-            'permission' => PermissionMiddleware::class,
-            'role_or_permission' => RoleOrPermissionMiddleware::class,
-
+            // custom middlewares
+            'admin'      => AdminMiddleware::class,
+            'role'       => CheckRole::class,
+            'permission' => CheckPermission::class,
         ]);
     })
 

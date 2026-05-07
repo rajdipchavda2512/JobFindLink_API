@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
-    use HasRoles;
+
     protected $fillable = [
         'name',
         'full_name',
@@ -23,6 +22,8 @@ class User extends Authenticatable
         'role',
         'is_verified',
         'is_active',
+        'mobile_verified_at',
+        'profile_setup_complete',
     ];
 
     protected $hidden = [
@@ -33,17 +34,27 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_verified' => 'boolean',
-            'is_active' => 'boolean',
+            'email_verified_at'      => 'datetime',
+            'mobile_verified_at'     => 'datetime',
+            'password'               => 'hashed',
+            'is_verified'            => 'boolean',
+            'is_active'              => 'boolean',
+            'profile_setup_complete' => 'boolean',
         ];
     }
 
-    // Relationships
+    // ========================
+    // RELATIONSHIPS
+    // ========================
+
     public function employeeProfile()
     {
         return $this->hasOne(EmployeeProfile::class);
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
     }
 
     public function employerProfile()
@@ -76,7 +87,10 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class);
     }
 
-    // Helpers
+    // ========================
+    // HELPERS / ACCESSORS
+    // ========================
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -99,5 +113,22 @@ class User extends Authenticatable
             ->where('expires_at', '>', now())
             ->latest()
             ->first();
+    }
+
+    /**
+     * Check if user has a specific role
+     */
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    /**
+     * Check if user has any of the given roles
+     */
+    public function hasAnyRole(array|string ...$roles): bool
+    {
+        $roles = is_array($roles[0]) ? $roles[0] : $roles;
+        return in_array($this->role, $roles);
     }
 }
