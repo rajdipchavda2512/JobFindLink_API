@@ -1,4 +1,4 @@
-@extends('Employee.layouts')
+@extends('Frontend.employee.layouts')
 
 @section('title', 'Languages')
 

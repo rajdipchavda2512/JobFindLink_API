@@ -1,11 +1,11 @@
-{{-- resources/views/employee/auth/verify.blade.php --}}
+{{-- resources/views/auth/verify-otp.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Verify OTP - JobFindLink | India's #1 Job Platform</title>
+    <title>{{ ucfirst($type) }} Verification - JobFindLink | India's #1 Job Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -155,7 +155,7 @@
 <body class="bg-gray-50">
     <div class="min-h-screen flex flex-col lg:flex-row">
         
-        <!-- Left Section - Logo & Branding with Blue Theme (Same as Login Page) -->
+        <!-- Left Section - Logo & Branding with Blue Theme (Dynamic based on type) -->
         <div class="lg:w-1/2 animated-bg text-white p-8 lg:p-16 flex flex-col justify-center relative overflow-hidden">
             <!-- Floating Design Elements -->
             <div class="floating-shape w-64 h-64 top-10 -left-20" style="animation-delay: 0s;"></div>
@@ -199,15 +199,26 @@
                     </div>
                 </div>
                 
-                <!-- Tagline -->
+                <!-- Tagline - Dynamic based on type -->
                 <div class="mb-8">
                     <p class="text-xl leading-relaxed opacity-95">
-                        Your career journey begins here. 
-                        <span class="block text-yellow-400 font-semibold mt-2">50 Lakh+ Opportunities Await!</span>
+                        @if($type === 'employee')
+                            Your career journey begins here.
+                        @else
+                            Find the best talent for your company.
+                        @endif
+                        <span class="block text-yellow-400 font-semibold mt-2">
+                            @if($type === 'employee')
+                                50 Lakh+ Opportunities Await!
+                            @else
+                                Connect with 5Cr+ Job Seekers!
+                            @endif
+                        </span>
                     </p>
                 </div>
                 
-                <!-- Job Categories with Yellow Accents -->
+                <!-- Job/Employer Categories - Dynamic based on type -->
+                @if($type === 'employee')
                 <div class="grid grid-cols-2 gap-3 mb-8">
                     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
                         <i class="fas fa-map-marker-alt text-yellow-400 text-lg mb-1"></i>
@@ -230,6 +241,30 @@
                         <p class="text-xs opacity-75">Full Time</p>
                     </div>
                 </div>
+                @else
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-chart-line text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Active Jobs</p>
+                        <p class="text-xs opacity-75">2L+ Live Jobs</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-users text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Job Seekers</p>
+                        <p class="text-xs opacity-75">5Cr+ Candidates</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-building text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Companies</p>
+                        <p class="text-xs opacity-75">50k+ Trust Us</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-clock text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Quick Hiring</p>
+                        <p class="text-xs opacity-75">24hr Response</p>
+                    </div>
+                </div>
+                @endif
                 
                 <!-- Trust Indicators -->
                 <div class="flex flex-wrap justify-center lg:justify-start gap-6">
@@ -259,7 +294,7 @@
             </div>
         </div>
         
-        <!-- Right Section - OTP Verification Form (Matching Login Page Design) -->
+        <!-- Right Section - OTP Verification Form (Dynamic based on type) -->
         <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 lg:p-16 bg-gradient-to-br from-gray-50 to-white">
             <div class="w-full max-w-md">
                 <!-- Welcome Card -->
@@ -267,7 +302,7 @@
                     <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                         <i class="fas fa-key text-yellow-400 text-3xl"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-800">Verify OTP</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">{{ ucfirst($type) }} Verification</h2>
                     <p class="text-gray-500 text-sm mt-2">Enter the verification code sent to your mobile</p>
                 </div>
                 
@@ -280,13 +315,13 @@
                         <h3 class="text-lg font-bold text-gray-800">OTP Verification</h3>
                         <p class="text-xs text-gray-500 mt-1">
                             We've sent a 6-digit code to 
-                            <span class="font-semibold text-yellow-600">+91 {{ session('mobile') }}</span>
+                            <span class="font-semibold text-yellow-600">+91 {{ session('auth_mobile') }}</span>
                         </p>
                     </div>
                     
-                    <!-- OTP Form -->
-                    <form id="otpForm" action="{{ route('employee.verify.otp') }}" method="POST" class="space-y-5">
-                        @csrf
+                    <!-- OTP Form - Dynamic route -->
+<form id="otpForm" action="{{ route('auth.verify.otp', ['type' => $type]) }}" method="POST" class="space-y-5">
+                            @csrf
                         
                         <!-- OTP Input -->
                         <div>
@@ -332,15 +367,14 @@
                                 id="verifyBtn"
                                 class="btn-yellow w-full text-white py-3.5 rounded-xl font-semibold transition-all transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-base flex items-center justify-center gap-2">
                             <i class="fas fa-check-circle"></i>
-                            <span>Verify & Login</span>
+                            <span>Verify & {{ $type === 'employee' ? 'Login' : 'Register' }}</span>
                         </button>
                     </form>
                     
                     <!-- Resend Section -->
                     <div class="mt-6 text-center">
                         <p class="text-sm text-gray-600 mb-2">Didn't receive the code?</p>
-                        <form action="{{ route('employee.resend.otp') }}" method="POST" id="resendForm" class="inline">
-                            @csrf
+<form action="{{ route('auth.resend.otp', ['type' => $type]) }}" method="POST" id="resendForm" class="inline">                                  @csrf
                             <button type="submit" 
                                     id="resendOtpBtn"
                                     class="text-yellow-600 font-semibold text-sm hover:underline disabled:opacity-50 disabled:cursor-not-allowed">
@@ -360,10 +394,9 @@
                         </div>
                     </div>
                     
-                    <!-- Change Number Link -->
+                    <!-- Change Number Link - Dynamic route -->
                     <div class="text-center">
-                        <a href="{{ route('employee.login') }}" class="text-gray-500 text-sm hover:text-yellow-600 transition inline-flex items-center gap-1">
-                            <i class="fas fa-arrow-left"></i>
+<a href="{{ route('auth.mobile.form', ['type' => $type]) }}" class="text-gray-500 text-sm hover:text-yellow-600 transition inline-flex items-center gap-1">                            <i class="fas fa-arrow-left"></i>
                             <span>Use different mobile number</span>
                         </a>
                     </div>
@@ -511,10 +544,10 @@
                 startTimer(60);
             @endif
             
-            // Job category click handlers
+            // Category click handlers
             $('.grid > div').on('click', function() {
                 const category = $(this).find('p:first').text();
-                showNotification(`Exploring ${category} jobs...`, 'info');
+                showNotification(`Exploring ${category}...`, 'info');
             });
         });
     </script>

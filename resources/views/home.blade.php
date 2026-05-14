@@ -84,57 +84,64 @@
 <body class="bg-white">
     
     <!-- Navigation Bar -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-2">
-                    <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
-                        <i class="fas fa-briefcase text-yellow-400 text-xl"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gray-800">Job<span class="text-yellow-500">Find</span>Link</span>
-                </div>
-                
-                <div class="hidden md:flex space-x-8">
-                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Home</a>
-                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">About</a>
-                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Services</a>
-                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Contact</a>
-                </div>
-                
-                <div class="hidden md:flex space-x-3">
-                    <a href="{{ route('employee.login') }}" class="px-4 py-2 border border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition">
-                        Employee Login
-                    </a>
-                    <a href="{{ route('employee.login') }}" class="px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
-                        Post a Job
-                    </a>
-                </div>
-
-                
-
-                 
-
-                
-                <!-- Mobile menu button -->
-                <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-            </div>
-        </div>
+  <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Mobile menu -->
-        <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
-            <div class="px-4 py-3 space-y-3">
-                <a href="#" class="block text-gray-700 hover:text-yellow-500">Home</a>
-                <a href="#" class="block text-gray-700 hover:text-yellow-500">About</a>
-                <a href="#" class="block text-gray-700 hover:text-yellow-500">Services</a>
-                <a href="#" class="block text-gray-700 hover:text-yellow-500">Contact</a>
-                <hr>
-                <a href="{{ route('employee.login') }}" class="block text-yellow-600 font-semibold">Employee Login</a>
-                <a href="#" class="block gradient-bg text-white px-4 py-2 rounded-lg text-center">Post a Job</a>
+        <!-- Header Height -->
+        <div class="flex justify-between items-center h-24">
+
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3">
+
+                <!-- Logo Container -->
+               <div class="w-24 h-20 flex items-center justify-center overflow-hidden">
+    <img 
+        src="{{ asset('storage/images/logo2.png') }}"
+        alt="JobFindLink Logo"
+        class="w-24 h-24 object-contain scale-125 transition duration-300"
+    >
+</div>
+
+                <!-- Brand Name -->
+                <span class="text-2xl font-bold text-gray-800">
+                    Job<span class="text-yellow-500">Find</span>Link
+                </span>
+
             </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Home</a>
+                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">About</a>
+                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Services</a>
+                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Contact</a>
+            </div>
+
+          <!-- Buttons -->
+<div class="hidden md:flex space-x-3">
+
+    <!-- Employee Login -->
+    <a href="{{ route('auth.mobile.form', ['type' => 'employee']) }}"
+       class="px-4 py-2 border border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition">
+        Employee Login
+    </a>
+
+    <!-- Employer Login -->
+    <a href="{{ route('auth.mobile.form', ['type' => 'employer']) }}"
+       class="px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+        Employer Login
+    </a>
+
+</div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-blue-50 to-white overflow-hidden">
@@ -315,9 +322,13 @@
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
-                            <i class="fas fa-briefcase text-yellow-400 text-xl"></i>
-                        </div>
+                       <div class="w-24 h-20 flex items-center justify-center overflow-hidden">
+    <img 
+        src="{{ asset('storage/images/logo2.png') }}"
+        alt="JobFindLink Logo"
+        class="w-24 h-24 object-contain scale-125 transition duration-300"
+    >
+</div>
                         <span class="text-xl font-bold">Job<span class="text-yellow-500">Find</span>Link</span>
                     </div>
                     <p class="text-gray-400 text-sm">Connecting talent with opportunities across India.</p>

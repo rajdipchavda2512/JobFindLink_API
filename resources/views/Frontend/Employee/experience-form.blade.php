@@ -1,5 +1,5 @@
 {{-- resources/views/employee/experience-form.blade.php --}}
-@extends('employee.layouts')
+@extends('Frontend.employee.layouts')
 
 @section('title', isset($experience) ? 'Edit Experience' : 'Add Experience')
 

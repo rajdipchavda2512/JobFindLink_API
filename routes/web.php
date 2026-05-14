@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
@@ -14,9 +14,13 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\CategoryController;
 
-use App\Http\Controllers\Employee\EmployeeAuthController;
+use App\Http\Controllers\Frontend\Employee\EmployeeAuthController;
 use App\Http\Controllers\Employee\ProfileSetupController;
-
+use App\Http\Controllers\Employer\Auth\EmployerAuthController;
+use App\Http\Controllers\Frontend\Auth\AuthController;  
+use App\Http\Controllers\Frontend\Employee\EmployeeController;
+use App\Http\Controllers\Frontend\Employer\EmployerController;
+// App\Http\Controllers\Frontend\Auth\AuthController
 /*
 |--------------------------------------------------------------------------
 | ROOT
@@ -119,26 +123,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 */
 Route::get('/', [EmployeeAuthController::class, 'home'])->name('home');
 
-Route::prefix('employee')->name('employee.')->group(function () {
-
-    Route::get('/login', [EmployeeAuthController::class, 'MobileForm'])->name('login');
-    Route::post('/send-otp', [EmployeeAuthController::class, 'sendOtp'])->name('send.otp');
-
-    Route::get('/verify', [EmployeeAuthController::class, 'showOtpForm'])->name('verify.form');
-    Route::post('/verify', [EmployeeAuthController::class, 'verifyOtp'])->name('verify.otp');
-
-    Route::post('/resend-otp', [EmployeeAuthController::class, 'resendOtp'])->name('resend.otp');
-
-    Route::get('/profile', [EmployeeAuthController::class, 'profile'])->middleware('auth')->name('profile');
-    Route::post('/profile', [EmployeeAuthController::class, 'saveProfile'])->middleware('auth')->name('profile.save');
-
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-    Route::get('/dashboard', function () {
-        return "Employee Dashboard";
-    })->middleware('auth')->name('dashboard');
-
-});
 
 
 Route::prefix('employee')->name('employee.')->middleware(['auth'])->group(function () {
@@ -178,6 +162,7 @@ Route::prefix('employee')->name('employee.')->middleware(['auth'])->group(functi
 
 Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
     // Employee profile completion routes
+    
     Route::get('/complete-profile', [EmployeeAuthController::class, 'showCompleteProfile'])->name('complete.profile');
     Route::post('/upload-resume', [EmployeeAuthController::class, 'uploadResume'])->name('upload.resume');
     Route::post('/step1', [EmployeeAuthController::class, 'saveStep1'])->name('step1');
@@ -189,5 +174,83 @@ Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(functi
     Route::post('/step7', [EmployeeAuthController::class, 'saveStep7'])->name('step7');
     Route::post('/skip-step', [EmployeeAuthController::class, 'skipStep'])->name('skip.step');
         Route::get('/dashboard', [EmployeeAuthController::class, 'index'])->name('dashboard');
+    Route::get('/saveStep1', [EmployeeAuthController::class, 'saveStep1'])->name('saveStep1');
+Route::get('/employee/download-resume/{filename}', [EmployeeAuthController::class, 'downloadResume'])->name('download.resume');
+Route::post('/employee/delete-resume/{filename}', [EmployeeAuthController::class, 'deleteResume'])->name('delete.resume');
 
+}); 
+    
+
+// // Employer Routes - Use 'auth:employer' middleware
+Route::prefix('employer')->name('employer.')->middleware(['auth'])->group(function () {
+    // Profile Setup Routes
+    Route::get('complete-profile', [EmployerController::class, 'showCompleteProfileForm'])->name('complete.profile');
+    Route::post('save-company-details', [EmployerController::class, 'saveCompanyDetails'])->name('save.company');
+    Route::post('upload-documents', [EmployerController::class, 'uploadDocuments'])->name('upload.documents');
+    Route::post('delete-document', [EmployerController::class, 'deleteDocument'])->name('delete.document');
+    Route::post('save-preferences', [EmployerController::class, 'savePreferences'])->name('save.preferences');
+    Route::post('complete-profile', [EmployerController::class, 'completeProfile'])->name('complete.profile.post');
+     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+         Route::get('dashboard', [EmployerController::class, 'dashboard'])->name('dashboard');
+
+    });
+
+// In routes/web.php
+Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
+    // Profile routes - supports optional edit_step parameter
+    Route::get('/complete-profile/{edit_step?}', [EmployeeAuthController::class, 'showCompleteProfile'])
+        ->name('complete.profile')
+        ->where('edit_step', '[0-7]');  // Restrict to digits 0-7
+    
+    // Unified save step route
+    Route::post('/step/{step}', [EmployeeAuthController::class, 'saveStep'])->name('step.save');
+    
+    // Get step data for editing (optional - for AJAX loading)
+    Route::get('/step/{step}/data', [EmployeeAuthController::class, 'getStepData'])->name('step.data');
+    
+    // Resume routes
+    Route::post('/upload-resume', [EmployeeAuthController::class, 'uploadResume'])->name('upload.resume');
+    Route::post('/remove-resume', [EmployeeAuthController::class, 'removeResume'])->name('remove.resume');
+    
+    // Dashboard
+    Route::get('/dashboard', [EmployeeAuthController::class, 'index'])->name('dashboard');
+});
+/*
+|--------------------------------------------------------------------------
+| Common Login Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/login', function () {
+    return redirect()->route('auth.mobile.form', 'employee');
+})->name('login');
+
+
+Route::prefix('auth')->name('auth.')->group(function () {
+
+    // Mobile Form
+    Route::get('{type}/login', [AuthController::class, 'mobileForm'])
+        ->name('mobile.form');
+  Route::post('{type}/check-mobile', [AuthController::class, 'checkMobileStatus'])
+        ->name('check.mobile');
+    // Send OTP
+    Route::post('{type}/send-otp', [AuthController::class, 'sendOtp'])
+        ->name('send.otp');
+
+    // Verify Form
+    Route::get('{type}/verify-otp', [AuthController::class, 'showOtpForm'])
+        ->name('verify.form');
+
+    // Verify OTP
+    Route::post('{type}/verify-otp', [AuthController::class, 'verifyOtp'])
+        ->name('verify.otp');
+
+    // Resend OTP
+    Route::post('{type}/resend-otp', [AuthController::class, 'resendOtp'])
+        ->name('resend.otp');
+
+    // Logout
+    Route::post('logout', [AuthController::class, 'logout'])
+        ->middleware('auth')
+        ->name('logout');
 });

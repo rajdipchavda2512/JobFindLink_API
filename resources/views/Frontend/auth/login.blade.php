@@ -67,7 +67,7 @@
             transform: scale(1.05);
         }
 
-        /* ===== NEW HEADER STYLES (Integrated) ===== */
+        /* Header Styles */
         .site-header {
             background: #ffffff;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
@@ -215,6 +215,57 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.08);
         }
 
+        /* User Menu Styles */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.5rem 1rem;
+            background: #f1f5f9;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .user-menu-btn:hover {
+            background: #e2e8f0;
+        }
+        .user-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 0.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            min-width: 200px;
+            display: none;
+            z-index: 50;
+        }
+        .user-menu:hover .user-dropdown {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #334155;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .dropdown-item:hover {
+            background: #f1f5f9;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
+        }
+
         @media (max-width: 880px) {
             .header-container {
                 flex-direction: column;
@@ -251,7 +302,7 @@
 </head>
 <body class="bg-gray-50">
     
-    <!-- ===== NEW NAVIGATION HEADER (Integrated as requested) ===== -->
+    <!-- Navigation Header - Dynamic based on auth status -->
     <header class="site-header">
         <div class="header-container">
             <div class="header-left">
@@ -271,7 +322,7 @@
                         <i class="fas fa-chalkboard-user"></i> Job Prep
                     </button>
                     <button class="nav-btn" id="contactsNavBtn">
-                        <i class="fas fa-address-book"></i> Contects
+                        <i class="fas fa-address-book"></i> Contacts
                     </button>
                     <button class="nav-btn" id="degreeNavBtn">
                         <i class="fas fa-graduation-cap"></i> Degree
@@ -280,16 +331,74 @@
             </div>
 
             <div class="header-right">
-                <button class="login-btn login-employee" id="employeeLoginBtn">
-                    <i class="fas fa-building"></i> <a href="{{ route('employee.mobileForm') }}" class="login-btn login-employee" id="employeeLoginBtn">
-            <i class="fas fa-building"></i> Candidate login
-        </a> 
-                </button>
-                <button class="login-btn login-candidate" id="candidateLoginBtn">
-                    <i class="fas fa-user-check"></i><a href="{{ route('candidate.login') }}" >
-             Company login
-        </a>
-                </button>
+                @if(Auth::guard('web')->check())
+                    <!-- Employer Logged In -->
+                    <div class="user-menu">
+                        <div class="user-menu-btn">
+                            <i class="fas fa-building text-blue-600"></i>
+                            <span class="text-sm font-semibold">{{ Auth::guard('web')->user()->full_name ?? 'Employer' }}</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                        <div class="user-dropdown">
+                            <a href="{{ route('employer.dashboard') }}" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="{{ route('employer.post.job') }}" class="dropdown-item">
+                                <i class="fas fa-plus-circle"></i> Post a Job
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-building"></i> Company Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form action="{{ route('employer.logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="dropdown-item w-full text-left">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                @elseif(Auth::check() && Auth::user()->role === 'employee')
+                    <!-- Employee Logged In -->
+                    <div class="user-menu">
+                        <div class="user-menu-btn">
+                            <i class="fas fa-user-circle text-blue-600"></i>
+                            <span class="text-sm font-semibold">{{ Auth::user()->full_name ?? 'Employee' }}</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                        <div class="user-dropdown">
+                            <a href="{{ route('employee.index') }}" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-file-alt"></i> My Applications
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-save"></i> Saved Jobs
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-user-edit"></i> Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form action="{{ route('employee.logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="dropdown-item w-full text-left">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                @else
+                    <!-- Not Logged In - Show Login Buttons -->
+                    <a href="{{ route('auth.mobile.form', 'employee') }}" class="login-btn login-employee">
+                        <i class="fas fa-user-circle"></i> Candidate Login
+                    </a>
+                    <a href="{{ route('auth.mobile.form', 'employer') }}" class="login-btn login-candidate">
+                        <i class="fas fa-building"></i> Company Login
+                    </a>
+                @endif
             </div>
         </div>
     </header>
@@ -298,8 +407,22 @@
     <div class="gradient-bg text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-5xl font-bold mb-4">INDIA'S #1 JOB PLATFORM</h1>
-            <p class="text-2xl mb-2">Your job search ends here</p>
-            <p class="text-lg opacity-90 mb-8">Discover 50 lakh+ career opportunities</p>
+            <p class="text-2xl mb-2">
+                @if(Auth::guard('web')->check())
+                    Find the best talent for your company
+                @elseif(Auth::check() && Auth::user()->role === 'employee')
+                    Continue your job search journey
+                @else
+                    Your job search ends here
+                @endif
+            </p>
+            <p class="text-lg opacity-90 mb-8">
+                @if(Auth::guard('web')->check())
+                    Post jobs and connect with 5Cr+ job seekers
+                @else
+                    Discover 50 lakh+ career opportunities
+                @endif
+            </p>
             
             <!-- Search Bar -->
             <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4">
@@ -405,6 +528,7 @@
         </div>
     </div>
 
+    <!-- Rest of the content remains the same -->
     <!-- Popular Searches -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h2 class="text-3xl font-bold text-gray-800 mb-8">Popular Searches on Job Find Link</h2>
@@ -686,7 +810,7 @@
             observer.observe(el);
         });
 
-        // ===== NEW HEADER BUTTON FUNCTIONALITY =====
+        // Show message function
         function showMessage(msg) {
             const toast = document.createElement('div');
             toast.innerText = msg;
@@ -713,10 +837,8 @@
         // Header navigation buttons
         document.getElementById('jobNavBtn')?.addEventListener('click', () => showMessage('🔍 Explore thousands of Job openings · Software, Marketing, Finance & more'));
         document.getElementById('jobPrepNavBtn')?.addEventListener('click', () => showMessage('📚 Job Prep: Resume builder, mock interviews, skill assessments & career guidance'));
-        document.getElementById('contactsNavBtn')?.addEventListener('click', () => showMessage('📞 Contects: Reach recruiters, network with mentors, get referral connects'));
+        document.getElementById('contactsNavBtn')?.addEventListener('click', () => showMessage('📞 Contacts: Reach recruiters, network with mentors, get referral connects'));
         document.getElementById('degreeNavBtn')?.addEventListener('click', () => showMessage('🎓 Degree programs & certifications: Upskill with top universities & online degrees'));
-        document.getElementById('employeeLoginBtn')?.addEventListener('click', () => showMessage('🏢 Employee login portal: Post jobs, manage candidates, track hiring'));
-        document.getElementById('candidateLoginBtn')?.addEventListener('click', () => showMessage('👤 Candidate login: Access saved jobs, applications, personalized job alerts'));
         
         // Logo click
         document.querySelector('.logo-area')?.addEventListener('click', () => showMessage('🏠 Job Find Link — India\'s #1 destination for careers'));

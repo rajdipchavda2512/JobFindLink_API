@@ -1,5 +1,5 @@
 {{-- resources/views/employee/experiences.blade.php --}}
-@extends('employee.layouts')
+@extends('Frontend.employee.layouts')
 
 @section('title', 'Work Experience')
 

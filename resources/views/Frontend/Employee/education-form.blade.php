@@ -1,5 +1,5 @@
 {{-- resources/views/employee/education-form.blade.php --}}
-@extends('employee.layouts')
+@extends('Frontend.employee.layouts')
 
 @section('title', isset($education) ? 'Edit Education' : 'Add Education')
 
