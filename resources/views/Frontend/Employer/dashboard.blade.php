@@ -1,5 +1,5 @@
 {{-- resources/views/frontend/employer/dashboard.blade.php --}}
-@extends('frontend.employer.layouts')
+@extends('Frontend.employer.postjobs.layouts.app')
 
 @section('title', 'Employer Dashboard - JobFindLink')
 

@@ -110,32 +110,75 @@
             <form id="profileForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 
-                <!-- STEP 0: UPLOAD RESUME (only for create mode) -->
+                <!-- STEP 0: UPLOAD RESUME (for create mode) -->
                 @if(!isset($isEditing) || !$isEditing)
-                <div class="step active" data-step="0">
+                <div class="step" data-step="0" style="display: none;">
                     <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
-                        <h2 class="text-2xl font-bold text-white">Upload Your Resume</h2>
+                        <h2 class="text-2xl font-bold text-white">Upload Your Resume/CV</h2>
                         <p class="text-yellow-100 mt-1">Start by uploading your resume</p>
                     </div>
                     <div class="p-8">
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Upload Resume (PDF, DOC, DOCX - Max 5MB)
+                                    Resume (PDF, DOC, DOCX - Max 5MB)
                                 </label>
-
-                                <label for="resume" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-yellow-500 transition cursor-pointer block">
+                                
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-yellow-500 transition cursor-pointer"
+                                     onclick="document.getElementById('resume').click()">
                                     <input type="file" name="resume" id="resume" accept=".pdf,.doc,.docx" class="hidden">
-
-                                    <div id="resumeUploadContent" class="{{ $employee && $employee->resume ? 'hidden' : '' }}">
+                                    
+                                    <div id="resumeUploadContent">
                                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                                         </svg>
                                         <p class="mt-2 text-sm text-gray-600">Click to upload or drag and drop</p>
                                         <p class="text-xs text-gray-500">PDF, DOC, DOCX (Max 5MB)</p>
                                     </div>
+                                    
+                                    <div id="resumeFileName" class="mt-3 text-center hidden"></div>
+                                </div>
+                                
+                                <p class="text-xs text-gray-500 mt-2">ℹ️ You can skip this step and upload later, but a resume increases your chances of getting hired.</p>
+                            </div>
+                            
+                            <div class="flex justify-end pt-4">
+                                <button type="button" class="save-resume-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
+                                    Continue to Basic Details →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
-                                    <div id="resumeFileName" class="{{ $employee && $employee->resume ? '' : 'hidden' }} mt-3 text-center">
+                <!-- EDIT MODE RESUME STEP -->
+                @if(isset($isEditing) && $isEditing)
+                <div class="step" data-step="0" style="display: none;">
+                    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
+                        <h2 class="text-2xl font-bold text-white">Update Resume/CV</h2>
+                        <p class="text-yellow-100 mt-1">Manage your resume document</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Upload New Resume (PDF, DOC, DOCX - Max 5MB)
+                                </label>
+
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-yellow-500 transition cursor-pointer"
+                                     onclick="document.getElementById('edit_resume').click()">
+                                    <input type="file" name="edit_resume" id="edit_resume" accept=".pdf,.doc,.docx" class="hidden">
+
+                                    <div id="editResumeUploadContent">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                        <p class="mt-2 text-sm text-gray-600">Click to upload a new resume</p>
+                                        <p class="text-xs text-gray-500">PDF, DOC, DOCX (Max 5MB)</p>
+                                    </div>
+
+                                    <div id="editResumeFileName" class="mt-3 text-center @if(!$employee || !$employee->resume) hidden @endif">
                                         @if($employee && $employee->resume)
                                             <div class="flex items-center justify-between bg-green-50 p-4 rounded-lg border border-green-200">
                                                 <div class="flex items-center gap-3">
@@ -144,37 +187,31 @@
                                                     </svg>
                                                     <div>
                                                         <p class="text-sm font-semibold text-green-700">{{ basename($employee->resume) }}</p>
-                                                        <p class="text-xs text-gray-500">Already uploaded</p>
+                                                        <p class="text-xs text-gray-500">Current resume</p>
                                                     </div>
                                                 </div>
                                                 <div class="flex gap-2">
-                                                    <button type="button" class="download-resume-btn px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
+                                                    <button type="button" class="download-edit-resume-btn px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
                                                         Download
                                                     </button>
-                                                    <button type="button" class="remove-resume-btn px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm">
+                                                    <button type="button" class="remove-edit-resume-btn px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm">
                                                         Remove
                                                     </button>
                                                 </div>
                                             </div>
                                         @endif
                                     </div>
-                                </label>
+                                </div>
 
-                                <p class="text-xs text-gray-500 mt-2">ℹ️ After uploading, you can download to verify the file or replace it anytime.</p>
+                                <p class="text-xs text-gray-500 mt-2">ℹ️ Upload a new resume to replace the existing one.</p>
                             </div>
+                            
                             <div class="flex justify-between pt-4">
-                                <a href="{{ route('login') }}" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                    </svg>
-                                    Back
-                                </a>
-                                <button type="button" class="save-resume-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg transition flex items-center gap-2">
-                                    Continue to Next Step
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
-                                    </svg>
+                                <button type="button" class="prev-step px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
+                                <button type="button" class="save-edit-resume-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
+                                    Update Resume
                                 </button>
+                                <button type="button" class="cancel-edit px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -562,6 +599,7 @@
     let existingResumeName = @json($employee && $employee->resume ? basename($employee->resume) : null);
     let experienceCounter = 0;
     let isEditMode = @json(isset($isEditing) && $isEditing);
+    let isSaving = false; // Prevent multiple saves
 
     // Set current step based on edit mode
     @if(isset($isEditing) && $isEditing)
@@ -886,6 +924,84 @@
         showAlert('Resume loaded successfully!', 'success');
     }
 
+    // Function to handle edit mode resume upload
+    function uploadEditResume(file) {
+        let formData = new FormData();
+        formData.append('resume', file);
+        formData.append('_token', '{{ csrf_token() }}');
+        
+        $.ajax({
+            url: '{{ route("employee.upload.resume") }}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    existingResumeUrl = response.path;
+                    existingResumeName = file.name;
+                    showAlert('Resume updated successfully!', 'success');
+                    updateEditResumeDisplay(file);
+                }
+            },
+            error: function(xhr) {
+                showAlert(xhr.responseJSON?.message || 'Error uploading resume');
+            }
+        });
+    }
+
+    function updateEditResumeDisplay(file) {
+        $('#editResumeFileName').removeClass('hidden').html(`
+            <div class="flex items-center justify-between bg-green-50 p-4 rounded-lg border border-green-200">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-sm font-semibold text-green-700">${file.name}</p>
+                        <p class="text-xs text-gray-500">${(file.size / 1024).toFixed(2)} KB</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" class="download-edit-resume-btn px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-1 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download
+                    </button>
+                    <button type="button" class="remove-edit-resume-btn px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition flex items-center gap-1 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Remove
+                    </button>
+                </div>
+            </div>
+        `);
+        $('#editResumeUploadContent').addClass('hidden');
+    }
+
+    function removeEditResume() {
+        $.ajax({
+            url: '{{ route("employee.remove.resume") }}',
+            type: 'POST',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function(response) {
+                if (response.success) {
+                    existingResumeUrl = null;
+                    existingResumeName = null;
+                    $('#edit_resume').val('');
+                    $('#editResumeFileName').addClass('hidden').empty();
+                    $('#editResumeUploadContent').removeClass('hidden');
+                    showAlert('Resume removed successfully', 'success');
+                }
+            },
+            error: function() {
+                showAlert('Error removing resume');
+            }
+        });
+    }
+
     function initializeSkills() {
         $('#skills_container').empty();
         if (existingSkills && existingSkills.length > 0) {
@@ -1117,7 +1233,7 @@
         });
         return experiences;
     }
-    
+
     function updateCitiesDisplay() {
         if (selectedCities.length === 0) {
             $('#selectedCitiesContainer').html('<p class="text-gray-400 text-sm">No cities selected. Select cities from the dropdown.</p>');
@@ -1141,6 +1257,22 @@
         clearErrors();
         
         switch(step) {
+            case 0:
+                if (isEditMode) {
+                    let resumeFile = $('#edit_resume')[0].files[0];
+                    if (resumeFile && resumeFile.size > 0) {
+                        let allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                        if (!allowedTypes.includes(resumeFile.type)) {
+                            showAlert('Only PDF, DOC, and DOCX files are allowed', 'error');
+                            return false;
+                        }
+                        if (resumeFile.size > 5 * 1024 * 1024) {
+                            showAlert('File size must be less than 5MB', 'error');
+                            return false;
+                        }
+                    }
+                }
+                break;
             case 1:
                 if (!$('#full_name').val().trim()) {
                     showFieldError('full_name', 'Full name is required');
@@ -1197,13 +1329,72 @@
     }
     
     function saveStep(step) {
+        if (isSaving) {
+            return;
+        }
+        
         if (!validateStep(step)) {
             return;
         }
         
+        isSaving = true;
+        
+        // Show loading state on the clicked button
+        let clickedBtn = $('.save-step, .save-resume-step, .save-edit-resume-step').filter(':focus');
+        let originalText = clickedBtn.text();
+        clickedBtn.text('Saving...').prop('disabled', true);
+        
         let formData = new FormData();
         
         switch(step) {
+            case 0:
+                if (isEditMode) {
+                    let resumeFile = $('#edit_resume')[0].files[0];
+                    if (resumeFile && resumeFile.size > 0) {
+                        uploadEditResume(resumeFile);
+                    } else {
+                        showAlert('Please select a resume file to upload', 'error');
+                    }
+                    clickedBtn.text(originalText).prop('disabled', false);
+                    isSaving = false;
+                    return;
+                } else {
+                    let file = $('#resume')[0].files[0];
+                    if (file && file.size > 0) {
+                        formData.append('resume', file);
+                        $.ajax({
+                            url: '{{ route("employee.upload.resume") }}',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                            success: function(response) {
+                                if (response.success) {
+                                    showAlert('Resume uploaded successfully!', 'success');
+                                    currentStep = 1;
+                                    showStep(currentStep);
+                                }
+                                clickedBtn.text(originalText).prop('disabled', false);
+                                isSaving = false;
+                            },
+                            error: function(xhr) {
+                                showAlert(xhr.responseJSON?.message || 'Error uploading resume');
+                                clickedBtn.text(originalText).prop('disabled', false);
+                                isSaving = false;
+                            }
+                        });
+                    } else {
+                        if (confirm('You haven\'t uploaded a resume. You can upload it later from your profile. Continue anyway?')) {
+                            currentStep = 1;
+                            showStep(currentStep);
+                        }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
+                    }
+                    return;
+                }
+                
             case 1:
                 formData.append('full_name', $('#full_name').val());
                 formData.append('email', $('#email').val());
@@ -1226,9 +1417,11 @@
                                 currentStep = response.next_step;
                                 showStep(currentStep);
                             } else {
-                                window.location.href = '{{ route("employee.complete.profile") }}';
+                                window.location.href = '{{ route("employee.dashboard") }}';
                             }
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     },
                     error: function(xhr) {
                         let errors = xhr.responseJSON?.errors;
@@ -1239,6 +1432,8 @@
                         } else {
                             showAlert(xhr.responseJSON?.message || 'Error saving data.');
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     }
                 });
                 break;
@@ -1266,9 +1461,11 @@
                                 currentStep = response.next_step;
                                 showStep(currentStep);
                             } else {
-                                window.location.href = '{{ route("employee.complete.profile") }}';
+                                window.location.href = '{{ route("employee.dashboard") }}';
                             }
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     },
                     error: function(xhr) {
                         let errors = xhr.responseJSON?.errors;
@@ -1279,6 +1476,8 @@
                         } else {
                             showAlert(xhr.responseJSON?.message || 'Error saving data.');
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     }
                 });
                 break;
@@ -1305,9 +1504,11 @@
                                 currentStep = response.next_step;
                                 showStep(currentStep);
                             } else {
-                                window.location.href = '{{ route("employee.complete.profile") }}';
+                                window.location.href = '{{ route("employee.dashboard") }}';
                             }
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     },
                     error: function(xhr) {
                         let errors = xhr.responseJSON?.errors;
@@ -1318,6 +1519,8 @@
                         } else {
                             showAlert(xhr.responseJSON?.message || 'Error saving data.');
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     }
                 });
                 break;
@@ -1350,9 +1553,11 @@
                                 currentStep = response.next_step;
                                 showStep(currentStep);
                             } else {
-                                window.location.href = '{{ route("employee.complete.profile") }}';
+                                window.location.href = '{{ route("employee.dashboard") }}';
                             }
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     },
                     error: function(xhr) {
                         let errors = xhr.responseJSON?.errors;
@@ -1363,22 +1568,24 @@
                         } else {
                             showAlert(xhr.responseJSON?.message || 'Error saving data.');
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     }
                 });
                 break;
                 
             case 5:
                 let educations = collectEducationsData();
-                if (!educations) return;
+                if (!educations) {
+                    clickedBtn.text(originalText).prop('disabled', false);
+                    isSaving = false;
+                    return;
+                }
                 
                 let eduFormData = new FormData();
                 eduFormData.append('educations', JSON.stringify(educations));
                 eduFormData.append('education_level', $('#education_level').val());
                 eduFormData.append('_token', '{{ csrf_token() }}');
-                
-                let saveBtn = $('.save-step');
-                let originalText = saveBtn.text();
-                saveBtn.text('Saving...').prop('disabled', true);
                 
                 $.ajax({
                     url: '{{ route("employee.step.save", ["step" => 5]) }}',
@@ -1387,22 +1594,24 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        saveBtn.text(originalText).prop('disabled', false);
                         if (response.success) {
                             showAlert(response.message, 'success');
                             if (!isEditMode) {
                                 currentStep = response.next_step;
                                 showStep(currentStep);
                             } else {
-                                window.location.href = '{{ route("employee.complete.profile") }}';
+                                window.location.href = '{{ route("employee.dashboard") }}';
                             }
                         } else {
                             showAlert(response.message || 'Error saving data', 'error');
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     },
                     error: function(xhr) {
-                        saveBtn.text(originalText).prop('disabled', false);
                         showAlert(xhr.responseJSON?.message || 'Error saving education details.', 'error');
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     }
                 });
                 break;
@@ -1425,14 +1634,18 @@
                                 currentStep = response.next_step;
                                 showStep(currentStep);
                             } else {
-                                window.location.href = '{{ route("employee.complete.profile") }}';
+                                window.location.href = '{{ route("employee.dashboard") }}';
                             }
                         } else {
                             showAlert(response.message || 'Error saving data', 'error');
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     },
                     error: function(xhr) {
                         showAlert(xhr.responseJSON?.message || 'Error saving work experience.', 'error');
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     }
                 });
                 break;
@@ -1455,9 +1668,13 @@
                                 window.location.href = '{{ route("employee.dashboard") }}';
                             }
                         }
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     },
                     error: function(xhr) {
                         showAlert(xhr.responseJSON?.message || 'Error completing profile.', 'error');
+                        clickedBtn.text(originalText).prop('disabled', false);
+                        isSaving = false;
                     }
                 });
                 break;
@@ -1492,6 +1709,44 @@
             }
         });
         
+        // Create mode resume file selection
+        $('#resume').on('change', function(e) {
+            let file = this.files[0];
+            if (file) {
+                let allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!allowedTypes.includes(file.type)) {
+                    showAlert('Only PDF, DOC, and DOCX files are allowed', 'error');
+                    $(this).val('');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('File size must be less than 5MB', 'error');
+                    $(this).val('');
+                    return;
+                }
+                uploadResumeFile(file);
+            }
+        });
+        
+        // Edit mode resume file selection
+        $('#edit_resume').on('change', function(e) {
+            let file = this.files[0];
+            if (file) {
+                let allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!allowedTypes.includes(file.type)) {
+                    showAlert('Only PDF, DOC, and DOCX files are allowed', 'error');
+                    $(this).val('');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('File size must be less than 5MB', 'error');
+                    $(this).val('');
+                    return;
+                }
+                updateEditResumeDisplay(file);
+            }
+        });
+        
         $('.save-step').on('click', function(e) {
             e.preventDefault();
             saveStep(currentStep);
@@ -1499,7 +1754,7 @@
         
         $('.prev-step').on('click', function(e) {
             e.preventDefault();
-            if (currentStep > 1) { 
+            if (currentStep > (isEditMode ? 1 : 0)) { 
                 currentStep--; 
                 showStep(currentStep); 
             }
@@ -1507,46 +1762,12 @@
         
         $('.save-resume-step').on('click', function(e) {
             e.preventDefault();
-            
-            let file = $('#resume')[0].files[0];
-            let hasResumeFile = (file !== undefined && file !== null);
-            let hasExistingResume = (existingResumeUrl !== null && existingResumeUrl !== undefined);
-            
-            if (!hasResumeFile && !uploadedResumeFile && !hasExistingResume) {
-                if (confirm('You haven\'t uploaded a resume. You can upload it later from your profile. Continue anyway?')) {
-                    currentStep = 1;
-                    showStep(currentStep);
-                }
-            } else {
-                if (hasResumeFile && !uploadedResumeFile) {
-                    let formData = new FormData();
-                    formData.append('resume', file);
-                    formData.append('_token', '{{ csrf_token() }}');
-                    
-                    $.ajax({
-                        url: '{{ route("employee.upload.resume") }}',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            if (response.success) {
-                                uploadedResumeFile = null;
-                                existingResumeUrl = response.path;
-                                showAlert('Resume uploaded successfully!', 'success');
-                                currentStep = 1;
-                                showStep(currentStep);
-                            }
-                        },
-                        error: function(xhr) {
-                            showAlert(xhr.responseJSON?.message || 'Error uploading resume');
-                        }
-                    });
-                } else {
-                    currentStep = 1;
-                    showStep(currentStep);
-                }
-            }
+            saveStep(0);
+        });
+        
+        $('.save-edit-resume-step').on('click', function(e) {
+            e.preventDefault();
+            saveStep(0);
         });
         
         $(document).on('click', '.remove-city', function(e) {
@@ -1563,6 +1784,54 @@
             selectedLanguages = selectedLanguages.filter(l => l.id != langId);
             $(`.language-btn[data-id="${langId}"]`).removeClass('bg-yellow-500 text-white border-yellow-500').addClass('bg-white text-gray-700 border-gray-300');
             updateLanguagesDisplay();
+        });
+        
+        // Create mode resume download/remove - Fixed to prevent event bubbling
+        $(document).on('click', '.download-resume-btn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (uploadedResumeFile) {
+                let tempUrl = URL.createObjectURL(uploadedResumeFile);
+                window.open(tempUrl, '_blank');
+                setTimeout(() => URL.revokeObjectURL(tempUrl), 100);
+            } else {
+                showAlert('No resume found to download', 'error');
+            }
+        });
+        
+        $(document).on('click', '.remove-resume-btn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (confirm('Are you sure you want to remove the resume?')) {
+                uploadedResumeFile = null;
+                $('#resume').val('');
+                $('#resumeFileName').addClass('hidden').empty();
+                $('#resumeUploadContent').removeClass('hidden');
+                showAlert('Resume removed', 'success');
+            }
+        });
+        
+        // Edit mode resume download/remove - Fixed to prevent event bubbling
+        $(document).on('click', '.download-edit-resume-btn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (existingResumeUrl) {
+                window.open(existingResumeUrl, '_blank');
+            } else {
+                showAlert('No resume found to download', 'error');
+            }
+        });
+        
+        $(document).on('click', '.remove-edit-resume-btn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (confirm('Are you sure you want to remove the resume?')) {
+                removeEditResume();
+            }
         });
         
         $('#addMoreExperienceBtn').on('click', function() {
@@ -1606,51 +1875,12 @@
             generateEducationFields($(this).val(), existingEducations);
         });
         
-        $(document).on('click', '.download-resume-btn', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (uploadedResumeFile) {
-                let tempUrl = URL.createObjectURL(uploadedResumeFile);
-                window.open(tempUrl, '_blank');
-                setTimeout(() => URL.revokeObjectURL(tempUrl), 100);
-            } else if (existingResumeUrl) {
-                window.open(existingResumeUrl, '_blank');
-            } else {
-                showAlert('No resume found to download', 'error');
-            }
-        });
-        
-        $(document).on('click', '.remove-resume-btn', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (confirm('Are you sure you want to remove the resume?')) {
-                $.ajax({
-                    url: '{{ route("employee.remove.resume") }}',
-                    type: 'POST',
-                    data: { _token: '{{ csrf_token() }}' },
-                    success: function(response) {
-                        if (response.success) {
-                            uploadedResumeFile = null;
-                            existingResumeUrl = null;
-                            $('#resume').val('');
-                            $('#resumeFileName').addClass('hidden').empty();
-                            $('#resumeUploadContent').removeClass('hidden');
-                            showAlert('Resume removed successfully', 'success');
-                        }
-                    },
-                    error: function() {
-                        showAlert('Error removing resume');
-                    }
-                });
-            }
-        });
-        
         $('#profileForm').on('submit', function(e) {
             e.preventDefault();
+            if (isSaving) return;
             if (!validateStep(7)) return;
             
+            isSaving = true;
             let formData = new FormData();
             formData.append('availability', $('input[name="availability"]:checked').val());
             formData.append('_token', '{{ csrf_token() }}');
@@ -1669,34 +1899,33 @@
                     if (response.redirect) {
                         window.location.href = response.redirect;
                     }
+                    isSaving = false;
                 },
                 error: function(xhr) {
                     submitBtn.text(originalText).prop('disabled', false);
                     showAlert(xhr.responseJSON?.message || 'Error completing profile.', 'error');
+                    isSaving = false;
                 }
             });
         });
         
         $('.edit-section-btn').on('click', function() {
-            let section = $(this).data('section');
+            let section = parseInt($(this).data('section'));
             currentStep = section;
             showStep(currentStep);
             $('.edit-section-btn').removeClass('bg-yellow-100 border-yellow-500');
             $(this).addClass('bg-yellow-100 border-yellow-500');
             
-            // Update URL without reloading page (optional)
             let newUrl = '{{ route("employee.complete.profile", "") }}/' + section;
             window.history.pushState({}, '', newUrl);
         });
         
         $('.cancel-edit').on('click', function() {
-            window.location.href = '{{ route("employee.complete.profile") }}';
+            window.location.href = '{{ route("employee.dashboard") }}';
         });
         
-        // Show the appropriate step based on currentStep
         showStep(currentStep);
         
-        // Highlight current section in edit mode
         if (isEditMode) {
             $(`.edit-section-btn[data-section="${currentStep}"]`).addClass('bg-yellow-100 border-yellow-500');
         }
@@ -1717,6 +1946,12 @@
                     }
                 });
                 updateLanguagesDisplay();
+                $('.language-btn').each(function() {
+                    let id = $(this).data('id');
+                    if (selectedLanguages.some(l => l.id == id)) {
+                        $(this).addClass('bg-yellow-500 text-white border-yellow-500').removeClass('bg-white text-gray-700 border-gray-300');
+                    }
+                });
             }
             
             initializeSkills();

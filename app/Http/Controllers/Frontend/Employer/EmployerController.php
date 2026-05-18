@@ -17,7 +17,6 @@ class EmployerController extends Controller
      */
     public function showCompleteProfileForm()
     {
-        // Use 'employer' guard instead of 'web'
         $employer = Auth::guard('web')->user();
         
         // Get or create profile to avoid null
@@ -51,52 +50,60 @@ class EmployerController extends Controller
     /**
      * Save company details (Step 1)
      */
-   /**
- * Save company details (Step 1)
- */
-public function saveCompanyDetails(Request $request)
-{
-    $request->validate([
-        'company_name' => 'required|string|max:255',
-        'work_email' => 'required|email',
-        'industry_type' => 'nullable|string|max:255',
-        'company_size' => 'nullable|string|max:100',
-        'company_website' => 'nullable|url|max:255',
-        'company_description' => 'nullable|string',
-        'employer_designation' => 'nullable|string|max:255',
-    ]);
+    public function saveCompanyDetails(Request $request)
+    {
+        $request->validate([
+            'company_name' => 'required|string|max:255',
+            'work_email' => 'required|email',
+            'industry_type' => 'nullable|string|max:255',
+            'company_size' => 'nullable|string|max:100',
+            'company_website' => 'nullable|url|max:255',
+            'company_description' => 'nullable|string',
+            'employer_designation' => 'nullable|string|max:255',
+        ]);
 
-    // Use 'web' guard
-    $employer = Auth::guard('web')->user();
-    
-    // Update employer basic info
-    $employer->update([
-        'company_name' => $request->company_name,
-        'email' => $request->work_email,
-        'full_name' => $request->company_name, // Update full_name for profile completion check
-        'name' => $request->company_name, // Update name from default
-    ]);
-    
-    // Create or update profile
-    $profile = EmployerProfile::updateOrCreate(
-        ['user_id' => $employer->id],
-        [
+        $employer = Auth::guard('web')->user();
+        
+        // Update employer basic info
+        $employer->update([
             'company_name' => $request->company_name,
-            'work_email' => $request->work_email,
-            'industry_type' => $request->industry_type,
-            'company_size' => $request->company_size,
-            'company_website' => $request->company_website,
-            'company_description' => $request->company_description,
-            'employer_designation' => $request->employer_designation,
-        ]
-    );
+            'email' => $request->work_email,
+            'full_name' => $request->company_name,
+            'name' => $request->company_name,
+        ]);
+        
+        // Create or update profile
+        $profile = EmployerProfile::updateOrCreate(
+            ['user_id' => $employer->id],
+            [
+                'company_name' => $request->company_name,
+                'work_email' => $request->work_email,
+                'industry_type' => $request->industry_type,
+                'company_size' => $request->company_size,
+                'company_website' => $request->company_website,
+                'company_description' => $request->company_description,
+                'employer_designation' => $request->employer_designation,
+            ]
+        );
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Company details saved successfully!',
-        'next_step' => 1
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Company details saved successfully!',
+            'next_step' => 1
+        ]);
+    }
+
+    /**
+     * Skip documents step (Step 2)
+     */
+    public function skipDocuments(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Documents step skipped',
+            'next_step' => 2
+        ]);
+    }
 
     /**
      * Upload documents (Step 2)
@@ -107,10 +114,8 @@ public function saveCompanyDetails(Request $request)
             'documents.*' => 'file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        // Use 'employer' guard
         $employer = Auth::guard('web')->user();
         
-        // Get or create profile
         $profile = EmployerProfile::firstOrCreate(
             ['user_id' => $employer->id],
             [
@@ -158,7 +163,6 @@ public function saveCompanyDetails(Request $request)
             'document_path' => 'required|string'
         ]);
 
-        // Use 'employer' guard
         $employer = Auth::guard('web')->user();
         $profile = EmployerProfile::where('user_id', $employer->id)->first();
         
@@ -174,7 +178,6 @@ public function saveCompanyDetails(Request $request)
             return $doc['path'] !== $request->document_path;
         });
         
-        // Delete file from storage
         Storage::disk('public')->delete($request->document_path);
         
         $profile->update([
@@ -199,10 +202,8 @@ public function saveCompanyDetails(Request $request)
             'candidate_messages' => 'boolean',
         ]);
 
-        // Use 'employer' guard
         $employer = Auth::guard('web')->user();
         
-        // Get or create profile
         $profile = EmployerProfile::firstOrCreate(
             ['user_id' => $employer->id],
             [
@@ -219,7 +220,8 @@ public function saveCompanyDetails(Request $request)
 
         return response()->json([
             'success' => true,
-            'message' => 'Preferences saved successfully!'
+            'message' => 'Preferences saved successfully!',
+            'next_step' => 3
         ]);
     }
 
@@ -228,13 +230,18 @@ public function saveCompanyDetails(Request $request)
      */
     public function completeProfile(Request $request)
     {
-        // Use 'employer' guard
         $employer = Auth::guard('web')->user();
         
-        // Update employer basic info
+        // Mark profile as completed
+        $profile = EmployerProfile::where('user_id', $employer->id)->first();
+        if ($profile) {
+            $profile->update(['profile_completed' => true]);
+        }
+        
         $employer->update([
-            'full_name' => $request->full_name,
-            'email' => $request->email,
+            'profile_completed' => true,
+            'full_name' => $request->full_name ?? $employer->company_name,
+            'email' => $request->email ?? $employer->email,
         ]);
 
         return response()->json([
@@ -248,28 +255,17 @@ public function saveCompanyDetails(Request $request)
      */
     public function dashboard()
     {
-        // Use 'employer' guard
         $employer = Auth::guard('web')->user();
         $profile = EmployerProfile::where('user_id', $employer->id)->first();
         return view('frontend.employer.dashboard', compact('employer', 'profile'));
     }
-   public function logout(Request $request)
+    
+    public function logout(Request $request)
     {
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
         return redirect()->route('auth.mobile.form', 'employer');
-    }
-
-    /**
-     * Skip step (optional)
-     */
-    public function skipStep(Request $request)
-    {
-        return response()->json([
-            'success' => true,
-            'next_step' => $request->next_step
-        ]);
     }
 }

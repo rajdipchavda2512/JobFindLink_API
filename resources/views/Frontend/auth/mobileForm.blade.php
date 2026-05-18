@@ -192,6 +192,12 @@
                 opacity: 1;
             }
         }
+        
+        /* Prevent images from causing infinite reload */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -215,14 +221,12 @@
             </div>
             
             <div class="relative z-10 max-w-md mx-auto text-center lg:text-left">
-                <!-- Logo Section -->
+                <!-- Logo Section - FIXED: Removed problematic onerror that causes infinite loop -->
                 <div class="flex justify-center lg:justify-start mb-8">
                     <div class="relative">
                         <div class="w-28 h-28 bg-white rounded-2xl flex items-center justify-center shadow-2xl animate-float">
-                            <img src="{{ asset('images/jobfindlink_logo.png') }}" 
-                                 alt="JobFindLink" 
-                                 class="w-20 h-20 object-contain"
-                                 onerror="this.src='https://via.placeholder.com/80x80?text=JFL'">
+                            <!-- FIXED: Replaced image with Font Awesome icon to prevent infinite loading -->
+                            <i class="fas fa-briefcase text-blue-600 text-4xl"></i>
                         </div>
                         <div class="absolute -top-3 -right-3 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
                             <i class="fas fa-star text-white text-sm"></i>
@@ -502,11 +506,50 @@
     </script>
     @endif
 
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
     let checkTimeout;
     let canSendOtp = false;
     let currentMobileNumber = '';
+    
+    // Global notification function
+    window.showNotification = function(message, type = 'success') {
+        // Remove existing notifications
+        $('.notification').remove();
+        
+        let bgColor, icon;
+        
+        switch(type) {
+            case 'success':
+                bgColor = 'bg-green-500';
+                icon = 'fa-check-circle';
+                break;
+            case 'error':
+                bgColor = 'bg-red-500';
+                icon = 'fa-exclamation-circle';
+                break;
+            default:
+                bgColor = 'bg-yellow-500';
+                icon = 'fa-info-circle';
+        }
+        
+        const notification = $(`
+            <div class="notification">
+                <div class="${bgColor} text-white px-4 sm:px-6 py-3 rounded-xl shadow-lg flex items-center space-x-3">
+                    <i class="fas ${icon} text-lg"></i>
+                    <span class="text-sm">${message}</span>
+                </div>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        setTimeout(function() {
+            notification.fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 3000);
+    };
     
     $(document).ready(function() {
         // Initially disable send button
@@ -733,15 +776,6 @@
             
             $('body').append(overlay);
             
-            $('head').append(`
-                <style>
-                    @keyframes progress {
-                        from { width: 0%; }
-                        to { width: 100%; }
-                    }
-                </style>
-            `);
-            
             setTimeout(function() {
                 window.location.href = redirectUrl;
             }, 2000);
@@ -778,42 +812,6 @@
             setTimeout(function() {
                 window.location.href = redirectUrl;
             }, 2000);
-        }
-        
-        // Show notification function
-        function showNotification(message, type = 'success') {
-            let bgColor, icon;
-            
-            switch(type) {
-                case 'success':
-                    bgColor = 'bg-green-500';
-                    icon = 'fa-check-circle';
-                    break;
-                case 'error':
-                    bgColor = 'bg-red-500';
-                    icon = 'fa-exclamation-circle';
-                    break;
-                default:
-                    bgColor = 'bg-yellow-500';
-                    icon = 'fa-info-circle';
-            }
-            
-            const notification = $(`
-                <div class="notification">
-                    <div class="${bgColor} text-white px-4 sm:px-6 py-3 rounded-xl shadow-lg flex items-center space-x-3">
-                        <i class="fas ${icon} text-lg"></i>
-                        <span class="text-sm">${message}</span>
-                    </div>
-                </div>
-            `);
-            
-            $('body').append(notification);
-            
-            setTimeout(function() {
-                notification.fadeOut(300, function() {
-                    $(this).remove();
-                });
-            }, 3000);
         }
         
         // Handle mobile form submission
@@ -854,8 +852,24 @@
             const category = $(this).find('p:first').text();
             showNotification(`Exploring ${category}...`, 'info');
         });
+        
+        // Global image error handler - prevents infinite loading
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                console.warn('Image failed to load:', e.target.src);
+                e.target.onerror = null;
+                e.target.style.display = 'none';
+                // Add fallback icon
+                const fallback = document.createElement('i');
+                fallback.className = 'fas fa-briefcase text-blue-600 text-4xl';
+                if (e.target.parentElement) {
+                    e.target.parentElement.appendChild(fallback);
+                    e.target.style.display = 'none';
+                }
+            }
+        }, true);
     });
-</script>
+    </script>
 
 </body>
 </html>

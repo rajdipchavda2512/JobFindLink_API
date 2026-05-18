@@ -150,6 +150,12 @@
                 font-size: 1.25rem;
             }
         }
+        
+        /* Prevent images from causing infinite reload */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -173,14 +179,11 @@
             </div>
             
             <div class="relative z-10 max-w-md mx-auto text-center lg:text-left">
-                <!-- Logo Section -->
+                <!-- Logo Section - FIXED: Replaced image with Font Awesome icon -->
                 <div class="flex justify-center lg:justify-start mb-8">
                     <div class="relative">
                         <div class="w-28 h-28 bg-white rounded-2xl flex items-center justify-center shadow-2xl animate-float">
-                            <img src="{{ asset('images/jobfindlink_logo.png') }}" 
-                                 alt="JobFindLink" 
-                                 class="w-20 h-20 object-contain"
-                                 onerror="this.src='https://via.placeholder.com/80x80?text=JFL'">
+                            <i class="fas fa-briefcase text-blue-600 text-4xl"></i>
                         </div>
                         <div class="absolute -top-3 -right-3 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
                             <i class="fas fa-star text-white text-sm"></i>
@@ -320,8 +323,8 @@
                     </div>
                     
                     <!-- OTP Form - Dynamic route -->
-<form id="otpForm" action="{{ route('auth.verify.otp', ['type' => $type]) }}" method="POST" class="space-y-5">
-                            @csrf
+                    <form id="otpForm" action="{{ route('auth.verify.otp', ['type' => $type]) }}" method="POST" class="space-y-5">
+                        @csrf
                         
                         <!-- OTP Input -->
                         <div>
@@ -374,7 +377,8 @@
                     <!-- Resend Section -->
                     <div class="mt-6 text-center">
                         <p class="text-sm text-gray-600 mb-2">Didn't receive the code?</p>
-<form action="{{ route('auth.resend.otp', ['type' => $type]) }}" method="POST" id="resendForm" class="inline">                                  @csrf
+                        <form action="{{ route('auth.resend.otp', ['type' => $type]) }}" method="POST" id="resendForm" class="inline">
+                            @csrf
                             <button type="submit" 
                                     id="resendOtpBtn"
                                     class="text-yellow-600 font-semibold text-sm hover:underline disabled:opacity-50 disabled:cursor-not-allowed">
@@ -396,7 +400,8 @@
                     
                     <!-- Change Number Link - Dynamic route -->
                     <div class="text-center">
-<a href="{{ route('auth.mobile.form', ['type' => $type]) }}" class="text-gray-500 text-sm hover:text-yellow-600 transition inline-flex items-center gap-1">                            <i class="fas fa-arrow-left"></i>
+                        <a href="{{ route('auth.mobile.form', ['type' => $type]) }}" class="text-gray-500 text-sm hover:text-yellow-600 transition inline-flex items-center gap-1">
+                            <i class="fas fa-arrow-left"></i>
                             <span>Use different mobile number</span>
                         </a>
                     </div>
@@ -446,6 +451,9 @@
             
             // Show notification function
             function showNotification(message, type = 'success') {
+                // Remove existing notifications
+                $('.notification').remove();
+                
                 let bgColor, icon;
                 
                 switch(type) {
@@ -492,6 +500,7 @@
                 e.preventDefault();
                 
                 const resendBtn = $('#resendOtpBtn');
+                const originalText = resendBtn.html();
                 resendBtn.html('<div class="loading-spinner mr-1"></div><span>Sending...</span>');
                 resendBtn.prop('disabled', true);
                 
@@ -508,33 +517,41 @@
                             $('#otp_code').val('').focus();
                         } else {
                             showNotification(response.message || 'Error resending OTP', 'error');
-                            resendBtn.html('Resend OTP');
+                            resendBtn.html(originalText);
                             resendBtn.prop('disabled', false);
                         }
                     },
                     error: function(xhr) {
                         const message = xhr.responseJSON?.message || 'Error resending OTP. Please try again.';
                         showNotification(message, 'error');
-                        resendBtn.html('Resend OTP');
+                        resendBtn.html(originalText);
                         resendBtn.prop('disabled', false);
                     }
                 });
             });
             
             // Timer function for resend OTP
+            let timerInterval = null;
+            
             function startTimer(seconds) {
+                // Clear existing interval if any
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+                
                 let remaining = seconds;
                 $('#resendOtpBtn').prop('disabled', true);
                 $('#timer').text(`Resend OTP in ${remaining}s`);
                 
-                const interval = setInterval(function() {
+                timerInterval = setInterval(function() {
                     remaining--;
                     $('#timer').text(`Resend OTP in ${remaining}s`);
                     
                     if (remaining <= 0) {
-                        clearInterval(interval);
+                        clearInterval(timerInterval);
                         $('#resendOtpBtn').prop('disabled', false);
                         $('#timer').text('');
+                        timerInterval = null;
                     }
                 }, 1000);
             }
@@ -549,6 +566,22 @@
                 const category = $(this).find('p:first').text();
                 showNotification(`Exploring ${category}...`, 'info');
             });
+            
+            // Global image error handler - prevents infinite loading
+            window.addEventListener('error', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    console.warn('Image failed to load:', e.target.src);
+                    e.target.onerror = null;
+                    e.target.style.display = 'none';
+                    // Add fallback icon
+                    const fallback = document.createElement('i');
+                    fallback.className = 'fas fa-briefcase text-blue-600 text-4xl';
+                    if (e.target.parentElement) {
+                        e.target.parentElement.appendChild(fallback);
+                        e.target.style.display = 'none';
+                    }
+                }
+            }, true);
         });
     </script>
 </body>

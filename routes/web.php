@@ -20,6 +20,8 @@ use App\Http\Controllers\Employer\Auth\EmployerAuthController;
 use App\Http\Controllers\Frontend\Auth\AuthController;  
 use App\Http\Controllers\Frontend\Employee\EmployeeController;
 use App\Http\Controllers\Frontend\Employer\EmployerController;
+
+use App\Http\Controllers\Frontend\Employer\JobPostController;
 // App\Http\Controllers\Frontend\Auth\AuthController
 /*
 |--------------------------------------------------------------------------
@@ -37,12 +39,12 @@ Route::get('/', [EmployeeAuthController::class, 'home'])->name('login');
 Route::prefix('admin')->name('admin.')->group(function () {
 
     // Auth Routes
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
 
     Route::middleware(['auth'])->group(function () {
 
-        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->middleware('permission:dashboard.view')
@@ -253,4 +255,19 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])
         ->middleware('auth')
         ->name('logout');
+});
+
+
+
+// Employer Job Routes (without middleware)
+Route::prefix('employer')->name('employer.')->group(function () {
+    Route::get('jobs/create', [JobPostController::class, 'create'])->name('jobs.create');
+    Route::post('jobs', [JobPostController::class, 'store'])->name('jobs.store');
+    Route::get('jobs', [JobPostController::class, 'index'])->name('jobs.index');
+    Route::get('jobs/{id}', [JobPostController::class, 'show'])->name('jobs.show');
+    Route::get('jobs/{id}/edit', [JobPostController::class, 'edit'])->name('jobs.edit');
+    Route::put('jobs/{id}', [JobPostController::class, 'update'])->name('jobs.update');
+    Route::delete('jobs/{id}', [JobPostController::class, 'destroy'])->name('jobs.destroy');
+    Route::post('jobs/{id}/publish', [JobPostController::class, 'publish'])->name('jobs.publish');
+    Route::post('jobs/{id}/close', [JobPostController::class, 'close'])->name('jobs.close');
 });

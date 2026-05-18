@@ -79,69 +79,62 @@
                 margin-bottom: 1rem;
             }
         }
+        
+        /* Prevent image from causing infinite reload */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body class="bg-white">
     
     <!-- Navigation Bar -->
-  <nav class="bg-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Header Height -->
-        <div class="flex justify-between items-center h-24">
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24">
+                <!-- Logo Section -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-24 h-20 flex items-center justify-center overflow-hidden">
+                        <img 
+                            src="{{ asset('storage/images/logo2.png') }}"
+                            alt="JobFindLink Logo"
+                            class="w-24 h-24 object-contain scale-125 transition duration-300"
+                            onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=JFL'"
+                        >
+                    </div>
+                    <span class="text-2xl font-bold text-gray-800">
+                        Job<span class="text-yellow-500">Find</span>Link
+                    </span>
+                </div>
 
-            <!-- Logo Section -->
-            <div class="flex items-center space-x-3">
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Home</a>
+                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">About</a>
+                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Services</a>
+                    <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Contact</a>
+                </div>
 
-                <!-- Logo Container -->
-               <div class="w-24 h-20 flex items-center justify-center overflow-hidden">
-    <img 
-        src="{{ asset('storage/images/logo2.png') }}"
-        alt="JobFindLink Logo"
-        class="w-24 h-24 object-contain scale-125 transition duration-300"
-    >
-</div>
+                <!-- Buttons -->
+                <div class="hidden md:flex space-x-3">
+                    <a href="{{ route('auth.mobile.form', ['type' => 'employee']) }}"
+                       class="px-4 py-2 border border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition">
+                        Employee Login
+                    </a>
+                    <a href="{{ route('auth.mobile.form', ['type' => 'employer']) }}"
+                       class="px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+                        Employer Login
+                    </a>
+                </div>
 
-                <!-- Brand Name -->
-                <span class="text-2xl font-bold text-gray-800">
-                    Job<span class="text-yellow-500">Find</span>Link
-                </span>
-
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
             </div>
-
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex space-x-8">
-                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Home</a>
-                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">About</a>
-                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Services</a>
-                <a href="#" class="text-gray-700 hover:text-yellow-500 transition">Contact</a>
-            </div>
-
-          <!-- Buttons -->
-<div class="hidden md:flex space-x-3">
-
-    <!-- Employee Login -->
-    <a href="{{ route('auth.mobile.form', ['type' => 'employee']) }}"
-       class="px-4 py-2 border border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition">
-        Employee Login
-    </a>
-
-    <!-- Employer Login -->
-    <a href="{{ route('auth.mobile.form', ['type' => 'employer']) }}"
-       class="px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
-        Employer Login
-    </a>
-
-</div>
-
-            <!-- Mobile Menu Button -->
-            <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
-
         </div>
-    </div>
-</nav>
+    </nav>
 
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-blue-50 to-white overflow-hidden">
@@ -167,7 +160,12 @@
                 <div class="hidden lg:block">
                     <div class="relative">
                         <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-yellow-400 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-                        <img src="{{ asset('images/hero-illustration.png') }}" alt="Hero" class="relative z-10 animate-float" onerror="this.src='https://via.placeholder.com/500x400?text=JobFindLink'">
+                        <!-- FIXED: Removed onerror that causes infinite loop -->
+                       
+                        <div class="fallback-message text-center text-gray-400" style="display: none;">
+                            <i class="fas fa-briefcase text-6xl mb-4"></i>
+                            <p>JobFindLink - Your Career Partner</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -322,13 +320,14 @@
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                       <div class="w-24 h-20 flex items-center justify-center overflow-hidden">
-    <img 
-        src="{{ asset('storage/images/logo2.png') }}"
-        alt="JobFindLink Logo"
-        class="w-24 h-24 object-contain scale-125 transition duration-300"
-    >
-</div>
+                        <div class="w-24 h-20 flex items-center justify-center overflow-hidden">
+                            <img 
+                                src="{{ asset('storage/images/logo2.png') }}"
+                                alt="JobFindLink Logo"
+                                class="w-24 h-24 object-contain scale-125 transition duration-300"
+                                onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=JFL'"
+                            >
+                        </div>
                         <span class="text-xl font-bold">Job<span class="text-yellow-500">Find</span>Link</span>
                     </div>
                     <p class="text-gray-400 text-sm">Connecting talent with opportunities across India.</p>
@@ -373,10 +372,31 @@
 
     <script>
         // Mobile menu toggle
-        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
-        });
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                // Create mobile menu if it doesn't exist
+                let mobileMenu = document.getElementById('mobileMenu');
+                if (!mobileMenu) {
+                    mobileMenu = document.createElement('div');
+                    mobileMenu.id = 'mobileMenu';
+                    mobileMenu.className = 'md:hidden bg-white shadow-lg py-4 px-4';
+                    mobileMenu.innerHTML = `
+                        <div class="flex flex-col space-y-3">
+                            <a href="#" class="text-gray-700 hover:text-yellow-500 transition py-2">Home</a>
+                            <a href="#" class="text-gray-700 hover:text-yellow-500 transition py-2">About</a>
+                            <a href="#" class="text-gray-700 hover:text-yellow-500 transition py-2">Services</a>
+                            <a href="#" class="text-gray-700 hover:text-yellow-500 transition py-2">Contact</a>
+                            <hr class="my-2">
+                            <a href="{{ route('auth.mobile.form', ['type' => 'employee']) }}" class="px-4 py-2 border border-yellow-500 text-yellow-600 rounded-lg text-center">Employee Login</a>
+                            <a href="{{ route('auth.mobile.form', ['type' => 'employer']) }}" class="px-4 py-2 gradient-bg text-white rounded-lg text-center">Employer Login</a>
+                        </div>
+                    `;
+                    mobileMenuBtn.parentElement.parentElement.parentElement.appendChild(mobileMenu);
+                }
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
         
         // Animate counters when they come into view
         const observerOptions = {
@@ -396,6 +416,14 @@
         document.querySelectorAll('.counter').forEach(counter => {
             observer.observe(counter);
         });
+        
+        // Fix for any potential infinite loop issues
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                console.warn('Image failed to load:', e.target.src);
+                e.target.onerror = null;
+            }
+        }, true);
     </script>
 </body>
 </html>
