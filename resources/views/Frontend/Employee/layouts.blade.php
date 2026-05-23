@@ -100,12 +100,13 @@
                                 <i class="fas fa-cog mr-2"></i> Settings
                             </a>
                             <hr class="my-1">
-                            <form action="{{ route('employee.logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-yellow-50">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                                </button>
-                            </form>
+                          <form action="{{ route('auth.logout') }}" method="POST">
+    @csrf
+
+    <button type="submit">
+        Logout
+    </button>
+</form>
                         </div>
                     </div>
                 </div>

@@ -1,11 +1,11 @@
-{{-- resources/views/employee/auth/verify.blade.php --}}
+{{-- resources/views/auth/verify-otp.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Verify OTP - JobFindLink | India's #1 Job Platform</title>
+    <title>{{ ucfirst($type) }} Verification - JobFindLink | India's #1 Job Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -150,12 +150,18 @@
                 font-size: 1.25rem;
             }
         }
+        
+        /* Prevent images from causing infinite reload */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen flex flex-col lg:flex-row">
         
-        <!-- Left Section - Logo & Branding with Blue Theme (Same as Login Page) -->
+        <!-- Left Section - Logo & Branding with Blue Theme (Dynamic based on type) -->
         <div class="lg:w-1/2 animated-bg text-white p-8 lg:p-16 flex flex-col justify-center relative overflow-hidden">
             <!-- Floating Design Elements -->
             <div class="floating-shape w-64 h-64 top-10 -left-20" style="animation-delay: 0s;"></div>
@@ -173,14 +179,11 @@
             </div>
             
             <div class="relative z-10 max-w-md mx-auto text-center lg:text-left">
-                <!-- Logo Section -->
+                <!-- Logo Section - FIXED: Replaced image with Font Awesome icon -->
                 <div class="flex justify-center lg:justify-start mb-8">
                     <div class="relative">
                         <div class="w-28 h-28 bg-white rounded-2xl flex items-center justify-center shadow-2xl animate-float">
-                            <img src="{{ asset('images/jobfindlink_logo.png') }}" 
-                                 alt="JobFindLink" 
-                                 class="w-20 h-20 object-contain"
-                                 onerror="this.src='https://via.placeholder.com/80x80?text=JFL'">
+                            <i class="fas fa-briefcase text-blue-600 text-4xl"></i>
                         </div>
                         <div class="absolute -top-3 -right-3 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
                             <i class="fas fa-star text-white text-sm"></i>
@@ -199,15 +202,26 @@
                     </div>
                 </div>
                 
-                <!-- Tagline -->
+                <!-- Tagline - Dynamic based on type -->
                 <div class="mb-8">
                     <p class="text-xl leading-relaxed opacity-95">
-                        Your career journey begins here. 
-                        <span class="block text-yellow-400 font-semibold mt-2">50 Lakh+ Opportunities Await!</span>
+                        @if($type === 'employee')
+                            Your career journey begins here.
+                        @else
+                            Find the best talent for your company.
+                        @endif
+                        <span class="block text-yellow-400 font-semibold mt-2">
+                            @if($type === 'employee')
+                                50 Lakh+ Opportunities Await!
+                            @else
+                                Connect with 5Cr+ Job Seekers!
+                            @endif
+                        </span>
                     </p>
                 </div>
                 
-                <!-- Job Categories with Yellow Accents -->
+                <!-- Job/Employer Categories - Dynamic based on type -->
+                @if($type === 'employee')
                 <div class="grid grid-cols-2 gap-3 mb-8">
                     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
                         <i class="fas fa-map-marker-alt text-yellow-400 text-lg mb-1"></i>
@@ -230,6 +244,30 @@
                         <p class="text-xs opacity-75">Full Time</p>
                     </div>
                 </div>
+                @else
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-chart-line text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Active Jobs</p>
+                        <p class="text-xs opacity-75">2L+ Live Jobs</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-users text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Job Seekers</p>
+                        <p class="text-xs opacity-75">5Cr+ Candidates</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-building text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Companies</p>
+                        <p class="text-xs opacity-75">50k+ Trust Us</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-yellow-400/30 hover:bg-yellow-400/20 transition cursor-pointer">
+                        <i class="fas fa-clock text-yellow-400 text-lg mb-1"></i>
+                        <p class="text-xs font-semibold">Quick Hiring</p>
+                        <p class="text-xs opacity-75">24hr Response</p>
+                    </div>
+                </div>
+                @endif
                 
                 <!-- Trust Indicators -->
                 <div class="flex flex-wrap justify-center lg:justify-start gap-6">
@@ -259,7 +297,7 @@
             </div>
         </div>
         
-        <!-- Right Section - OTP Verification Form (Matching Login Page Design) -->
+        <!-- Right Section - OTP Verification Form (Dynamic based on type) -->
         <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 lg:p-16 bg-gradient-to-br from-gray-50 to-white">
             <div class="w-full max-w-md">
                 <!-- Welcome Card -->
@@ -267,7 +305,7 @@
                     <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                         <i class="fas fa-key text-yellow-400 text-3xl"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-800">Verify OTP</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">{{ ucfirst($type) }} Verification</h2>
                     <p class="text-gray-500 text-sm mt-2">Enter the verification code sent to your mobile</p>
                 </div>
                 
@@ -280,12 +318,12 @@
                         <h3 class="text-lg font-bold text-gray-800">OTP Verification</h3>
                         <p class="text-xs text-gray-500 mt-1">
                             We've sent a 6-digit code to 
-                            <span class="font-semibold text-yellow-600">+91 {{ session('mobile') }}</span>
+                            <span class="font-semibold text-yellow-600">+91 {{ session('auth_mobile') }}</span>
                         </p>
                     </div>
                     
-                    <!-- OTP Form -->
-                    <form id="otpForm" action="{{ route('employee.verify.otp') }}" method="POST" class="space-y-5">
+                    <!-- OTP Form - Dynamic route -->
+                    <form id="otpForm" action="{{ route('auth.verify.otp', ['type' => $type]) }}" method="POST" class="space-y-5">
                         @csrf
                         
                         <!-- OTP Input -->
@@ -332,14 +370,14 @@
                                 id="verifyBtn"
                                 class="btn-yellow w-full text-white py-3.5 rounded-xl font-semibold transition-all transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-base flex items-center justify-center gap-2">
                             <i class="fas fa-check-circle"></i>
-                            <span>Verify & Login</span>
+                            <span>Verify & {{ $type === 'employee' ? 'Login' : 'Register' }}</span>
                         </button>
                     </form>
                     
                     <!-- Resend Section -->
                     <div class="mt-6 text-center">
                         <p class="text-sm text-gray-600 mb-2">Didn't receive the code?</p>
-                        <form action="{{ route('employee.resend.otp') }}" method="POST" id="resendForm" class="inline">
+                        <form action="{{ route('auth.resend.otp', ['type' => $type]) }}" method="POST" id="resendForm" class="inline">
                             @csrf
                             <button type="submit" 
                                     id="resendOtpBtn"
@@ -360,9 +398,9 @@
                         </div>
                     </div>
                     
-                    <!-- Change Number Link -->
+                    <!-- Change Number Link - Dynamic route -->
                     <div class="text-center">
-                        <a href="{{ route('employee.login') }}" class="text-gray-500 text-sm hover:text-yellow-600 transition inline-flex items-center gap-1">
+                        <a href="{{ route('auth.mobile.form', ['type' => $type]) }}" class="text-gray-500 text-sm hover:text-yellow-600 transition inline-flex items-center gap-1">
                             <i class="fas fa-arrow-left"></i>
                             <span>Use different mobile number</span>
                         </a>
@@ -413,6 +451,9 @@
             
             // Show notification function
             function showNotification(message, type = 'success') {
+                // Remove existing notifications
+                $('.notification').remove();
+                
                 let bgColor, icon;
                 
                 switch(type) {
@@ -459,6 +500,7 @@
                 e.preventDefault();
                 
                 const resendBtn = $('#resendOtpBtn');
+                const originalText = resendBtn.html();
                 resendBtn.html('<div class="loading-spinner mr-1"></div><span>Sending...</span>');
                 resendBtn.prop('disabled', true);
                 
@@ -475,33 +517,41 @@
                             $('#otp_code').val('').focus();
                         } else {
                             showNotification(response.message || 'Error resending OTP', 'error');
-                            resendBtn.html('Resend OTP');
+                            resendBtn.html(originalText);
                             resendBtn.prop('disabled', false);
                         }
                     },
                     error: function(xhr) {
                         const message = xhr.responseJSON?.message || 'Error resending OTP. Please try again.';
                         showNotification(message, 'error');
-                        resendBtn.html('Resend OTP');
+                        resendBtn.html(originalText);
                         resendBtn.prop('disabled', false);
                     }
                 });
             });
             
             // Timer function for resend OTP
+            let timerInterval = null;
+            
             function startTimer(seconds) {
+                // Clear existing interval if any
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+                
                 let remaining = seconds;
                 $('#resendOtpBtn').prop('disabled', true);
                 $('#timer').text(`Resend OTP in ${remaining}s`);
                 
-                const interval = setInterval(function() {
+                timerInterval = setInterval(function() {
                     remaining--;
                     $('#timer').text(`Resend OTP in ${remaining}s`);
                     
                     if (remaining <= 0) {
-                        clearInterval(interval);
+                        clearInterval(timerInterval);
                         $('#resendOtpBtn').prop('disabled', false);
                         $('#timer').text('');
+                        timerInterval = null;
                     }
                 }, 1000);
             }
@@ -511,11 +561,27 @@
                 startTimer(60);
             @endif
             
-            // Job category click handlers
+            // Category click handlers
             $('.grid > div').on('click', function() {
                 const category = $(this).find('p:first').text();
-                showNotification(`Exploring ${category} jobs...`, 'info');
+                showNotification(`Exploring ${category}...`, 'info');
             });
+            
+            // Global image error handler - prevents infinite loading
+            window.addEventListener('error', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    console.warn('Image failed to load:', e.target.src);
+                    e.target.onerror = null;
+                    e.target.style.display = 'none';
+                    // Add fallback icon
+                    const fallback = document.createElement('i');
+                    fallback.className = 'fas fa-briefcase text-blue-600 text-4xl';
+                    if (e.target.parentElement) {
+                        e.target.parentElement.appendChild(fallback);
+                        e.target.style.display = 'none';
+                    }
+                }
+            }, true);
         });
     </script>
 </body>

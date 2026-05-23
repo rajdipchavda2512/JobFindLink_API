@@ -21,6 +21,9 @@ class EmployerProfile extends Model
         'employer_designation',
         'logo_url',
         'is_verified',
+        'application_alerts',
+        'weekly_reports',
+        'candidate_messages',
     ];
 
     protected function casts(): array

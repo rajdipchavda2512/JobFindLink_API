@@ -1,0 +1,88 @@
+{
+  "states": [
+    {
+      "name": "Andhra Pradesh",
+      "cities": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Rajahmundry"]
+    },
+    {
+      "name": "Assam",
+      "cities": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon"]
+    },
+    {
+      "name": "Bihar",
+      "cities": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Darbhanga"]
+    },
+    {
+      "name": "Chhattisgarh",
+      "cities": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Durg"]
+    },
+    {
+      "name": "Delhi",
+      "cities": ["New Delhi", "Delhi", "Noida", "Gurgaon", "Faridabad"]
+    },
+    {
+      "name": "Goa",
+      "cities": ["Panaji", "Margao", "Vasco da Gama", "Mapusa", "Ponda"]
+    },
+    {
+      "name": "Gujarat",
+      "cities": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar", "Anand", "Navsari"]
+    },
+    {
+      "name": "Haryana",
+      "cities": ["Faridabad", "Gurugram", "Panipat", "Ambala", "Hisar"]
+    },
+    {
+      "name": "Himachal Pradesh",
+      "cities": ["Shimla", "Manali", "Dharamshala", "Kullu", "Mandi"]
+    },
+    {
+      "name": "Jharkhand",
+      "cities": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Hazaribagh"]
+    },
+    {
+      "name": "Karnataka",
+      "cities": ["Bengaluru", "Mysore", "Hubli", "Mangalore", "Belgaum"]
+    },
+    {
+      "name": "Kerala",
+      "cities": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam", "Thrissur"]
+    },
+    {
+      "name": "Madhya Pradesh",
+      "cities": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain"]
+    },
+    {
+      "name": "Maharashtra",
+      "cities": ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad", "Thane", "Solapur"]
+    },
+    {
+      "name": "Odisha",
+      "cities": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Sambalpur"]
+    },
+    {
+      "name": "Punjab",
+      "cities": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda"]
+    },
+    {
+      "name": "Rajasthan",
+      "cities": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer"]
+    },
+    {
+      "name": "Tamil Nadu",
+      "cities": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"]
+    },
+    {
+      "name": "Telangana",
+      "cities": ["Hyderabad", "Warangal", "Nizamabad", "Khammam", "Karimnagar"]
+    },
+    {
+      "name": "Uttar Pradesh",
+      "cities": ["Lucknow", "Kanpur", "Agra", "Varanasi", "Prayagraj"]
+    },
+    {
+      "name": "West Bengal",
+      "cities": ["Kolkata", "Howrah", "Durgapur", "Siliguri", "Asansol"]
+    }
+  ]
+}

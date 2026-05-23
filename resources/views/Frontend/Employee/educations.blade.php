@@ -1,5 +1,5 @@
 {{-- resources/views/employee/educations.blade.php --}}
-@extends('employee.layouts')
+@extends('Frontend.employee.layouts')
 
 @section('title', 'Education')
 

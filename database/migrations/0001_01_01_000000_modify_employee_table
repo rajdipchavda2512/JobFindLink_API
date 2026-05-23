@@ -1,0 +1,35 @@
+<?php
+
+// database/migrations/2024_01_01_000000_update_employees_experience_fields.php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class UpdateEmployeesExperienceFields extends Migration
+{
+    public function up()
+    {
+        Schema::table('employees', function (Blueprint $table) {
+            // Ensure these columns exist with proper defaults
+            if (!Schema::hasColumn('employees', 'exp_years')) {
+                $table->integer('exp_years')->default(0)->after('experience_type');
+            }
+            
+            if (!Schema::hasColumn('employees', 'exp_months')) {
+                $table->integer('exp_months')->default(0)->after('exp_years');
+            }
+            
+            // Add index for better query performance
+            $table->index(['exp_years', 'exp_months']);
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('employees', function (Blueprint $table) {
+            $table->dropIndex(['exp_years', 'exp_months']);
+            $table->dropColumn(['exp_years', 'exp_months']);
+        });
+    }
+}
