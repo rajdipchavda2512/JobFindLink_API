@@ -1,6 +1,4 @@
 <?php
-// app/Http/Controllers/Frontend/Employer/JobPostController.php
-
 namespace App\Http\Controllers\Frontend\Employer;
 
 use App\Http\Controllers\Controller;

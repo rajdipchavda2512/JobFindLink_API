@@ -338,77 +338,193 @@
                 </div>
             </div>
 
-            <!-- Work Experience Section -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-                    <h2 class="text-xl font-bold text-gray-800">Work Experience</h2>
-                    <a href="/employee/complete-profile/6" class="text-yellow-600 hover:text-yellow-700">
-                        <i class="fas fa-edit mr-1"></i> Edit
-                    </a>
-                </div>
-                <div class="p-6">
-                    @php
-                        $hasExperiences = false;
-                        $experiencesList = [];
+           <!-- Work Experience Section -->
+<div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-gray-800">Work Experience</h2>
+        <a href="/employee/complete-profile/6" class="text-yellow-600 hover:text-yellow-700">
+            <i class="fas fa-edit mr-1"></i> Edit
+        </a>
+    </div>
+    <div class="p-6">
+        @php
+            $hasExperiences = false;
+            $experiencesList = [];
+            
+            if(isset($employee) && $employee->experiences_json) {
+                $experiencesList = is_array($employee->experiences_json) ? $employee->experiences_json : json_decode($employee->experiences_json, true);
+                $hasExperiences = is_array($experiencesList) && count($experiencesList) > 0;
+            }
+        @endphp
+        
+        @if($hasExperiences)
+            <div class="space-y-6">
+                @foreach($experiencesList as $index => $exp)
+                <div class="relative pl-6 {{ $index > 0 ? 'pt-6 border-t border-gray-200' : '' }}">
+                    <!-- Timeline dot -->
+                    <div class="absolute left-0 top-1 w-3 h-3 rounded-full {{ isset($exp['currently_working']) && $exp['currently_working'] == 1 ? 'bg-green-500' : 'bg-yellow-500' }}"></div>
+                    <div class="absolute left-[5px] top-4 w-0.5 h-full -z-10 {{ $index < count($experiencesList) - 1 ? 'bg-gray-200' : '' }}"></div>
+                    
+                    <div class="flex flex-wrap justify-between items-start gap-2">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 text-lg">
+                                {{ $exp['company_name'] ?? 'N/A' }}
+                            </h3>
+                            <p class="text-gray-600">
+                                {{ $exp['position_name'] ?? ($exp['position_id'] ?? 'Position not specified') }}
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                {{ ucfirst(str_replace('_', ' ', $exp['employment_type'] ?? 'N/A')) }}
+                            </p>
+                        </div>
+                        @if(isset($exp['currently_working']) && $exp['currently_working'] == 1)
+                            <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full flex items-center gap-1">
+                                <i class="fas fa-check-circle text-xs"></i> Current Job
+                            </span>
+                        @endif
+                    </div>
+                    
+                    <div class="mt-3 flex flex-wrap gap-4 text-sm">
+                        @if(!empty($exp['start_date']))
+                            <div class="flex items-center gap-1 text-gray-500">
+                                <i class="fas fa-calendar-alt text-gray-400"></i>
+                                <span>From: {{ date('M Y', strtotime($exp['start_date'])) }}</span>
+                            </div>
+                        @endif
                         
-                        if(isset($employee)) {
-                            if(isset($employee->experiences_json) && $employee->experiences_json) {
-                                $experiencesList = is_array($employee->experiences_json) ? $employee->experiences_json : json_decode($employee->experiences_json, true);
-                                $hasExperiences = is_array($experiencesList) && count($experiencesList) > 0;
-                            } elseif(isset($employee->company_name) && $employee->company_name) {
-                                $hasExperiences = true;
-                                $experiencesList = [[
-                                    'company_name' => $employee->company_name, 
-                                    'employment_type' => $employee->employment_type, 
-                                    'start_date' => $employee->work_start_date, 
-                                    'end_date' => $employee->work_end_date, 
-                                    'currently_working' => $employee->currently_working,
-                                    'notice_period' => $employee->notice_period,
-                                    'industry_id' => $employee->industry_id
-                                ]];
+                        @if(!empty($exp['end_date']) && empty($exp['currently_working']))
+                            <div class="flex items-center gap-1 text-gray-500">
+                                <i class="fas fa-calendar-check text-gray-400"></i>
+                                <span>To: {{ date('M Y', strtotime($exp['end_date'])) }}</span>
+                            </div>
+                        @elseif(isset($exp['currently_working']) && $exp['currently_working'] == 1)
+                            <div class="flex items-center gap-1 text-green-600">
+                                <i class="fas fa-infinity"></i>
+                                <span>Present</span>
+                            </div>
+                        @endif
+                        
+                        @if(!empty($exp['notice_period']) && isset($exp['currently_working']) && $exp['currently_working'] == 1)
+                            <div class="flex items-center gap-1 text-orange-600">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>Notice Period: {{ $exp['notice_period'] }}</span>
+                            </div>
+                        @endif
+                    </div>
+                    
+                    @php
+                        // Calculate duration
+                        $durationText = '';
+                        if (!empty($exp['start_date'])) {
+                            $start = \Carbon\Carbon::parse($exp['start_date']);
+                            $end = (isset($exp['currently_working']) && $exp['currently_working'] == 1) 
+                                ? \Carbon\Carbon::now() 
+                                : (!empty($exp['end_date']) ? \Carbon\Carbon::parse($exp['end_date']) : null);
+                            
+                            if ($end && $start <= $end) {
+                                $diff = $start->diff($end);
+                                $years = $diff->y;
+                                $months = $diff->m;
+                                $days = $diff->d;
+                                
+                                if ($years > 0) {
+                                    $durationText .= $years . ' year' . ($years > 1 ? 's' : '');
+                                }
+                                if ($months > 0) {
+                                    if ($years > 0) $durationText .= ' ';
+                                    $durationText .= $months . ' month' . ($months > 1 ? 's' : '');
+                                }
+                                if ($years == 0 && $months == 0 && $days > 0) {
+                                    $durationText = $days . ' day' . ($days > 1 ? 's' : '');
+                                }
+                                if ($years == 0 && $months == 0 && $days == 0) {
+                                    $durationText = 'Less than a month';
+                                }
                             }
                         }
                     @endphp
                     
-                    @if($hasExperiences)
-                        @foreach($experiencesList as $exp)
-                        <div class="border-b border-gray-100 pb-4 mb-4 last:border-0 last:pb-0">
-                            <h3 class="font-semibold text-gray-800">{{ is_array($exp) ? ($exp['company_name'] ?? '') : ($exp->company_name ?? '') }}</h3>
-                            <p class="text-sm text-gray-600 mt-1">
-                                {{ isset($exp['employment_type']) ? ucfirst(str_replace('_', ' ', $exp['employment_type'])) : (isset($exp->employment_type) ? ucfirst(str_replace('_', ' ', $exp->employment_type)) : '') }}
-                            </p>
-                            <p class="text-xs text-gray-500 mt-1">
-                                @php
-                                    $startDate = is_array($exp) ? ($exp['start_date'] ?? '') : ($exp->start_date ?? '');
-                                    $endDate = is_array($exp) ? ($exp['end_date'] ?? '') : ($exp->end_date ?? '');
-                                    $currentlyWorking = is_array($exp) ? ($exp['currently_working'] ?? false) : ($exp->currently_working ?? false);
-                                @endphp
-                                @if($startDate)
-                                    {{ date('M Y', strtotime($startDate)) }} - {{ $currentlyWorking ? 'Present' : ($endDate ? date('M Y', strtotime($endDate)) : '') }}
-                                @endif
-                            </p>
-                            @if((is_array($exp) && isset($exp['notice_period']) && $exp['notice_period']) || (!is_array($exp) && isset($exp->notice_period) && $exp->notice_period))
-                                <p class="text-xs text-gray-400 mt-1">Notice Period: {{ is_array($exp) ? $exp['notice_period'] : $exp->notice_period }}</p>
-                            @endif
-                            @if((is_array($exp) && isset($exp['industry_id']) && $exp['industry_id']) || (!is_array($exp) && isset($exp->industry_id) && $exp->industry_id))
-                                @php
-                                    $industryId = is_array($exp) ? $exp['industry_id'] : $exp->industry_id;
-                                    $industry = isset($industries) ? $industries->firstWhere('id', $industryId) : null;
-                                @endphp
-                                @if($industry)
-                                    <p class="text-xs text-gray-400">Industry: {{ $industry->name }}</p>
-                                @endif
-                            @endif
+                    @if(!empty($durationText))
+                        <div class="mt-2 text-sm">
+                            <span class="text-gray-500">Duration:</span>
+                            <span class="font-medium text-gray-700 ml-1">{{ $durationText }}</span>
                         </div>
-                        @endforeach
-                    @elseif(isset($employee) && $employee->experience_type == 'experienced')
-                        <p class="text-gray-500 text-center py-4">No work experience added yet.</p>
-                    @else
-                        <p class="text-gray-500 text-center py-4">Fresher - No work experience</p>
+                    @endif
+                    
+                    <!-- Industry if available -->
+                    @if(!empty($exp['industry_id']))
+                        @php
+                            $industry = isset($industries) ? $industries->firstWhere('id', $exp['industry_id']) : null;
+                        @endphp
+                        @if($industry)
+                            <div class="mt-1 text-xs text-gray-400">
+                                <i class="fas fa-industry mr-1"></i> {{ $industry->name }}
+                            </div>
+                        @endif
                     @endif
                 </div>
+                @endforeach
             </div>
-
+            
+            <!-- Total Experience Summary -->
+            @php
+                $totalMonths = 0;
+                foreach($experiencesList as $exp) {
+                    if (!empty($exp['start_date'])) {
+                        $start = \Carbon\Carbon::parse($exp['start_date']);
+                        $end = (isset($exp['currently_working']) && $exp['currently_working'] == 1) 
+                            ? \Carbon\Carbon::now() 
+                            : (!empty($exp['end_date']) ? \Carbon\Carbon::parse($exp['end_date']) : null);
+                        if ($end && $start < $end) {
+                            $diff = $start->diff($end);
+                            $totalMonths += ($diff->y * 12) + $diff->m;
+                        }
+                    }
+                }
+                $totalYears = floor($totalMonths / 12);
+                $totalRemainingMonths = $totalMonths % 12;
+            @endphp
+            
+            @if($totalMonths > 0)
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chart-line text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Professional Experience</p>
+                            <p class="text-xl font-bold text-gray-800">
+                                @if($totalYears > 0) {{ $totalYears }} year{{ $totalYears > 1 ? 's' : '' }} @endif
+                                @if($totalRemainingMonths > 0) {{ $totalRemainingMonths }} month{{ $totalRemainingMonths > 1 ? 's' : '' }} @endif
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+            
+        @elseif(isset($employee) && $employee->experience_type == 'experienced')
+            <div class="text-center py-8">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-briefcase text-gray-400 text-2xl"></i>
+                </div>
+                <p class="text-gray-500">No work experience added yet.</p>
+                <a href="/employee/complete-profile/6" class="mt-3 inline-block text-yellow-600 hover:text-yellow-700 text-sm">
+                    <i class="fas fa-plus-circle mr-1"></i> Add your work experience
+                </a>
+            </div>
+        @else
+            <div class="text-center py-8">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-graduation-cap text-gray-400 text-2xl"></i>
+                </div>
+                <p class="text-gray-500">Fresher - No work experience</p>
+                <p class="text-xs text-gray-400 mt-1">You have selected "Fresher" as your experience type</p>
+            </div>
+        @endif
+    </div>
+</div>
             <!-- Availability Section -->
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
