@@ -23,6 +23,72 @@ class AuthController extends Controller
     }
 
     // ============================================================
+    // STEP 0 — Check Mobile Status (pre-OTP validation)
+    // ============================================================
+
+    /**
+     * POST /api/auth/check-mobile
+     *
+     * Pre-OTP check: validates mobile + intended role.
+     * Mirrors the frontend website's checkMobileStatus() logic.
+     *
+     * Returns whether the user can proceed to OTP,
+     * if there's a role mismatch, or if profile is complete.
+     */
+    public function checkMobileStatus(Request $request)
+    {
+        $request->validate([
+            'mobile' => 'required|string|size:10|regex:/^[6-9][0-9]{9}$/',
+            'role'   => 'required|in:employee,employer',
+        ]);
+
+        $mobile = $request->mobile;
+        $role   = $request->role;
+
+        $existingUser = User::where('mobile', $mobile)->first();
+
+        // Case 1: New number — can proceed
+        if (!$existingUser) {
+            return response()->json([
+                'success'     => true,
+                'exists'      => false,
+                'can_proceed' => true,
+                'message'     => 'New number! Please verify with OTP to continue.',
+                'action'      => 'send_otp',
+            ]);
+        }
+
+        // Case 2: Role mismatch — block access
+        if ($existingUser->role !== $role) {
+            $correctType = ($existingUser->role === 'employee') ? 'Job Seeker' : 'Employer';
+            return response()->json([
+                'success'        => false,
+                'exists'         => true,
+                'role_mismatch'  => true,
+                'can_proceed'    => false,
+                'message'        => "This number is already registered as a {$correctType}.",
+                'action'         => 'role_mismatch',
+                'correct_type'   => $existingUser->role,
+            ]);
+        }
+
+        // Case 3: Same role — check profile completion
+        $isProfileComplete = $this->isProfileComplete($existingUser);
+
+        return response()->json([
+            'success'          => true,
+            'exists'           => true,
+            'can_proceed'      => true,
+            'needs_otp'        => true,
+            'profile_complete' => $isProfileComplete,
+            'message'          => $isProfileComplete
+                ? 'Profile complete! Please verify OTP to login.'
+                : 'Please verify OTP to complete your profile.',
+            'action'           => 'send_otp',
+        ]);
+    }
+
+    // ============================================================
     // STEP 1 — Send OTP (10-digit mobile, mandatory for all users)
     // ============================================================
 
@@ -31,6 +97,7 @@ class AuthController extends Controller
      *
      * First step for ALL users (Employee & Employer).
      * Accepts a 10-digit Indian mobile number.
+     * Optional 'role' parameter validates role match before sending OTP.
      * Purpose: 'login' | 'register' | 'verify' | 'forgot_password' | 'resend'
      */
     public function sendOtp(Request $request)
@@ -38,7 +105,22 @@ class AuthController extends Controller
         $request->validate([
             'mobile'  => 'required|string|size:10|regex:/^[6-9][0-9]{9}$/',
             'purpose' => 'nullable|in:login,register,verify,forgot_password,resend',
+            'role'    => 'nullable|in:employee,employer',
         ]);
+
+        // If role is provided, validate role match
+        if ($request->role) {
+            $existingUser = User::where('mobile', $request->mobile)->first();
+            if ($existingUser && $existingUser->role !== $request->role) {
+                $correctType = ($existingUser->role === 'employee') ? 'Job Seeker' : 'Employer';
+                return response()->json([
+                    'success'      => false,
+                    'message'      => "This number is already registered as a {$correctType}. Please login as {$correctType}.",
+                    'role_mismatch' => true,
+                    'correct_type' => $existingUser->role,
+                ], 409);
+            }
+        }
 
         return $this->dispatchOtp($request->mobile, $request->purpose ?? 'verify');
     }
@@ -135,12 +217,14 @@ class AuthController extends Controller
                 $employee    = $user->employee ?? $user->employeeProfile;
                 $profileData = $employee;
                 $profileStep = $employee?->profile_step ?? 0;
-                $nextScreen  = ($employee?->profile_completed)
+                $isComplete  = $this->isProfileComplete($user);
+                $nextScreen  = $isComplete
                     ? 'employee_dashboard'
                     : 'profile_setup_step_' . $profileStep;
             } elseif ($user->isEmployer()) {
                 $profileData = $user->employerProfile;
-                $nextScreen  = 'employer_dashboard';
+                $isComplete  = $this->isProfileComplete($user);
+                $nextScreen  = $isComplete ? 'employer_dashboard' : 'employer_complete_profile';
             } elseif ($user->isAdmin()) {
                 $nextScreen = 'admin_dashboard';
             }
@@ -426,12 +510,14 @@ class AuthController extends Controller
             $employee    = $user->employee ?? $user->employeeProfile;
             $profileData = $employee;
             $profileStep = $employee?->profile_step ?? 0;
-            $nextScreen  = ($employee?->profile_completed)
+            $isComplete  = $this->isProfileComplete($user);
+            $nextScreen  = $isComplete
                 ? 'employee_dashboard'
                 : 'profile_setup_step_' . $profileStep;
         } elseif ($user->isEmployer()) {
             $profileData = $user->employerProfile;
-            $nextScreen  = 'employer_dashboard';
+            $isComplete  = $this->isProfileComplete($user);
+            $nextScreen  = $isComplete ? 'employer_dashboard' : 'employer_complete_profile';
         } elseif ($user->isAdmin()) {
             $nextScreen = 'admin_dashboard';
         }
@@ -507,12 +593,14 @@ class AuthController extends Controller
             $employee    = $user->employee ?? $user->employeeProfile;
             $profileData = $employee;
             $profileStep = $employee?->profile_step ?? 0;
-            $nextScreen  = ($employee?->profile_completed)
+            $isComplete  = $this->isProfileComplete($user);
+            $nextScreen  = $isComplete
                 ? 'employee_dashboard'
                 : 'profile_setup_step_' . $profileStep;
         } elseif ($user->isEmployer()) {
             $profileData = $user->employerProfile;
-            $nextScreen  = 'employer_dashboard';
+            $isComplete  = $this->isProfileComplete($user);
+            $nextScreen  = $isComplete ? 'employer_dashboard' : 'employer_complete_profile';
             if ($profileData) {
                 $profileData->subscription = $user->activeSubscription() ? [
                     'is_active'    => true,
@@ -744,6 +832,41 @@ class AuthController extends Controller
     }
 
     /**
+     * Check if the user's profile is complete.
+     * Aligned with the frontend website's logic:
+     *   - Employee: checks if employees.full_name is non-empty
+     *   - Employer: checks if employer_profiles.company_name is non-empty
+     * Falls back to the profile_completed / profile_setup_complete flags.
+     */
+    private function isProfileComplete(User $user): bool
+    {
+        if ($user->isEmployee()) {
+            $employee = $user->employee;
+            if (!$employee) {
+                return false;
+            }
+            // Primary check: full_name in employees table (matches frontend)
+            if (!empty($employee->full_name)) {
+                return true;
+            }
+            // Fallback: profile_completed flag
+            return (bool) ($employee->profile_completed ?? false);
+        }
+
+        if ($user->isEmployer()) {
+            $profile = $user->employerProfile;
+            if (!$profile) {
+                return false;
+            }
+            // Primary check: company_name in employer_profiles table (matches frontend)
+            return !empty($profile->company_name);
+        }
+
+        // Admin or other roles are always considered complete
+        return true;
+    }
+
+    /**
      * Format user for API response
      */
     private function formatUser(User $user): array
@@ -755,7 +878,7 @@ class AuthController extends Controller
             'email'                  => $user->email,
             'role'                   => $user->role,
             'is_verified'            => $user->is_verified,
-            'profile_setup_complete' => $user->profile_setup_complete ?? false,
+            'profile_setup_complete' => $this->isProfileComplete($user),
         ];
     }
 }

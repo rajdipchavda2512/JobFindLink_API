@@ -910,7 +910,7 @@
                         "description": "Required: skills (array, min 1)\nOptional: languages (array of language names)",
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"skills\": [\n        \"PHP\",\n        \"Laravel\",\n        \"MySQL\",\n        \"JavaScript\"\n    ],\n    \"languages\": [\n        \"Gujarati\",\n        \"Hindi\",\n        \"English\"\n    ]\n}",
+                            "raw": "{\n    \"skills\": [\n        \"PHP\",\n        \"Laravel\",\n        \"MySQL\",\n        \"JavaScript\"\n    ],\n    \"languages\": \"[1, 2, 3]\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -953,7 +953,7 @@
                         "description": "education_level: below_10th | 10th | 12th | diploma | graduate | post_graduate | phd\ncollege_name + degree_name required for: diploma, graduate, post_graduate, phd\nspecialisation is optional",
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"education_level\": \"graduate\",\n    \"college_name\": \"Gujarat University\",\n    \"degree_name\": \"B.E. Computer Engineering\",\n    \"specialisation\": \"Computer Science\"\n}",
+                            "raw": "{\n    \"education_level\": \"Bachelor's Degree\",\n    \"educations\": \"[{\\\"level\\\":\\\"Bachelor's Degree\\\",\\\"college\\\":\\\"Gujarat University\\\",\\\"degree_name\\\":\\\"B.E. Computer Engineering\\\",\\\"specialization\\\":\\\"Computer Science\\\"}]\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -995,7 +995,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"education_level\": \"12th\"\n}",
+                            "raw": "{\n    \"education_level\": \"12th\",\n    \"educations\": \"[{\\\"level\\\":\\\"12th\\\",\\\"college\\\":\\\"\\\",\\\"degree_name\\\":\\\"\\\",\\\"specialization\\\":\\\"\\\"}]\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1081,7 +1081,7 @@
                         "description": "employment_type: full-time | part-time | shift | contract\nSet currently_working:true and end_date:null for current job.\nnotice_period: Immediate | 15 days | 30 days | 60 days | 90 days",
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"company_name\": \"ABC Tech Pvt Ltd\",\n    \"industry_sector\": \"Information Technology\",\n    \"employment_type\": \"full-time\",\n    \"start_date\": \"2022-06-01\",\n    \"end_date\": null,\n    \"currently_working\": true,\n    \"notice_period\": \"30 days\"\n}",
+                            "raw": "{\n    \"experiences\": \"[{\\\"company_name\\\":\\\"ABC Tech Pvt Ltd\\\",\\\"industry_sector\\\":\\\"Information Technology\\\",\\\"employment_type\\\":\\\"full-time\\\",\\\"start_date\\\":\\\"2022-06-01\\\",\\\"end_date\\\":null,\\\"currently_working\\\":true,\\\"notice_period\\\":\\\"30 days\\\"}]\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1123,7 +1123,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"company_name\": \"XYZ Solutions\",\n    \"industry_sector\": \"Manufacturing\",\n    \"employment_type\": \"full-time\",\n    \"start_date\": \"2020-01-01\",\n    \"end_date\": \"2022-05-31\",\n    \"currently_working\": false,\n    \"notice_period\": \"Immediate\"\n}",
+                            "raw": "{\n    \"experiences\": \"[{\\\"company_name\\\":\\\"XYZ Solutions\\\",\\\"industry_sector\\\":\\\"Manufacturing\\\",\\\"employment_type\\\":\\\"full-time\\\",\\\"start_date\\\":\\\"2020-01-01\\\",\\\"end_date\\\":\\\"2022-05-31\\\",\\\"currently_working\\\":false,\\\"notice_period\\\":\\\"Immediate\\\"}]\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"

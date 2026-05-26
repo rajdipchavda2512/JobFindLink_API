@@ -110,6 +110,7 @@ class EmployeeProfileController extends Controller
             'mobile_number'=> 'nullable|string|size:10',
             'email'        => 'nullable|email|max:150',
             'gender'       => 'required|in:male,female,other',
+            'age'          => 'required|integer|min:18|max:100',
             'profile_photo'=> 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -121,6 +122,7 @@ class EmployeeProfileController extends Controller
             'mobile_number' => $request->mobile_number ?? $user->mobile,
             'email'         => $request->email,
             'gender'        => $request->gender,
+            'age'           => $request->age,
             'profile_step'  => max($employee->profile_step ?? 0, 1),
         ];
 
@@ -161,7 +163,8 @@ class EmployeeProfileController extends Controller
     public function step2JobPreference(Request $request)
     {
         $request->validate([
-            'seeking_position' => 'required|string|max:150',
+            'job_title_id'     => 'required|integer',
+            'seeking_position' => 'nullable|string|max:150', // kept for fallback
             'experience_type'  => 'required|in:fresher,experienced',
             'exp_years'        => 'required_if:experience_type,experienced|integer|min:0|max:40',
             'exp_months'       => 'required_if:experience_type,experienced|integer|min:0|max:11',
@@ -171,6 +174,7 @@ class EmployeeProfileController extends Controller
         $employee = $this->getOrCreateEmployee($user->id);
 
         $data = [
+            'job_title_id'     => $request->job_title_id,
             'seeking_position' => $request->seeking_position,
             'experience_type'  => $request->experience_type,
             'profile_step'     => max($employee->profile_step ?? 0, 2),
@@ -211,6 +215,7 @@ class EmployeeProfileController extends Controller
         $request->validate([
             'preferred_locations'   => 'required|array|min:1',
             'preferred_locations.*' => 'string|max:100',
+            'employment_type'       => 'required|string|max:50',
             'current_salary'        => 'nullable|numeric|min:0',
             'expected_salary'       => 'nullable|numeric|min:0',
         ]);
@@ -220,6 +225,7 @@ class EmployeeProfileController extends Controller
 
         $employee->update([
             'preferred_locations' => $request->preferred_locations,
+            'employment_type'     => $request->employment_type,
             'current_salary'      => $request->current_salary,
             'expected_salary'     => $request->expected_salary,
             'profile_step'        => max($employee->profile_step ?? 0, 3),
@@ -242,25 +248,32 @@ class EmployeeProfileController extends Controller
      * POST /api/employee/profile/step/4
      *
      * Fields:
-     *   - skills (array of strings)
-     *   - languages (array of strings — e.g., ['Hindi', 'English', 'Gujarati'])
+     *   - skills[] (array of strings)
+     *   - languages (JSON string of language IDs — e.g., "[1, 2]")
      */
     public function step4SkillsLanguages(Request $request)
     {
         $request->validate([
             'skills'      => 'required|array|min:1',
             'skills.*'    => 'string|max:100',
-            'languages'   => 'nullable|array',
-            'languages.*' => 'string|max:100',
+            'languages'   => 'nullable|string',
         ]);
 
         $user     = $request->user();
         $employee = $this->getOrCreateEmployee($user->id);
 
+        $languagesData = [];
+        if ($request->languages) {
+            $decodedLanguages = json_decode($request->languages, true);
+            if (is_array($decodedLanguages)) {
+                $languagesData = $decodedLanguages;
+            }
+        }
+
         $employee->update([
             'skills_json'  => $request->skills,
             'skills'       => implode(', ', $request->skills),
-            'languages'    => $request->languages ?? [],
+            'languages'    => $languagesData,
             'profile_step' => max($employee->profile_step ?? 0, 4),
         ]);
 
@@ -281,10 +294,8 @@ class EmployeeProfileController extends Controller
      * POST /api/employee/profile/step/5
      *
      * Fields:
-     *   - education_level: 'below_10th' | '10th' | '12th' | 'diploma' | 'graduate' | 'post_graduate' | 'phd'
-     *   - college_name (required if above 12th)
-     *   - degree_name (required if above 12th)
-     *   - specialisation (optional)
+     *   - education_level (string, e.g., "Bachelor's Degree")
+     *   - educations (JSON string of education objects)
      * Can be skipped (skip=true).
      */
     public function step5Education(Request $request)
@@ -303,36 +314,36 @@ class EmployeeProfileController extends Controller
             ]);
         }
 
-        $highLevels = ['diploma', 'graduate', 'post_graduate', 'phd'];
-
         $request->validate([
-            'education_level' => 'required|in:below_10th,10th,12th,diploma,graduate,post_graduate,phd',
-            'college_name'    => 'required_if_in:education_level,' . implode(',', $highLevels) . '|nullable|string|max:200',
-            'degree_name'     => 'required_if_in:education_level,' . implode(',', $highLevels) . '|nullable|string|max:150',
-            'specialisation'  => 'nullable|string|max:150',
+            'education_level' => 'required|string',
+            'educations'      => 'required|string',
         ]);
 
         $user     = $request->user();
         $employee = $this->getOrCreateEmployee($user->id);
 
+        $educationsData = json_decode($request->educations, true);
+
+        // Derive highest qualification details for easy querying
+        $collegeName = null;
+        $degreeId = null;
+        $specialisation = null;
+
+        if (is_array($educationsData) && count($educationsData) > 0) {
+            $lastEdu = end($educationsData);
+            $collegeName = $lastEdu['college'] ?? null;
+            $degreeId = $lastEdu['degree_id'] ?? null;
+            $specialisation = $lastEdu['specialization'] ?? null;
+        }
+
         $employee->update([
             'education_level' => $request->education_level,
-            'college_name'    => $request->college_name,
-            'specialisation'  => $request->specialisation,
+            'college_name'    => $collegeName,
+            'degree_id'       => $degreeId,
+            'specialisation'  => $specialisation,
+            'educations_json' => is_array($educationsData) ? $educationsData : [],
             'profile_step'    => max($employee->profile_step ?? 0, 5),
         ]);
-
-        // Store degree name in educations_json if no degree_id lookup
-        if ($request->degree_name) {
-            $existing = $employee->educations_json ?? [];
-            $existing[] = [
-                'level'          => $request->education_level,
-                'college'        => $request->college_name,
-                'degree'         => $request->degree_name,
-                'specialisation' => $request->specialisation,
-            ];
-            $employee->update(['educations_json' => $existing]);
-        }
 
         return response()->json([
             'success'      => true,
@@ -351,13 +362,7 @@ class EmployeeProfileController extends Controller
      * POST /api/employee/profile/step/6
      *
      * Fields:
-     *   - company_name
-     *   - industry_sector
-     *   - employment_type: full-time | part-time | shift | contract
-     *   - start_date (YYYY-MM-DD)
-     *   - end_date (YYYY-MM-DD) — null if currently_working
-     *   - currently_working (boolean)
-     *   - notice_period (e.g., 'immediate', '15 days', '30 days', '60 days', '90 days')
+     *   - experiences (JSON string of experience objects)
      * Can be skipped (skip=true).
      */
     public function step6WorkExperience(Request $request)
@@ -377,40 +382,40 @@ class EmployeeProfileController extends Controller
         }
 
         $request->validate([
-            'company_name'      => 'required|string|max:200',
-            'industry_sector'   => 'required|string|max:150',
-            'employment_type'   => 'required|in:full-time,part-time,shift,contract',
-            'start_date'        => 'required|date',
-            'end_date'          => 'nullable|date|after:start_date',
-            'currently_working' => 'boolean',
-            'notice_period'     => 'nullable|string|max:50',
+            'experiences' => 'required|string',
         ]);
 
         $user     = $request->user();
         $employee = $this->getOrCreateEmployee($user->id);
 
-        $experience = [
-            'company_name'    => $request->company_name,
-            'industry_sector' => $request->industry_sector,
-            'employment_type' => $request->employment_type,
-            'start_date'      => $request->start_date,
-            'end_date'        => $request->boolean('currently_working') ? null : $request->end_date,
-            'currently_working' => $request->boolean('currently_working'),
-            'notice_period'   => $request->notice_period,
-        ];
+        $experiencesData = json_decode($request->experiences, true);
 
-        // Store as JSON array (can have multiple experiences)
-        $existing = $employee->experiences_json ?? [];
-        $existing[] = $experience;
+        // Extract primary experience info for top-level columns if needed
+        $companyName = null;
+        $employmentType = null;
+        $startDate = null;
+        $endDate = null;
+        $currentlyWorking = false;
+        $noticePeriod = null;
+
+        if (is_array($experiencesData) && count($experiencesData) > 0) {
+            $firstExp = $experiencesData[0];
+            $companyName = $firstExp['company_name'] ?? null;
+            $employmentType = $firstExp['employment_type'] ?? null;
+            $startDate = $firstExp['start_date'] ?? null;
+            $endDate = $firstExp['end_date'] ?? null;
+            $currentlyWorking = !empty($firstExp['currently_working']);
+            $noticePeriod = $firstExp['notice_period'] ?? null;
+        }
 
         $employee->update([
-            'company_name'      => $request->company_name,
-            'employment_type'   => $request->employment_type,
-            'work_start_date'   => $request->start_date,
-            'work_end_date'     => $request->boolean('currently_working') ? null : $request->end_date,
-            'currently_working' => $request->boolean('currently_working'),
-            'notice_period'     => $request->notice_period,
-            'experiences_json'  => $existing,
+            'company_name'      => $companyName,
+            'employment_type'   => $employmentType,
+            'work_start_date'   => $startDate,
+            'work_end_date'     => $currentlyWorking ? null : $endDate,
+            'currently_working' => $currentlyWorking,
+            'notice_period'     => $noticePeriod,
+            'experiences_json'  => is_array($experiencesData) ? $experiencesData : [],
             'profile_step'      => max($employee->profile_step ?? 0, 6),
         ]);
 

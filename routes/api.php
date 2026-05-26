@@ -29,6 +29,9 @@ Route::get('/ping', fn () => response()->json(['success' => true, 'message' => '
 // ============================================================
 Route::prefix('auth')->group(function () {
 
+    // --- Step 0: Check mobile status (pre-OTP validation) ---
+    Route::post('/check-mobile', [AuthController::class, 'checkMobileStatus']);
+
     // --- Step 1: Send OTP (all users, 10-digit mobile) ---
     Route::post('/send-otp',   [AuthController::class, 'sendOtp']);
     Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
@@ -45,6 +48,8 @@ Route::prefix('auth')->group(function () {
     // --- Login Shortcuts ---
     // Universal mobile OTP login (Employee OR Employer)
     Route::post('/login/otp',      [AuthController::class, 'loginWithOtp']);
+    // Convenience alias: /api/auth/login (used by HTML prototype)
+    Route::post('/login',          [AuthController::class, 'loginWithOtp']);
     // Employer can also login with Email + Password
     Route::post('/employer/login', [AuthController::class, 'employerLogin']);
 

@@ -1377,18 +1377,64 @@ const API_BASE = 'http://localhost:8000/api';
 window.currentUser = null;
 window.currentProfile = null;
 
+// Step 0: Check mobile status before sending OTP
+async function apiCheckMobile(role) {
+  const isEmp = role === 'e';
+  const mobile = document.getElementById(isEmp ? 'emp-mobile' : 'empr-mobile').value;
+  if(!mobile || mobile.length !== 10) return;
+
+  const apiRole = isEmp ? 'employee' : 'employer';
+
+  try {
+    let res = await fetch(API_BASE + '/auth/check-mobile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ mobile: mobile, role: apiRole })
+    });
+    let data = await res.json();
+
+    if(data.role_mismatch) {
+      alert('⚠️ ' + data.message + ' Please switch to ' + data.correct_type + ' login.');
+      return false;
+    }
+
+    if(!data.exists) {
+      console.log('New user — will register after OTP');
+    } else {
+      console.log('Existing user — profile_complete: ' + data.profile_complete);
+    }
+    return true;
+  } catch(e) {
+    console.warn('Check mobile failed: ' + e);
+    return true; // Allow to proceed even if check fails
+  }
+}
+
+// Step 1: Send OTP (with role validation)
 async function apiSendOtp(role) {
   const isEmp = role === 'e';
   const mobile = document.getElementById(isEmp ? 'emp-mobile' : 'empr-mobile').value;
   if(!mobile) return alert('Please enter mobile number');
 
+  // Pre-check mobile status
+  const canProceed = await apiCheckMobile(role);
+  if(canProceed === false) return;
+
+  const apiRole = isEmp ? 'employee' : 'employer';
+
   try {
     let res = await fetch(API_BASE + '/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ mobile: mobile })
+      body: JSON.stringify({ mobile: mobile, role: apiRole })
     });
     let data = await res.json();
+
+    if(data.role_mismatch) {
+      alert('⚠️ ' + data.message);
+      return;
+    }
+
     if(data.success) {
       alert('OTP Sent! ' + (data.otp_code ? ('(Dev OTP: ' + data.otp_code + ')') : 'Check SMS'));
       // In dev we auto-fill the OTP because it's returned
@@ -1404,6 +1450,7 @@ async function apiSendOtp(role) {
   }
 }
 
+// Step 2: Verify OTP & Login
 async function apiLogin(role) {
   const isEmp = role === 'e';
   const mobile = document.getElementById(isEmp ? 'emp-mobile' : 'empr-mobile').value;
@@ -1412,17 +1459,62 @@ async function apiLogin(role) {
   if(!mobile || !otp) return alert('Please enter mobile and OTP');
 
   try {
+    // First try /auth/login (for existing users)
     let res = await fetch(API_BASE + '/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ mobile: mobile, otp_code: otp })
     });
     let data = await res.json();
-    if(data.success && data.data.access_token) {
+
+    // If user not found, try verify-otp flow (handles new user registration)
+    if(!data.success && res.status === 404) {
+      res = await fetch(API_BASE + '/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ mobile: mobile, otp_code: otp })
+      });
+      data = await res.json();
+
+      if(data.success && data.is_new_user) {
+        // New user — need to register
+        const apiRole = isEmp ? 'employee' : 'employer';
+        alert('Welcome! Your mobile is verified. Creating your account...');
+
+        const regEndpoint = isEmp ? '/auth/employee/register' : '/auth/employer/register';
+        const regBody = isEmp
+          ? { mobile: mobile, temp_token: data.temp_token }
+          : { mobile: mobile, temp_token: data.temp_token, company_name: 'My Company', email: mobile + '@temp.com', password: 'password123', password_confirmation: 'password123', location: 'India', company_size: '1-10' };
+
+        const regRes = await fetch(API_BASE + regEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(regBody)
+        });
+        data = await regRes.json();
+      }
+    }
+
+    if(data.success && data.data && data.data.access_token) {
       localStorage.setItem('jobfindlink_token', data.data.access_token);
       window.currentUser = data.data.user;
       window.currentProfile = data.data.profile;
-      alert('Login successful! Welcome ' + window.currentUser.full_name);
+
+      const userName = window.currentUser.full_name || 'User';
+      alert('Login successful! Welcome ' + userName);
+
+      // Navigate based on next_screen from API
+      if(data.data.next_screen) {
+        const ns = data.data.next_screen;
+        if(ns.includes('employer')) {
+          curType = 'em';
+          curScreen = 'dashboard';
+        } else {
+          curType = 'e';
+          curScreen = 'dashboard';
+        }
+        buildNav();
+      }
       goTo('dashboard');
     } else {
       alert('Login failed: ' + (data.message || 'Invalid OTP'));
@@ -1457,6 +1549,9 @@ async function apiLoadProfile() {
          curScreen = 'dashboard';
       }
       buildNav();
+    } else {
+      // Token expired or invalid — clear it
+      localStorage.removeItem('jobfindlink_token');
     }
   } catch(e) {
     console.warn('Silent auth check fail: ' + e);
