@@ -1,4 +1,3 @@
-{{-- resources/views/employer/jobs/create.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>

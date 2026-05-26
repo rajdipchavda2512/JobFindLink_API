@@ -179,7 +179,8 @@ Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(functi
     Route::get('/saveStep1', [EmployeeAuthController::class, 'saveStep1'])->name('saveStep1');
 Route::get('/employee/download-resume/{filename}', [EmployeeAuthController::class, 'downloadResume'])->name('download.resume');
 Route::post('/employee/delete-resume/{filename}', [EmployeeAuthController::class, 'deleteResume'])->name('delete.resume');
-
+  Route::get('/skills/search', [EmployeeAuthController::class, 'searchSkills'])->name('skills.search');
+    Route::get('/skills/all', [EmployeeAuthController::class, 'getAllSkills'])->name('skills.all');
 }); 
     
 

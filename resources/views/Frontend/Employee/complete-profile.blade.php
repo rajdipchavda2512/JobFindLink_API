@@ -438,114 +438,118 @@
                     </div>
                 </div>
 
-                <!-- STEP 4: SKILLS & LANGUAGES -->
-                <div class="step" data-step="4" style="display: none;">
-                    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
-                        <h2 class="text-2xl font-bold text-white">{{ isset($isEditing) && $isEditing ? 'Edit Skills & Languages' : 'Skills & Languages' }}</h2>
-                        <p class="text-yellow-100 mt-1">{{ isset($isEditing) && $isEditing ? 'Update your skills and language proficiency' : 'Tell us what you\'re good at' }}</p>
-                    </div>
-                    <div class="p-8">
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Skills (Max 5)</label>
-                                <div id="skills_container" class="space-y-2 mb-3"></div>
-                                <p class="text-red-500 text-xs mt-1 hidden" id="skills_error"></p>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Languages</label>
-                                <div id="languageButtonsContainer" class="flex flex-wrap gap-2 mb-3"></div>
-                                <div id="selectedLanguagesContainer" class="flex flex-wrap gap-2 mt-3"></div>
-                                <input type="hidden" name="languages" id="languagesInput">
-                                <p class="text-red-500 text-xs mt-1 hidden" id="languages_error"></p>
-                            </div>
-                            
-                            <div class="flex justify-between pt-4">
-                                @if(!isset($isEditing) || !$isEditing)
-                                <button type="button" class="prev-step px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
-                                @endif
-                                <button type="button" class="save-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
-                                    {{ isset($isEditing) && $isEditing ? 'Update Changes' : 'Save & Continue' }}
-                                </button>
-                                @if(isset($isEditing) && $isEditing)
-                                <button type="button" class="cancel-edit px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
+             
+<!-- STEP 4: SKILLS & LANGUAGES -->
+<div class="step" data-step="4" style="display: none;">
+    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
+        <h2 class="text-2xl font-bold text-white">{{ isset($isEditing) && $isEditing ? 'Edit Skills & Languages' : 'Skills & Languages' }}</h2>
+        <p class="text-yellow-100 mt-1">{{ isset($isEditing) && $isEditing ? 'Update your skills and language proficiency' : 'Tell us what you\'re good at' }}</p>
+    </div>
+    <div class="p-8">
+        <div class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Skills (Max 5)</label>
+                <div id="skills_container" class="space-y-2 mb-3"></div>
+                <p class="text-xs text-gray-500 mt-1">Start typing to see skill suggestions from our database</p>
+                <p class="text-red-500 text-xs mt-1 hidden" id="skills_error"></p>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Languages</label>
+                <div id="languageButtonsContainer" class="flex flex-wrap gap-2 mb-3"></div>
+                <div id="selectedLanguagesContainer" class="flex flex-wrap gap-2 mt-3"></div>
+                <input type="hidden" name="languages" id="languagesInput">
+                <p class="text-red-500 text-xs mt-1 hidden" id="languages_error"></p>
+            </div>
+            
+            <div class="flex justify-between pt-4">
+                @if(!isset($isEditing) || !$isEditing)
+                <button type="button" class="prev-step px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
+                @endif
+                <button type="button" class="save-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
+                    {{ isset($isEditing) && $isEditing ? 'Update Changes' : 'Save & Continue' }}
+                </button>
+                @if(isset($isEditing) && $isEditing)
+                <button type="button" class="cancel-edit px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 
-                <!-- STEP 5: EDUCATION -->
-                <div class="step" data-step="5" style="display: none;">
-                    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
-                        <h2 class="text-2xl font-bold text-white">{{ isset($isEditing) && $isEditing ? 'Edit Education' : 'Education' }}</h2>
-                        <p class="text-yellow-100 mt-1">{{ isset($isEditing) && $isEditing ? 'Update your educational background' : 'Your educational background' }}</p>
-                    </div>
-                    <div class="p-8">
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Education Level <span class="text-red-500">*</span></label>
-                                <select name="education_level" id="education_level" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl">
-                                    <option value="">Select Education Level</option>
-                                    <option value="Below 10th" {{ old('education_level', $employee->education_level ?? '') == 'Below 10th' ? 'selected' : '' }}>Below 10th</option>
-                                    <option value="10th" {{ old('education_level', $employee->education_level ?? '') == '10th' ? 'selected' : '' }}>10th Pass</option>
-                                    <option value="12th" {{ old('education_level', $employee->education_level ?? '') == '12th' ? 'selected' : '' }}>12th Pass</option>
-                                    <option value="Diploma" {{ old('education_level', $employee->education_level ?? '') == 'Diploma' ? 'selected' : '' }}>Diploma</option>
-                                    <option value="Graduate" {{ old('education_level', $employee->education_level ?? '') == 'Graduate' ? 'selected' : '' }}>Graduate</option>
-                                    <option value="Post Graduate" {{ old('education_level', $employee->education_level ?? '') == 'Post Graduate' ? 'selected' : '' }}>Post Graduate</option>
-                                    <option value="PhD" {{ old('education_level', $employee->education_level ?? '') == 'PhD' ? 'selected' : '' }}>PhD</option>
-                                </select>
-                                <p class="text-red-500 text-xs mt-1 hidden" id="education_level_error"></p>
-                            </div>
-                            
-                            <div id="education_fields_container"></div>
-                            
-                            <div class="flex justify-between pt-4">
-                                @if(!isset($isEditing) || !$isEditing)
-                                <button type="button" class="prev-step px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
-                                @endif
-                                <button type="button" class="save-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
-                                    {{ isset($isEditing) && $isEditing ? 'Update Changes' : 'Save & Continue' }}
-                                </button>
-                                @if(isset($isEditing) && $isEditing)
-                                <button type="button" class="cancel-edit px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STEP 6: WORK EXPERIENCE -->
-                <div class="step" data-step="6" style="display: none;">
-                    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
-                        <h2 class="text-2xl font-bold text-white">{{ isset($isEditing) && $isEditing ? 'Edit Work Experience' : 'Work Experience' }}</h2>
-                        <p class="text-yellow-100 mt-1">{{ isset($isEditing) && $isEditing ? 'Update your professional experience' : 'Your professional journey (Optional)' }}</p>
-                    </div>
-                    <div class="p-8">
-                        <div class="space-y-6">
-                            <div id="experiences_container"></div>
-                            
-                            <button type="button" id="addMoreExperienceBtn" class="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Add More Experience
-                            </button>
-                            
-                            <div class="flex justify-between pt-4">
-                                @if(!isset($isEditing) || !$isEditing)
-                                <button type="button" class="prev-step px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
-                                @endif
-                                <button type="button" class="save-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
-                                    {{ isset($isEditing) && $isEditing ? 'Update Changes' : 'Save & Continue' }}
-                                </button>
-                                @if(isset($isEditing) && $isEditing)
-                                <button type="button" class="cancel-edit px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               <!-- STEP 5: EDUCATION -->
+<div class="step" data-step="5" style="display: none;">
+    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
+        <h2 class="text-2xl font-bold text-white">{{ isset($isEditing) && $isEditing ? 'Edit Education' : 'Education' }}</h2>
+        <p class="text-yellow-100 mt-1">{{ isset($isEditing) && $isEditing ? 'Update your educational background' : 'Your educational background' }}</p>
+    </div>
+    <div class="p-8">
+        <div class="space-y-6">
+            <!-- Education Level Selection -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Education Level <span class="text-red-500">*</span></label>
+                <select name="education_level" id="education_level" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
+                    <option value="">Select Education Level</option>
+                    <option value="Below 10th" {{ old('education_level', $employee->education_level ?? '') == 'Below 10th' ? 'selected' : '' }}>Below 10th</option>
+                    <option value="10th" {{ old('education_level', $employee->education_level ?? '') == '10th' ? 'selected' : '' }}>10th Pass</option>
+                    <option value="12th" {{ old('education_level', $employee->education_level ?? '') == '12th' ? 'selected' : '' }}>12th Pass</option>
+                    <option value="ITI" {{ old('education_level', $employee->education_level ?? '') == 'ITI' ? 'selected' : '' }}>ITI (Industrial Training Institute)</option>
+                    <option value="Diploma" {{ old('education_level', $employee->education_level ?? '') == 'Diploma' ? 'selected' : '' }}>Diploma</option>
+                    <option value="Bachelor's Degree" {{ old('education_level', $employee->education_level ?? '') == "Bachelor's Degree" ? 'selected' : '' }}>Bachelor's Degree</option>
+                    <option value="Master's Degree" {{ old('education_level', $employee->education_level ?? '') == "Master's Degree" ? 'selected' : '' }}>Master's Degree</option>
+                    <option value="PhD/Doctorate" {{ old('education_level', $employee->education_level ?? '') == 'PhD/Doctorate' ? 'selected' : '' }}>PhD / Doctorate</option>
+                </select>
+                <p class="text-red-500 text-xs mt-1 hidden" id="education_level_error"></p>
+            </div>
+            
+            <!-- Dynamic Education Fields Container -->
+            <div id="education_fields_container"></div>
+            
+            <div class="flex justify-between pt-4">
+                @if(!isset($isEditing) || !$isEditing)
+                <button type="button" class="prev-step px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
+                @endif
+                <button type="button" class="save-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
+                    {{ isset($isEditing) && $isEditing ? 'Update Changes' : 'Save & Continue' }}
+                </button>
+                @if(isset($isEditing) && $isEditing)
+                <button type="button" class="cancel-edit px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+<!-- STEP 6: WORK EXPERIENCE -->
+<div class="step" data-step="6" style="display: none;">
+    <div class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-6">
+        <h2 class="text-2xl font-bold text-white">{{ isset($isEditing) && $isEditing ? 'Edit Work Experience' : 'Work Experience' }}</h2>
+        <p class="text-yellow-100 mt-1">{{ isset($isEditing) && $isEditing ? 'Update your professional experience' : 'Your professional journey' }}</p>
+    </div>
+    <div class="p-8">
+        <div class="space-y-6">
+            <div id="experiences_container"></div>
+            
+            <button type="button" id="addMoreExperienceBtn" class="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add More Experience
+            </button>
+            
+            <div class="flex justify-between pt-4">
+                @if(!isset($isEditing) || !$isEditing)
+                <button type="button" class="prev-step px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
+                @endif
+                <button type="button" class="save-step px-6 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:shadow-lg">
+                    {{ isset($isEditing) && $isEditing ? 'Update Changes' : 'Save & Continue' }}
+                </button>
+                @if(isset($isEditing) && $isEditing)
+                <button type="button" class="cancel-edit px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- STEP 7: AVAILABILITY & SUBMIT -->
                 <div class="step" data-step="7" style="display: none;">
@@ -627,10 +631,14 @@
 
     function showAlert(message, type = 'error') {
         let alertDiv = $('#alertMessage');
-        alertDiv.removeClass('hidden bg-green-100 text-green-700 bg-red-100 text-red-700');
+        alertDiv.removeClass('hidden bg-green-100 text-green-700 bg-red-100 text-red-700 bg-yellow-100 text-yellow-700 bg-blue-100 text-blue-700');
         
         if (type === 'success') {
             alertDiv.addClass('bg-green-100 text-green-700');
+        } else if (type === 'warning') {
+            alertDiv.addClass('bg-yellow-100 text-yellow-700');
+        } else if (type === 'info') {
+            alertDiv.addClass('bg-blue-100 text-blue-700');
         } else {
             alertDiv.addClass('bg-red-100 text-red-700');
         }
@@ -639,7 +647,10 @@
             '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">' +
             (type === 'success' ? 
                 '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>' :
-                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>'
+                (type === 'warning' ?
+                    '<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>' :
+                    '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>'
+                )
             ) +
             '</svg>' + message + '</div>');
         alertDiv.removeClass('hidden');
@@ -677,12 +688,17 @@
         }
         
         if (step === 6) {
-            if ($('.experience-entry').length === 0 && existingExperiences && existingExperiences.length > 0) {
-                existingExperiences.forEach(exp => {
-                    addExperienceEntry(exp);
-                });
-            } else if ($('.experience-entry').length === 0) {
-                addExperienceEntry(null);
+            // Only load if container is empty to prevent duplicates
+            if ($('#experiences_container').children().length === 0) {
+                if (existingExperiences && existingExperiences.length > 0) {
+                    experienceCounter = 0;
+                    $('#experiences_container').empty();
+                    existingExperiences.forEach(exp => {
+                        addExperienceEntry(exp);
+                    });
+                } else {
+                    addExperienceEntry(null);
+                }
             }
         }
     }
@@ -714,132 +730,326 @@
     }
 
     function generateEducationFields(selectedLevel, savedData = null) {
-        let container = $('#education_fields_container');
-        container.empty();
+    let container = $('#education_fields_container');
+    container.empty();
+    
+    if (!selectedLevel) return;
+    
+    // No additional fields for these levels
+    if (selectedLevel === 'Below 10th' || selectedLevel === '10th' || selectedLevel === '12th') {
+        container.html('<div class="text-center text-gray-500 p-4">No additional details required for this education level.</div>');
+        return;
+    }
+    
+    let fieldSets = [];
+    
+    switch(selectedLevel) {
+        case 'ITI':
+            fieldSets = [{ level: 'ITI', title: 'ITI (Industrial Training Institute) Details', required: true }];
+            break;
+            
+        case 'Diploma':
+            fieldSets = [{ level: 'Diploma', title: 'Diploma Details', required: true }];
+            break;
+            
+        case "Bachelor's Degree":
+            fieldSets = [{ level: "Bachelor's Degree", title: "Bachelor's Degree Details", required: true }];
+            break;
+            
+        case "Master's Degree":
+            fieldSets = [
+                { level: "Bachelor's Degree", title: "Bachelor's Degree Details", required: true },
+                { level: "Master's Degree", title: "Master's Degree Details", required: true }
+            ];
+            break;
+            
+        case "PhD/Doctorate":
+            fieldSets = [
+                { level: "Bachelor's Degree", title: "Bachelor's Degree Details", required: true },
+                { level: "Master's Degree", title: "Master's Degree Details", required: true },
+                { level: "PhD/Doctorate", title: "PhD/Doctorate Details", required: true }
+            ];
+            break;
+            
+        default:
+            fieldSets = [];
+    }
+    
+    fieldSets.forEach((fieldSet, index) => {
+        let savedEducation = savedData ? savedData.find(edu => edu.level === fieldSet.level) : null;
         
-        if (!selectedLevel) return;
+        let html = `
+            <div class="education-field-set border border-gray-200 rounded-xl p-4 mb-4 bg-gray-50" data-level="${fieldSet.level}">
+                <h3 class="text-md font-semibold text-gray-800 mb-3 pb-2 border-b">${fieldSet.title}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Institution / University / College / ITI Name <span class="text-red-500">*</span></label>
+                        <input type="text" class="college-name w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
+                               value="${savedEducation ? (savedEducation.college || '') : ''}" 
+                               placeholder="Enter institution/university/college/ITI name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Course / Degree / Trade Name <span class="text-red-500">*</span></label>
+                        <select class="degree-select w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
+                            <option value="">Select Course/Degree/Trade</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Field of Study / Specialization / Trade</label>
+                        <input type="text" class="specialization w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
+                               value="${savedEducation ? (savedEducation.specialization || '') : ''}" 
+                               placeholder="e.g., Computer Science, Finance, Marketing, Electrician">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Course Type</label>
+                        <select class="course-type w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
+                            <option value="">Select Course Type</option>
+                            <option value="Full Time" ${savedEducation && savedEducation.course_type == 'Full Time' ? 'selected' : ''}>Full Time</option>
+                            <option value="Part Time" ${savedEducation && savedEducation.course_type == 'Part Time' ? 'selected' : ''}>Part Time</option>
+                            <option value="Distance Learning" ${savedEducation && savedEducation.course_type == 'Distance Learning' ? 'selected' : ''}>Distance Learning</option>
+                            <option value="Correspondence" ${savedEducation && savedEducation.course_type == 'Correspondence' ? 'selected' : ''}>Correspondence</option>
+                            <option value="Online" ${savedEducation && savedEducation.course_type == 'Online' ? 'selected' : ''}>Online</option>
+                            <option value="Regular" ${savedEducation && savedEducation.course_type == 'Regular' ? 'selected' : ''}>Regular</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
+                        <select class="passing-year w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
+                            <option value="">Select Year</option>`;
         
-        if (selectedLevel === 'Below 10th' || selectedLevel === '10th' || selectedLevel === '12th') {
-            container.html('<div class="text-center text-gray-500 p-4">No additional details required for this education level.</div>');
-            return;
+        let currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 1950; year--) {
+            let selected = (savedEducation && savedEducation.passing_year == year) ? 'selected' : '';
+            html += `<option value="${year}" ${selected}>${year}</option>`;
         }
         
-        let fieldSets = [];
-        
-        switch(selectedLevel) {
-            case 'Diploma':
-                fieldSets = [{ level: selectedLevel, title: selectedLevel + ' Details', required: true }];
-                break;
-            case 'Graduate':
-                fieldSets = [{ level: selectedLevel, title: selectedLevel + ' Details', required: true }];
-                break;
-            case 'Post Graduate':
-                fieldSets = [
-                    { level: 'Graduate', title: 'Graduate Details', required: true },
-                    { level: 'Post Graduate', title: 'Post Graduate Details', required: true }
-                ];
-                break;
-            case 'PhD':
-                fieldSets = [
-                    { level: 'Graduate', title: 'Graduate Details', required: true },
-                    { level: 'Post Graduate', title: 'Post Graduate Details', required: true },
-                    { level: 'PhD', title: 'PhD Details', required: true }
-                ];
-                break;
-            default:
-                fieldSets = [];
-        }
-        
-        fieldSets.forEach((fieldSet, index) => {
-            let savedEducation = savedData ? savedData.find(edu => edu.level === fieldSet.level) : null;
-            
-            let html = `
-                <div class="education-field-set border border-gray-200 rounded-xl p-4 mb-4 bg-gray-50" data-level="${fieldSet.level}">
-                    <h3 class="text-md font-semibold text-gray-800 mb-3 pb-2 border-b">${fieldSet.title}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">College / University Name <span class="text-red-500">*</span></label>
-                            <input type="text" class="college-name w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
-                                   value="${savedEducation ? (savedEducation.college || '') : ''}" 
-                                   placeholder="Enter college/university name">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Degree / Course <span class="text-red-500">*</span></label>
-                            <select class="degree-select w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
-                                <option value="">Select Degree</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
-                            <input type="text" class="specialization w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
-                                   value="${savedEducation ? (savedEducation.specialization || '') : ''}" 
-                                   placeholder="e.g., Computer Science, Finance">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
-                            <select class="passing-year w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
-                                <option value="">Select Year</option>`;
-            
-            let currentYear = new Date().getFullYear();
-            for (let year = currentYear; year >= 1950; year--) {
-                let selected = (savedEducation && savedEducation.passing_year == year) ? 'selected' : '';
-                html += `<option value="${year}" ${selected}>${year}</option>`;
-            }
-            
-            html += `
-                            </select>
+        html += `
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Percentage / CGPA / Grade</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" class="percentage w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
+                                   placeholder="e.g., 75%, 8.5 CGPA, A Grade"
+                                   value="${savedEducation ? (savedEducation.percentage || '') : ''}">
                         </div>
                     </div>
                 </div>
-            `;
-            
-            container.append(html);
-        });
+            </div>
+        `;
         
-        setTimeout(function() {
-            $('.education-field-set').each(function() {
-                let level = $(this).data('level');
-                let $degreeSelect = $(this).find('.degree-select');
-                let savedEducation = savedData ? savedData.find(edu => edu.level === level) : null;
-                loadDegreesForLevel(level, $degreeSelect, savedEducation ? savedEducation.degree_id : null);
-            });
-        }, 100);
+        container.append(html);
+    });
+    
+    setTimeout(function() {
+        $('.education-field-set').each(function() {
+            let level = $(this).data('level');
+            let $degreeSelect = $(this).find('.degree-select');
+            let savedEducation = savedData ? savedData.find(edu => edu.level === level) : null;
+            loadDegreesForLevel(level, $degreeSelect, savedEducation ? savedEducation.degree_id : null);
+        });
+    }, 100);
+}
+  function loadDegreesForLevel(educationLevel, $degreeSelect, selectedDegreeId = null) {
+    let degreesForLevel = [];
+    
+    // ITI Trades
+    if (educationLevel === 'ITI') {
+        degreesForLevel = [
+            { id: 101, name: "Electrician" },
+            { id: 102, name: "Fitter" },
+            { id: 103, name: "Welder" },
+            { id: 104, name: "Turner" },
+            { id: 105, name: "Machinist" },
+            { id: 106, name: "Mechanic (Motor Vehicle)" },
+            { id: 107, name: "Mechanic (Diesel)" },
+            { id: 108, name: "Mechanic (Refrigeration & Air Conditioning)" },
+            { id: 109, name: "Electronics Mechanic" },
+            { id: 110, name: "Instrument Mechanic" },
+            { id: 111, name: "Carpenter" },
+            { id: 112, name: "Plumber" },
+            { id: 113, name: "Painter (General)" },
+            { id: 114, name: "Mason (Building Constructor)" },
+            { id: 115, name: "Sheet Metal Worker" },
+            { id: 116, name: "Wireman" },
+            { id: 117, name: "Draughtsman (Civil)" },
+            { id: 118, name: "Draughtsman (Mechanical)" },
+            { id: 119, name: "Computer Operator and Programming Assistant (COPA)" },
+            { id: 120, name: "Information Technology (IT)" },
+            { id: 121, name: "Desktop Publishing Operator (DTP)" },
+            { id: 122, name: "Secretarial Practice" },
+            { id: 123, name: "Stenography (English)" },
+            { id: 124, name: "Stenography (Hindi)" },
+            { id: 125, name: "Health Sanitary Inspector" },
+            { id: 126, name: "Dress Making" },
+            { id: 127, name: "Fashion Design & Technology" },
+            { id: 128, name: "Hair & Skin Care" },
+            { id: 129, name: "Food Production (Chef)" },
+            { id: 130, name: "Food & Beverage Service" },
+            { id: 131, name: "Housekeeping" },
+            { id: 132, name: "Front Office Assistant" },
+            { id: 133, name: "Tourism & Travel" },
+            { id: 134, name: "Multimedia & Animation" },
+            { id: 135, name: "Web Designing" },
+            { id: 136, name: "Software Testing" },
+            { id: 137, name: "Networking Technician" },
+            { id: 138, name: "Hardware Technician" },
+            { id: 139, name: "Medical Lab Technician" },
+            { id: 140, name: "Radiology Technician" },
+            { id: 141, name: "Dental Lab Technician" },
+            { id: 142, name: "Pharmacy Assistant" },
+            { id: 143, name: "Nursing Assistant" },
+            { id: 144, name: "AC & Refrigeration Technician" },
+            { id: 145, name: "Solar Technician" },
+            { id: 146, name: "Wind Energy Technician" },
+            { id: 147, name: "CNC Operator" },
+            { id: 148, name: "3D Printing Technician" },
+            { id: 149, name: "Robotics Technician" },
+            { id: 150, name: "PLC Programmer" }
+        ];
+    }
+    // Diploma
+    else if (educationLevel === 'Diploma') {
+        degreesForLevel = [
+            { id: 61, name: "Diploma in Engineering" },
+            { id: 62, name: "Diploma in Computer Science" },
+            { id: 63, name: "Diploma in Information Technology" },
+            { id: 64, name: "Diploma in Electronics" },
+            { id: 65, name: "Diploma in Electrical Engineering" },
+            { id: 66, name: "Diploma in Mechanical Engineering" },
+            { id: 67, name: "Diploma in Civil Engineering" },
+            { id: 68, name: "Diploma in Business Administration" },
+            { id: 69, name: "Diploma in Pharmacy" },
+            { id: 70, name: "Diploma in Hotel Management" },
+            { id: 71, name: "Diploma in Fashion Design" },
+            { id: 72, name: "Diploma in Interior Design" },
+            { id: 73, name: "Diploma in Graphic Design" },
+            { id: 74, name: "Diploma in Animation" },
+            { id: 75, name: "Diploma in Multimedia" },
+            { id: 76, name: "Advanced Diploma in Computer Applications" },
+            { id: 77, name: "Post Graduate Diploma" },
+            { id: 151, name: "Diploma in Medical Lab Technology" },
+            { id: 152, name: "Diploma in Radiology" },
+            { id: 153, name: "Diploma in Nursing" },
+            { id: 154, name: "Diploma in Agriculture" },
+            { id: 155, name: "Diploma in Automobile Engineering" },
+            { id: 156, name: "Diploma in Chemical Engineering" },
+            { id: 157, name: "Diploma in Mining Engineering" },
+            { id: 158, name: "Diploma in Textile Engineering" },
+            { id: 159, name: "Diploma in Leather Technology" },
+            { id: 160, name: "Diploma in Food Technology" }
+        ];
+    }
+    // Bachelor's Degrees
+    else if (educationLevel === "Bachelor's Degree") {
+        degreesForLevel = [
+            { id: 1, name: "Bachelor of Arts (BA)" },
+            { id: 2, name: "Bachelor of Science (BSc)" },
+            { id: 3, name: "Bachelor of Commerce (BCom)" },
+            { id: 4, name: "Bachelor of Engineering (BE)" },
+            { id: 5, name: "Bachelor of Technology (BTech)" },
+            { id: 6, name: "Bachelor of Business Administration (BBA)" },
+            { id: 7, name: "Bachelor of Computer Applications (BCA)" },
+            { id: 8, name: "Bachelor of Laws (LLB)" },
+            { id: 9, name: "Bachelor of Education (BEd)" },
+            { id: 10, name: "Bachelor of Pharmacy (BPharm)" },
+            { id: 11, name: "Bachelor of Architecture (BArch)" },
+            { id: 12, name: "Bachelor of Design (BDes)" },
+            { id: 13, name: "Bachelor of Fine Arts (BFA)" },
+            { id: 14, name: "Bachelor of Social Work (BSW)" },
+            { id: 15, name: "Bachelor of Hotel Management (BHM)" },
+            { id: 16, name: "Bachelor of Physiotherapy (BPT)" },
+            { id: 17, name: "Bachelor of Occupational Therapy (BOT)" },
+            { id: 18, name: "Bachelor of Ayurvedic Medicine (BAMS)" },
+            { id: 19, name: "Bachelor of Homeopathic Medicine (BHMS)" },
+            { id: 20, name: "Bachelor of Dental Surgery (BDS)" },
+            { id: 21, name: "Bachelor of Medicine (MBBS)" },
+            { id: 22, name: "Bachelor of Nursing (BNursing)" },
+            { id: 23, name: "Bachelor of Science in Nursing (BSc Nursing)" },
+            { id: 24, name: "Bachelor of Journalism (BJ)" },
+            { id: 25, name: "Bachelor of Mass Media (BMM)" },
+            { id: 26, name: "Bachelor of Library Science (BLibSc)" },
+            { id: 27, name: "Bachelor of Physical Education (BPEd)" },
+            { id: 28, name: "Bachelor of Veterinary Science (BVSc)" },
+            { id: 29, name: "Bachelor of Agriculture (BAgri)" },
+            { id: 30, name: "Bachelor of Science in Information Technology (BSc IT)" },
+            { id: 161, name: "Bachelor of Computer Science (BCS)" },
+            { id: 162, name: "Bachelor of Business Management (BBM)" },
+            { id: 163, name: "Bachelor of Economics (BEcon)" },
+            { id: 164, name: "Bachelor of Social Sciences (BSS)" },
+            { id: 165, name: "Bachelor of Psychology (BPsych)" }
+        ];
+    }
+    // Master's Degrees
+    else if (educationLevel === "Master's Degree") {
+        degreesForLevel = [
+            { id: 31, name: "Master of Arts (MA)" },
+            { id: 32, name: "Master of Science (MSc)" },
+            { id: 33, name: "Master of Commerce (MCom)" },
+            { id: 34, name: "Master of Engineering (ME)" },
+            { id: 35, name: "Master of Technology (MTech)" },
+            { id: 36, name: "Master of Business Administration (MBA)" },
+            { id: 37, name: "Master of Computer Applications (MCA)" },
+            { id: 38, name: "Master of Laws (LLM)" },
+            { id: 39, name: "Master of Education (MEd)" },
+            { id: 40, name: "Master of Pharmacy (MPharm)" },
+            { id: 41, name: "Master of Architecture (MArch)" },
+            { id: 42, name: "Master of Design (MDes)" },
+            { id: 43, name: "Master of Fine Arts (MFA)" },
+            { id: 44, name: "Master of Social Work (MSW)" },
+            { id: 45, name: "Master of Hotel Management (MHM)" },
+            { id: 46, name: "Master of Physiotherapy (MPT)" },
+            { id: 47, name: "Master of Occupational Therapy (MOT)" },
+            { id: 48, name: "Master of Public Health (MPH)" },
+            { id: 49, name: "Master of Hospital Administration (MHA)" },
+            { id: 50, name: "Master of Journalism (MJ)" },
+            { id: 51, name: "Master of Mass Communication (MMC)" },
+            { id: 52, name: "Master of Library Science (MLibSc)" },
+            { id: 53, name: "Master of Physical Education (MPEd)" },
+            { id: 54, name: "Master of Science in Information Technology (MSc IT)" },
+            { id: 55, name: "Master of Finance (MFin)" },
+            { id: 56, name: "Master of Human Resource Management (MHRM)" },
+            { id: 57, name: "Master of International Business (MIB)" },
+            { id: 58, name: "Master of Marketing Management (MMM)" },
+            { id: 59, name: "Post Graduate Diploma in Management (PGDM)" },
+            { id: 60, name: "Post Graduate Programme in Management (PGPM)" },
+            { id: 166, name: "Master of Computer Science (MCS)" },
+            { id: 167, name: "Master of Economics (MEcon)" },
+            { id: 168, name: "Master of Psychology (MPsych)" },
+            { id: 169, name: "Master of Social Sciences (MSS)" }
+        ];
+    }
+    // PhD/Doctorate
+    else if (educationLevel === "PhD/Doctorate") {
+        degreesForLevel = [
+            { id: 78, name: "Doctor of Philosophy (PhD)" },
+            { id: 79, name: "Doctor of Medicine (MD)" },
+            { id: 80, name: "Doctor of Science (DSc)" },
+            { id: 81, name: "Doctor of Literature (DLit)" },
+            { id: 82, name: "Doctor of Dental Medicine (DDM)" },
+            { id: 83, name: "Doctor of Pharmacy (PharmD)" },
+            { id: 84, name: "Doctor of Education (EdD)" },
+            { id: 85, name: "Doctor of Business Administration (DBA)" }
+        ];
+    }
+    // 12th levels
+    else if (educationLevel === '12th') {
+        degreesForLevel = [
+            { id: 86, name: "12th - Science" },
+            { id: 87, name: "12th - Commerce" },
+            { id: 88, name: "12th - Arts/Humanities" },
+            { id: 89, name: "HSC (Higher Secondary Certificate)" },
+            { id: 90, name: "Intermediate" }
+        ];
     }
 
-    function loadDegreesForLevel(educationLevel, $degreeSelect, selectedDegreeId = null) {
-        let degreesForLevel = [];
-        
-        if (educationLevel === '12th') {
-            degreesForLevel = allDegrees.filter(d => 
-                d.name === '12th' || d.name === 'Intermediate' || d.name === 'High School' || d.name === 'HSC'
-            );
-        } else if (educationLevel === 'Diploma') {
-            degreesForLevel = allDegrees.filter(d => d.name.toLowerCase().includes('diploma'));
-        } else if (educationLevel === 'Graduate') {
-            degreesForLevel = allDegrees.filter(d => 
-                d.name === "Bachelor's" || d.name === "Bachelor of Arts" || d.name === "Bachelor of Science" || 
-                d.name === "Bachelor of Commerce" || d.name === "Bachelor of Engineering" || d.name === "Bachelor of Technology" ||
-                d.name.toLowerCase().includes('bachelor') || d.name === "B.A." || d.name === "B.Sc." || d.name === "B.Com." || 
-                d.name === "B.E." || d.name === "B.Tech" || d.name === "BCA" || d.name === "BBA"
-            );
-        } else if (educationLevel === 'Post Graduate') {
-            degreesForLevel = allDegrees.filter(d => 
-                d.name === "Master's" || d.name === "Master of Arts" || d.name === "Master of Science" || 
-                d.name === "Master of Commerce" || d.name === "Master of Engineering" || d.name === "Master of Technology" || 
-                d.name === "MBA" || d.name === "MCA" || d.name.toLowerCase().includes('master') || 
-                d.name === "M.A." || d.name === "M.Sc." || d.name === "M.Com." || d.name === "M.E." || d.name === "M.Tech"
-            );
-        } else if (educationLevel === 'PhD') {
-            degreesForLevel = allDegrees.filter(d => d.name.toLowerCase().includes('phd') || d.name.toLowerCase().includes('doctor') || d.name === "Doctorate");
-        }
-
-        let options = '<option value="">Select Degree</option>';
-        degreesForLevel.forEach(degree => {
-            let selected = (selectedDegreeId && selectedDegreeId == degree.id) ? 'selected' : '';
-            options += `<option value="${degree.id}" ${selected}>${degree.name}</option>`;
-        });
-        $degreeSelect.html(options);
-    }
+    let options = '<option value="">Select Course/Degree/Trade</option>';
+    degreesForLevel.forEach(degree => {
+        let selected = (selectedDegreeId && selectedDegreeId == degree.id) ? 'selected' : '';
+        options += `<option value="${degree.id}" ${selected}>${degree.name}</option>`;
+    });
+    $degreeSelect.html(options);
+}
 
     function collectEducationsData() {
         let educations = [];
@@ -1002,6 +1212,10 @@
         });
     }
 
+    // Skills Auto-complete functionality
+    let skillsSuggestionTimeout = null;
+    let currentSkillInputIndex = 0;
+
     function initializeSkills() {
         $('#skills_container').empty();
         if (existingSkills && existingSkills.length > 0) {
@@ -1012,13 +1226,24 @@
             $('#skills_container').append(createSkillInput(''));
         }
         addAddSkillButton();
+        initializeSkillAutoComplete();
     }
-    
+
     function createSkillInput(value = '') {
+        const uniqueId = 'skill_input_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         return `
-            <div class="skill-group flex gap-2 mb-2">
-                <input type="text" class="skill-input flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-yellow-500 focus:ring-yellow-500 transition" 
-                       placeholder="e.g., PHP, Laravel, React" value="${escapeHtml(value)}">
+            <div class="skill-group relative flex gap-2 mb-2">
+                <div class="relative flex-1">
+                    <input type="text" 
+                           class="skill-input w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-yellow-500 focus:ring-yellow-500 transition" 
+                           placeholder="e.g., PHP, Laravel, React" 
+                           value="${escapeHtml(value)}"
+                           autocomplete="off"
+                           data-unique-id="${uniqueId}">
+                    <div class="skill-suggestions absolute z-50 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 hidden max-h-60 overflow-y-auto" 
+                         data-for="${uniqueId}">
+                    </div>
+                </div>
                 <button type="button" class="remove-skill bg-red-500 text-white px-4 rounded-lg hover:bg-red-600 transition shadow-md hover:shadow-lg">
                     <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -1028,7 +1253,170 @@
             </div>
         `;
     }
-    
+
+    function initializeSkillAutoComplete() {
+        // Attach input event to all skill inputs
+        $(document).off('input', '.skill-input').on('input', '.skill-input', function() {
+            const input = $(this);
+            const query = input.val().trim();
+            const uniqueId = input.data('unique-id');
+            const suggestionsDiv = $(`.skill-suggestions[data-for="${uniqueId}"]`);
+            
+            // Clear previous timeout
+            if (skillsSuggestionTimeout) {
+                clearTimeout(skillsSuggestionTimeout);
+            }
+            
+            if (query.length < 2) {
+                suggestionsDiv.addClass('hidden').empty();
+                return;
+            }
+            
+            // Debounce the API call
+            skillsSuggestionTimeout = setTimeout(() => {
+                fetchSkillSuggestions(query, suggestionsDiv, input);
+            }, 300);
+        });
+        
+        // Close suggestions when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.skill-group').length) {
+                $('.skill-suggestions').addClass('hidden').empty();
+            }
+        });
+        
+        // Handle keyboard navigation
+        $(document).off('keydown', '.skill-input').on('keydown', '.skill-input', function(e) {
+            const input = $(this);
+            const uniqueId = input.data('unique-id');
+            const suggestionsDiv = $(`.skill-suggestions[data-for="${uniqueId}"]`);
+            const suggestions = suggestionsDiv.find('.suggestion-item');
+            
+            if (suggestions.length === 0) return;
+            
+            const currentIndex = suggestions.index(suggestions.filter('.active'));
+            
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (currentIndex < suggestions.length - 1) {
+                        suggestions.removeClass('active bg-yellow-100');
+                        suggestions.eq(currentIndex + 1).addClass('active bg-yellow-100');
+                        // Scroll into view
+                        suggestions.eq(currentIndex + 1)[0].scrollIntoView({ block: 'nearest' });
+                    }
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (currentIndex > 0) {
+                        suggestions.removeClass('active bg-yellow-100');
+                        suggestions.eq(currentIndex - 1).addClass('active bg-yellow-100');
+                        // Scroll into view
+                        suggestions.eq(currentIndex - 1)[0].scrollIntoView({ block: 'nearest' });
+                    }
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    const activeSuggestion = suggestions.filter('.active');
+                    if (activeSuggestion.length) {
+                        const selectedSkill = activeSuggestion.data('skill-name');
+                        input.val(selectedSkill);
+                        suggestionsDiv.addClass('hidden').empty();
+                        // Trigger validation if needed
+                        input.trigger('blur');
+                    }
+                    break;
+                case 'Escape':
+                    suggestionsDiv.addClass('hidden').empty();
+                    break;
+                case 'Tab':
+                    if (suggestions.length > 0 && suggestionsDiv.is(':visible')) {
+                        e.preventDefault();
+                        const firstSuggestion = suggestions.first();
+                        const selectedSkill = firstSuggestion.data('skill-name');
+                        input.val(selectedSkill);
+                        suggestionsDiv.addClass('hidden').empty();
+                    }
+                    break;
+            }
+        });
+        
+        // Handle blur event to validate skill
+        $(document).off('blur', '.skill-input').on('blur', '.skill-input', function() {
+            setTimeout(() => {
+                const suggestionsDiv = $(this).closest('.skill-group').find('.skill-suggestions');
+                suggestionsDiv.addClass('hidden').empty();
+            }, 200);
+        });
+    }
+
+    function fetchSkillSuggestions(query, suggestionsDiv, inputElement) {
+        // Show loading indicator
+        suggestionsDiv.html('<div class="px-4 py-2 text-gray-500 text-sm">Searching...</div>').removeClass('hidden');
+        
+        $.ajax({
+            url: '{{ route("employee.skills.search") }}',
+            type: 'GET',
+            data: { query: query },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.skills && response.skills.length > 0) {
+                    let html = '';
+                    response.skills.forEach(skill => {
+                        // Highlight matching text
+                        const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+                        const highlightedName = skill.name.replace(regex, '<strong class="text-yellow-600">$1</strong>');
+                        html += `
+                            <div class="suggestion-item px-4 py-2 hover:bg-yellow-50 cursor-pointer transition border-b border-gray-100 last:border-0"
+                                 data-skill-id="${skill.id}"
+                                 data-skill-name="${escapeHtml(skill.name)}">
+                                ${highlightedName}
+                                <span class="text-xs text-gray-400 ml-2">${skill.category || 'General'}</span>
+                            </div>
+                        `;
+                    });
+                    suggestionsDiv.html(html).removeClass('hidden');
+                    
+                    // Position the suggestions dropdown
+                    const inputOffset = inputElement.offset();
+                    const inputHeight = inputElement.outerHeight();
+                    suggestionsDiv.css({
+                        top: inputHeight + 5,
+                        left: 0,
+                        right: 0
+                    });
+                    
+                    // Add click handler for suggestions
+                    suggestionsDiv.find('.suggestion-item').off('click').on('click', function() {
+                        const selectedSkillName = $(this).data('skill-name');
+                        const selectedSkillId = $(this).data('skill-id');
+                        inputElement.val(selectedSkillName);
+                        suggestionsDiv.addClass('hidden').empty();
+                        
+                        // Show success message
+                        showAlert(`"${selectedSkillName}" selected`, 'success');
+                        
+                        // Trigger change event
+                        inputElement.trigger('change');
+                    });
+                } else {
+                    suggestionsDiv.html('<div class="px-4 py-2 text-gray-500 text-sm">No matching skills found. You can add custom skill.</div>').removeClass('hidden');
+                }
+            },
+            error: function(xhr) {
+                console.error('Error fetching skill suggestions:', xhr);
+                suggestionsDiv.html('<div class="px-4 py-2 text-red-500 text-sm">Error loading suggestions. Please try again.</div>').removeClass('hidden');
+            }
+        });
+    }
+
+    // Helper function to escape regex special characters
+    function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     function addAddSkillButton() {
         if ($('#addSkillBtn').length === 0 && $('.skill-group').length < 5) {
             $('#skills_container').append(`
@@ -1043,17 +1431,22 @@
             `);
         }
     }
-    
+
+    function updateAddButtonVisibility() {
+        if ($('.skill-group').length >= 5) {
+            $('#addSkillBtn').closest('div').remove();
+        } else if ($('#addSkillBtn').length === 0) {
+            addAddSkillButton();
+        }
+    }
+
     function escapeHtml(text) {
         if (!text) return '';
-        return text.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
-    
+        
     function initializeLanguages() {
         if (!allLanguages || allLanguages.length === 0) {
             $('#languageButtonsContainer').html('<p class="text-gray-500">No languages available</p>');
@@ -1137,10 +1530,25 @@
         }
         $('#languagesInput').val(JSON.stringify(selectedLanguages.map(l => l.id)));
     }
-    
+
     function addExperienceEntry(expData = null) {
         experienceCounter++;
         let expId = experienceCounter;
+        
+        // Check if this is a currently working experience from saved data
+        let isCurrentlyWorking = expData && expData.currently_working ? true : false;
+        let noticePeriodValue = expData ? (expData.notice_period_value || '') : '';
+        let startDateValue = expData ? (expData.start_date || '') : '';
+        let endDateValue = expData ? (expData.end_date || '') : '';
+        let companyNameValue = expData ? (expData.company_name || '') : '';
+        let employmentTypeValue = expData ? (expData.employment_type || '') : '';
+        let positionIdValue = expData ? (expData.position_id || '') : '';
+        
+        let positionsOptions = '<option value="">Select Position</option>';
+        allPositions.forEach(pos => {
+            let selected = positionIdValue == pos.id ? 'selected' : '';
+            positionsOptions += `<option value="${pos.id}" ${selected}>${escapeHtml(pos.name)}</option>`;
+        });
         
         let html = `
             <div class="experience-entry border border-gray-200 rounded-xl p-4 mb-4 relative bg-gray-50" data-exp-id="${expId}">
@@ -1150,49 +1558,64 @@
                     </svg>
                 </button>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Company Name <span class="text-red-500">*</span></label>
                         <input type="text" class="company-name w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
-                               value="${expData ? (expData.company_name || '') : ''}" placeholder="Enter company name">
-                    </div>
-                    <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Industry Sector</label>
-                        <select class="industry-select w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
-                            <option value="">Select Industry</option>
-                            ${allIndustries.map(ind => `<option value="${ind.id}" ${expData && expData.industry_id == ind.id ? 'selected' : ''}>${ind.name}</option>`).join('')}
-                        </select>
+                               value="${escapeHtml(companyNameValue)}" placeholder="Enter company name">
+                        <p class="text-red-500 text-xs mt-1 hidden company-name-error">Company name is required</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
-                        <select class="employment-type w-full px-4 py-2 border-2 border-gray-300 rounded-xl">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Position <span class="text-red-500">*</span></label>
+                        <select class="position-select w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
+                            ${positionsOptions}
+                        </select>
+                        <p class="text-red-500 text-xs mt-1 hidden position-error">Position is required</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Employment Type <span class="text-red-500">*</span></label>
+                        <select class="employment-type w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500">
                             <option value="">Select Type</option>
-                            <option value="full_time" ${expData && expData.employment_type == 'full_time' ? 'selected' : ''}>Full-time</option>
-                            <option value="part_time" ${expData && expData.employment_type == 'part_time' ? 'selected' : ''}>Part-time</option>
-                            <option value="contract" ${expData && expData.employment_type == 'contract' ? 'selected' : ''}>Contract</option>
-                            <option value="internship" ${expData && expData.employment_type == 'internship' ? 'selected' : ''}>Internship</option>
-                            <option value="freelancer" ${expData && expData.employment_type == 'freelancer' ? 'selected' : ''}>Freelancer</option>
+                            <option value="full_time" ${employmentTypeValue == 'full_time' ? 'selected' : ''}>Full-time</option>
+                            <option value="part_time" ${employmentTypeValue == 'part_time' ? 'selected' : ''}>Part-time</option>
+                            <option value="contract" ${employmentTypeValue == 'contract' ? 'selected' : ''}>Contract</option>
+                            <option value="internship" ${employmentTypeValue == 'internship' ? 'selected' : ''}>Internship</option>
+                            <option value="freelancer" ${employmentTypeValue == 'freelancer' ? 'selected' : ''}>Freelancer</option>
                         </select>
+                        <p class="text-red-500 text-xs mt-1 hidden employment-type-error">Employment type is required</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                        <input type="date" class="start-date w-full px-4 py-2 border-2 border-gray-300 rounded-xl" 
-                               value="${expData ? (expData.start_date || '') : ''}">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Date <span class="text-green-600 text-xs">(Optional)</span></label>
+                        <input type="date" class="start-date w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
+                               value="${startDateValue}">
+                        <p class="text-blue-600 text-xs mt-1">Note: Add dates to calculate total experience</p>
                     </div>
-                    <div class="end-date-div">
+                    <div class="end-date-div" style="${isCurrentlyWorking ? 'display: none;' : ''}">
                         <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                        <input type="date" class="end-date w-full px-4 py-2 border-2 border-gray-300 rounded-xl" 
-                               value="${expData ? (expData.end_date || '') : ''}">
+                        <input type="date" class="end-date w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
+                               value="${endDateValue}">
+                        <p class="text-red-500 text-xs mt-1 hidden end-date-error">End date is required when not currently working</p>
                     </div>
                     <div class="col-span-2">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="currently-working mr-2" ${expData && expData.currently_working ? 'checked' : ''}>
-                            <span>I currently work here</span>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" class="currently-working mr-2" ${isCurrentlyWorking ? 'checked' : ''}>
+                            <span class="text-gray-700">I currently work here</span>
                         </label>
                     </div>
-                    <div>
+                    <div class="notice-period-div col-span-2" style="${isCurrentlyWorking ? '' : 'display: none;'}">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Notice Period</label>
-                        <input type="text" class="notice-period w-full px-4 py-2 border-2 border-gray-300 rounded-xl" 
-                               placeholder="e.g., 15 days, 1 month" value="${expData ? (expData.notice_period || '') : ''}">
+                        <div class="flex items-center gap-2">
+                            <div class="relative flex-1 max-w-[200px]">
+                                <input type="number" class="notice-period w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-yellow-500" 
+                                       placeholder="Enter number"
+                                       min="0"
+                                       max="365"
+                                       value="${noticePeriodValue}"
+                                       onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                            </div>
+                            <span class="text-gray-600 font-medium bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">DAYS</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Example: 15, 30, 45, 60, 90 (0 for Immediate)</p>
+                        <p class="text-red-500 text-xs mt-1 hidden notice-period-error">Notice period is required for current job</p>
                     </div>
                 </div>
             </div>
@@ -1202,35 +1625,215 @@
         
         let newEntry = $(`.experience-entry[data-exp-id="${expId}"]`);
         
+        // Initialize Select2 for position dropdown
+        newEntry.find('.position-select').select2({
+            placeholder: "Search for a position...",
+            allowClear: true,
+            width: '100%'
+        });
+        
+        // Handle currently working checkbox change
         newEntry.find('.currently-working').on('change', function() {
+            let noticePeriodDiv = $(this).closest('.experience-entry').find('.notice-period-div');
             let endDateDiv = $(this).closest('.experience-entry').find('.end-date-div');
+            let currentCheckbox = $(this);
+            
             if ($(this).is(':checked')) {
+                // Uncheck all other "currently working" checkboxes
+                $('.currently-working').each(function() {
+                    if ($(this).is(':checked') && this !== currentCheckbox[0]) {
+                        $(this).prop('checked', false);
+                        $(this).trigger('change');
+                    }
+                });
+                
                 endDateDiv.slideUp();
                 endDateDiv.find('.end-date').val('');
+                noticePeriodDiv.slideDown();
+                newEntry.find('.end-date').removeClass('border-red-500');
+                newEntry.find('.end-date-error').addClass('hidden');
             } else {
                 endDateDiv.slideDown();
+                noticePeriodDiv.slideUp();
+                noticePeriodDiv.find('.notice-period').val('');
+                newEntry.find('.notice-period').removeClass('border-red-500');
+                newEntry.find('.notice-period-error').addClass('hidden');
             }
+            validateExperienceEntry(newEntry);
+        });
+        
+        // Add validation on input change
+        newEntry.find('.company-name, .position-select, .employment-type, .start-date, .end-date, .notice-period').on('change keyup', function() {
+            validateExperienceEntry(newEntry);
+        });
+        
+        newEntry.find('.start-date').on('change', function() {
+            validateExperienceEntry(newEntry);
         });
         
         newEntry.find('.currently-working').trigger('change');
+        
+        if (startDateValue) {
+            validateExperienceEntry(newEntry);
+        }
     }
-    
+
+    // Function to validate a single experience entry
+    function validateExperienceEntry(entry) {
+        let isValid = true;
+        let companyName = entry.find('.company-name').val().trim();
+        let positionId = entry.find('.position-select').val();
+        let employmentType = entry.find('.employment-type').val();
+        let startDate = entry.find('.start-date').val();
+        let endDate = entry.find('.end-date').val();
+        let currentlyWorking = entry.find('.currently-working').is(':checked');
+        let noticePeriod = entry.find('.notice-period').val();
+        
+        // Clear previous errors
+        entry.find('.company-name').removeClass('border-red-500');
+        entry.find('.company-name-error').addClass('hidden');
+        entry.find('.position-select').removeClass('border-red-500');
+        entry.find('.position-error').addClass('hidden');
+        entry.find('.employment-type').removeClass('border-red-500');
+        entry.find('.employment-type-error').addClass('hidden');
+        entry.find('.start-date').removeClass('border-red-500');
+        entry.find('.end-date').removeClass('border-red-500');
+        entry.find('.end-date-error').addClass('hidden');
+        entry.find('.notice-period').removeClass('border-red-500');
+        entry.find('.notice-period-error').addClass('hidden');
+        
+        // Company name is always required
+        if (!companyName) {
+            entry.find('.company-name').addClass('border-red-500');
+            entry.find('.company-name-error').removeClass('hidden');
+            isValid = false;
+        }
+        
+        // Position is always required
+        if (!positionId || positionId === '') {
+            entry.find('.position-select').addClass('border-red-500');
+            entry.find('.position-error').removeClass('hidden');
+            isValid = false;
+        }
+        
+        // Employment type is always required
+        if (!employmentType || employmentType === '') {
+            entry.find('.employment-type').addClass('border-red-500');
+            entry.find('.employment-type-error').removeClass('hidden');
+            isValid = false;
+        }
+        
+        // Only validate dates if start date exists
+        if (startDate) {
+            if (currentlyWorking) {
+                if (!noticePeriod || noticePeriod === '') {
+                    entry.find('.notice-period').addClass('border-red-500');
+                    entry.find('.notice-period-error').removeClass('hidden');
+                    isValid = false;
+                }
+            } else {
+                if (!endDate) {
+                    entry.find('.end-date').addClass('border-red-500');
+                    entry.find('.end-date-error').removeClass('hidden');
+                    isValid = false;
+                }
+                if (endDate && endDate < startDate) {
+                    entry.find('.end-date').addClass('border-red-500');
+                    showAlert('End date cannot be earlier than start date', 'error');
+                    isValid = false;
+                }
+            }
+        }
+        
+        return isValid;
+    }
+
     function collectExperiencesData() {
         let experiences = [];
+        let hasError = false;
+        let incompleteCount = 0;
+        
         $('.experience-entry').each(function() {
-            let exp = {
-                company_name: $(this).find('.company-name').val(),
-                industry_id: $(this).find('.industry-select').val(),
-                employment_type: $(this).find('.employment-type').val(),
-                start_date: $(this).find('.start-date').val(),
-                end_date: $(this).find('.end-date').val(),
-                currently_working: $(this).find('.currently-working').is(':checked') ? 1 : 0,
-                notice_period: $(this).find('.notice-period').val()
-            };
-            if (exp.company_name || exp.industry_id || exp.employment_type) {
-                experiences.push(exp);
+            let entry = $(this);
+            let companyName = entry.find('.company-name').val().trim();
+            let positionId = entry.find('.position-select').val();
+            let employmentType = entry.find('.employment-type').val();
+            let startDate = entry.find('.start-date').val();
+            
+            // Skip if no company name (empty entry)
+            if (!companyName) {
+                return true;
             }
+            
+            // Validate required fields
+            if (!positionId || !employmentType) {
+                showAlert('Please fill in Position and Employment Type for all experience entries.', 'error');
+                hasError = true;
+                return false;
+            }
+            
+            // Create experience object with all data
+            let exp = {
+                company_name: companyName,
+                position_id: positionId,
+                position_name: entry.find('.position-select option:selected').text(),
+                employment_type: employmentType,
+                start_date: startDate || null,
+                end_date: entry.find('.end-date').val() || null,
+                currently_working: entry.find('.currently-working').is(':checked') ? 1 : 0,
+                notice_period: '',
+                notice_period_value: ''
+            };
+            
+            // Only validate dates if start date exists
+            if (startDate) {
+                let endDate = entry.find('.end-date').val();
+                let currentlyWorking = entry.find('.currently-working').is(':checked');
+                let noticePeriod = entry.find('.notice-period').val();
+                
+                if (currentlyWorking) {
+                    if (!noticePeriod || noticePeriod === '') {
+                        entry.find('.notice-period').addClass('border-red-500');
+                        entry.find('.notice-period-error').removeClass('hidden');
+                        hasError = true;
+                        return false;
+                    }
+                    exp.notice_period_value = noticePeriod || '';
+                    if (noticePeriod && noticePeriod > 0) {
+                        exp.notice_period = noticePeriod + ' days';
+                    } else if (noticePeriod === '0' || noticePeriod === 0) {
+                        exp.notice_period = 'Immediate';
+                        exp.notice_period_value = '0';
+                    }
+                } else {
+                    if (!endDate) {
+                        entry.find('.end-date').addClass('border-red-500');
+                        entry.find('.end-date-error').removeClass('hidden');
+                        hasError = true;
+                        return false;
+                    }
+                    if (endDate && startDate && endDate < startDate) {
+                        entry.find('.end-date').addClass('border-red-500');
+                        showAlert('End date cannot be earlier than start date', 'error');
+                        hasError = true;
+                        return false;
+                    }
+                }
+            } else {
+                incompleteCount++;
+            }
+            
+            experiences.push(exp);
         });
+        
+        if (incompleteCount > 0 && !hasError) {
+            showAlert(`${incompleteCount} experience entr${incompleteCount > 1 ? 'ies' : 'y'} ${incompleteCount > 1 ? 'were' : 'was'} saved without start date. You can add dates later.`, 'info');
+        }
+        
+        if (hasError) {
+            return null;
+        }
+        
         return experiences;
     }
 
@@ -1316,6 +1919,10 @@
                 }
                 break;
             case 6:
+                let experiencesData = collectExperiencesData();
+                if (experiencesData === null) {
+                    isValid = false;
+                }
                 break;
             case 7:
                 if (!$('input[name="availability"]:checked').val()) {
@@ -1618,6 +2225,11 @@
                 
             case 6:
                 let experiences = collectExperiencesData();
+                if (experiences === null) {
+                    clickedBtn.text(originalText).prop('disabled', false);
+                    isSaving = false;
+                    return;
+                }
                 formData.append('experiences', JSON.stringify(experiences));
                 
                 $.ajax({
@@ -1957,7 +2569,10 @@
             initializeSkills();
             initializeLanguages();
             
+            // Load experiences only once when page loads
             if (existingExperiences && existingExperiences.length > 0) {
+                experienceCounter = 0;
+                $('#experiences_container').empty();
                 existingExperiences.forEach(exp => {
                     addExperienceEntry(exp);
                 });
@@ -1999,28 +2614,102 @@
 </script>
 
 <style>
-.select2-container--default .select2-selection--single {
-    border: 2px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 0.5rem;
-    height: auto;
-}
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 1.5;
-    padding: 0.25rem 0;
-}
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    top: 50%;
-    transform: translateY(-50%);
-}
-.select2-dropdown {
-    border-radius: 0.75rem;
-    border-color: #e5e7eb;
-}
-.edit-section-btn.active, .edit-section-btn:hover {
-    background-color: #fef3c7;
-    border-color: #f59e0b;
-}
+    /* Notice period input styling */
+    .notice-period {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .notice-period:focus {
+        outline: none;
+        border-color: #f59e0b;
+        ring: 2px solid #f59e0b;
+    }
+
+    /* Remove number input spinners for cleaner look */
+    .notice-period::-webkit-inner-spin-button, 
+    .notice-period::-webkit-outer-spin-button {
+        opacity: 0.5;
+    }
+
+    .notice-period::-webkit-inner-spin-button:hover,
+    .notice-period::-webkit-outer-spin-button:hover {
+        opacity: 1;
+    }
+
+    /* For Firefox */
+    .notice-period {
+        -moz-appearance: textfield;
+    }
+
+    /* Error state styling */
+    .border-red-500 {
+        border-color: #ef4444 !important;
+    }
+
+    .border-red-500:focus {
+        ring-color: #ef4444 !important;
+    }
+    
+    .select2-container--default .select2-selection--single {
+        border: 2px solid #e5e7eb;
+        border-radius: 0.75rem;
+        padding: 0.5rem;
+        height: auto;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5;
+        padding: 0.25rem 0;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .select2-dropdown {
+        border-radius: 0.75rem;
+        border-color: #e5e7eb;
+    }
+    
+    .edit-section-btn.active, .edit-section-btn:hover {
+        background-color: #fef3c7;
+        border-color: #f59e0b;
+    }
+    
+    .skill-suggestions {
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .skill-suggestions .suggestion-item.active {
+        background-color: #fef3c7;
+    }
+
+    .skill-suggestions .suggestion-item:hover {
+        background-color: #fef3c7;
+    }
+
+    .skill-suggestions::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .skill-suggestions::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .skill-suggestions::-webkit-scrollbar-thumb {
+        background: #fbbf24;
+        border-radius: 10px;
+    }
+
+    .skill-suggestions::-webkit-scrollbar-thumb:hover {
+        background: #f59e0b;
+    }
 </style>
 
 @endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Degree;
 use App\Models\Industry;
 use App\Models\Position;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\OtpVerification;
@@ -218,7 +219,127 @@ private function getOrCreateEmployee()
             ], 500);
         }
     }
+/**
+ * Search skills for autocomplete
+ */
+public function searchSkills(Request $request)
+{
+    $query = $request->get('query');
     
+    if (strlen($query) < 2) {
+        return response()->json(['skills' => []]);
+    }
+    
+    $skills = Skill::where('name', 'LIKE', "%{$query}%")
+        ->limit(10)
+        ->get(['id', 'name']);
+    
+    // Add category if you have a category field in your skills table
+    $skillsWithCategory = $skills->map(function($skill) {
+        return [
+            'id' => $skill->id,
+            'name' => $skill->name,
+            'category' => $skill->category ?? '' // Optional: add category if exists
+        ];
+    });
+    
+    return response()->json(['skills' => $skillsWithCategory]);
+}
+
+/**
+ * Get all skills (for reference)
+ */
+public function getAllSkills(Request $request)
+{
+    $skills = Skill::orderBy('name')->get(['id', 'name']);
+    
+    if ($request->ajax()) {
+        return response()->json(['skills' => $skills]);
+    }
+    
+    return $skills;
+}
+
+/**
+ * Save Step 4: Skills & Languages (Updated)
+ */
+public function saveStep4(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'skills' => 'nullable|array|max:5',
+            'skills.*' => 'string|max:100',
+            'languages' => 'nullable'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        $employee = $this->getOrCreateEmployee();
+        
+        // Process and validate skills
+        if ($request->has('skills') && is_array($request->skills)) {
+            $skills = array_filter($request->skills);
+            $skills = array_slice($skills, 0, 5); // Max 5 skills
+            
+            // Optional: Verify each skill exists in database
+            $validatedSkills = [];
+            foreach ($skills as $skillName) {
+                $skillName = trim($skillName);
+                if (!empty($skillName)) {
+                    // Check if skill exists, if not, you might want to add it to the database
+                    $existingSkill = Skill::where('name', $skillName)->first();
+                    if (!$existingSkill) {
+                        // Optionally create new skill
+                        // Skill::create(['name' => $skillName]);
+                    }
+                    $validatedSkills[] = $skillName;
+                }
+            }
+            
+            $employee->skills = json_encode($validatedSkills);
+        } else {
+            $employee->skills = json_encode([]);
+        }
+        
+        // Process languages
+        $languages = $request->languages;
+        if (is_string($languages)) {
+            $languages = json_decode($languages, true);
+        }
+        
+        if (is_array($languages) && isset($languages[0]['id'])) {
+            $languageIds = array_column($languages, 'id');
+            $employee->languages = json_encode($languageIds);
+        } elseif (is_array($languages)) {
+            $employee->languages = json_encode($languages);
+        } else {
+            $employee->languages = json_encode([]);
+        }
+        
+        // Update profile step if needed
+        if ($employee->profile_step < 5) {
+            $employee->profile_step = 5;
+        }
+        $employee->save();
+        
+        return response()->json([
+            'success' => true,
+            'next_step' => 5,
+            'message' => 'Skills and languages saved successfully'
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Step 4 Error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error saving data: ' . $e->getMessage()
+        ], 500);
+    }
+}
     /**
      * Remove resume
      */
@@ -416,62 +537,62 @@ private function getOrCreateEmployee()
     /**
      * Save Step 4: Skills & Languages
      */
-    public function saveStep4(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'skills' => 'nullable|array|max:5',
-                'skills.*' => 'string|max:100',
-                'languages' => 'nullable'
-            ]);
+    // public function saveStep4(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'skills' => 'nullable|array|max:5',
+    //             'skills.*' => 'string|max:100',
+    //             'languages' => 'nullable'
+    //         ]);
             
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors()
-                ], 422);
-            }
+    //         if ($validator->fails()) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'errors' => $validator->errors()
+    //             ], 422);
+    //         }
             
-            $employee = $this->getOrCreateEmployee();
+    //         $employee = $this->getOrCreateEmployee();
             
-            if ($request->has('skills') && is_array($request->skills)) {
-                $employee->skills = json_encode(array_filter($request->skills));
-            } else {
-                $employee->skills = json_encode([]);
-            }
+    //         if ($request->has('skills') && is_array($request->skills)) {
+    //             $employee->skills = json_encode(array_filter($request->skills));
+    //         } else {
+    //             $employee->skills = json_encode([]);
+    //         }
             
-            $languages = $request->languages;
-            if (is_string($languages)) {
-                $languages = json_decode($languages, true);
-            }
+    //         $languages = $request->languages;
+    //         if (is_string($languages)) {
+    //             $languages = json_decode($languages, true);
+    //         }
             
-            if (is_array($languages) && isset($languages[0]['id'])) {
-                $languageIds = array_column($languages, 'id');
-                $employee->languages = json_encode($languageIds);
-            } elseif (is_array($languages)) {
-                $employee->languages = json_encode($languages);
-            } else {
-                $employee->languages = json_encode([]);
-            }
+    //         if (is_array($languages) && isset($languages[0]['id'])) {
+    //             $languageIds = array_column($languages, 'id');
+    //             $employee->languages = json_encode($languageIds);
+    //         } elseif (is_array($languages)) {
+    //             $employee->languages = json_encode($languages);
+    //         } else {
+    //             $employee->languages = json_encode([]);
+    //         }
             
-            if ($employee->profile_step < 5) {
-                $employee->profile_step = 5;
-            }
-            $employee->save();
+    //         if ($employee->profile_step < 5) {
+    //             $employee->profile_step = 5;
+    //         }
+    //         $employee->save();
             
-            return response()->json([
-                'success' => true,
-                'next_step' => 5,
-                'message' => 'Skills and languages saved successfully'
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Step 4 Error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error saving data: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'success' => true,
+    //             'next_step' => 5,
+    //             'message' => 'Skills and languages saved successfully'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         Log::error('Step 4 Error: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Error saving data: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
     
     /**
      * Save Step 5: Education
@@ -552,100 +673,107 @@ private function getOrCreateEmployee()
     /**
      * Save Step 6: Work Experience
      */
-    public function saveStep6(Request $request)
-    {
-        try {
-            $employee = $this->getOrCreateEmployee();
+  /**
+ * Save Step 6: Work Experience
+ */
+/**
+ * Save Step 6: Work Experience
+ */
+public function saveStep6(Request $request)
+{
+    try {
+        $employee = $this->getOrCreateEmployee();
+        
+        $experiencesJson = $request->input('experiences');
+        $experiences = json_decode($experiencesJson, true);
+        
+        if ($experiences && is_array($experiences) && !empty($experiences)) {
+            // Filter out completely empty entries
+            $validExperiences = array_filter($experiences, function($experience) {
+                return !empty($experience['company_name']);
+            });
             
-            $experienceType = $employee->experience_type ?? 'fresher';
+            // Save all experiences (including those without start dates)
+            $employee->experiences_json = json_encode(array_values($validExperiences));
             
-            if ($experienceType == 'experienced') {
-                $experiencesJson = $request->input('experiences');
-                $experiences = json_decode($experiencesJson, true);
-                
-                if ($experiences && is_array($experiences) && !empty($experiences)) {
-                    $validExperiences = array_filter($experiences, function($experience) {
-                        return !empty($experience['company_name']) || 
-                               !empty($experience['employment_type']) || 
-                               !empty($experience['start_date']);
-                    });
-                    
-                    if (!empty($validExperiences)) {
-                        $employee->experiences_json = json_encode(array_values($validExperiences));
+            // Calculate total experience only from entries with start dates
+            $totalMonths = 0;
+            foreach ($validExperiences as $experience) {
+                if (!empty($experience['start_date'])) {
+                    try {
+                        $start = new \DateTime($experience['start_date']);
+                        $end = isset($experience['currently_working']) && $experience['currently_working'] 
+                            ? new \DateTime() 
+                            : (isset($experience['end_date']) && !empty($experience['end_date']) 
+                                ? new \DateTime($experience['end_date']) 
+                                : null);
                         
-                        $totalMonths = 0;
-                        foreach ($validExperiences as $experience) {
-                            if (isset($experience['start_date']) && !empty($experience['start_date'])) {
-                                try {
-                                    $start = new \DateTime($experience['start_date']);
-                                    $end = isset($experience['currently_working']) && $experience['currently_working'] 
-                                        ? new \DateTime() 
-                                        : (isset($experience['end_date']) && !empty($experience['end_date']) 
-                                            ? new \DateTime($experience['end_date']) 
-                                            : null);
-                                    
-                                    if ($end && $start < $end) {
-                                        $diff = $start->diff($end);
-                                        $totalMonths += ($diff->y * 12) + $diff->m;
-                                    }
-                                } catch (\Exception $e) {
-                                    Log::warning('Date parsing error: ' . $e->getMessage());
-                                }
-                            }
+                        if ($end && $start < $end) {
+                            $diff = $start->diff($end);
+                            $totalMonths += ($diff->y * 12) + $diff->m;
                         }
-                        
-                        $totalYears = floor($totalMonths / 12);
-                        $totalMonthsRemaining = $totalMonths % 12;
-                        
-                        $employee->total_experience = $totalYears + ($totalMonthsRemaining / 12);
-                        
-                        $latestExperience = null;
-                        $latestDate = null;
-                        foreach ($validExperiences as $experience) {
-                            if (isset($experience['start_date']) && !empty($experience['start_date'])) {
-                                try {
-                                    $startDate = new \DateTime($experience['start_date']);
-                                    if (!$latestDate || $startDate > $latestDate) {
-                                        $latestDate = $startDate;
-                                        $latestExperience = $experience;
-                                    }
-                                } catch (\Exception $e) {
-                                    // Skip invalid dates
-                                }
-                            }
-                        }
-                        
-                        if ($latestExperience) {
-                            $employee->company_name = $latestExperience['company_name'] ?? null;
-                            $employee->industry_id = isset($latestExperience['industry_id']) ? (int)$latestExperience['industry_id'] : null;
-                            $employee->work_start_date = $latestExperience['start_date'] ?? null;
-                            $employee->work_end_date = $latestExperience['currently_working'] ? null : ($latestExperience['end_date'] ?? null);
-                            $employee->currently_working = $latestExperience['currently_working'] ?? false;
-                            $employee->notice_period = $latestExperience['notice_period'] ?? null;
-                        }
+                    } catch (\Exception $e) {
+                        Log::warning('Date parsing error: ' . $e->getMessage());
                     }
                 }
             }
             
-            if ($employee->profile_step < 7) {
-                $employee->profile_step = 7;
-            }
-            $employee->save();
+            $totalYears = floor($totalMonths / 12);
+            $totalMonthsRemaining = $totalMonths % 12;
+            $employee->total_experience = $totalYears + ($totalMonthsRemaining / 12);
             
-            return response()->json([
-                'success' => true,
-                'next_step' => 7,
-                'message' => 'Work experience saved successfully',
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Step 6 Error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
+            // Get latest experience (preferring those with start dates)
+            $latestExperience = null;
+            $latestDate = null;
+            foreach ($validExperiences as $experience) {
+                if (!empty($experience['start_date'])) {
+                    try {
+                        $startDate = new \DateTime($experience['start_date']);
+                        if (!$latestDate || $startDate > $latestDate) {
+                            $latestDate = $startDate;
+                            $latestExperience = $experience;
+                        }
+                    } catch (\Exception $e) {
+                        // Skip invalid dates
+                    }
+                }
+            }
+            
+            // If no experience with start date, use the first experience
+            if (!$latestExperience && !empty($validExperiences)) {
+                $latestExperience = $validExperiences[0];
+            }
+            
+            if ($latestExperience) {
+                $employee->company_name = $latestExperience['company_name'] ?? null;
+                $employee->job_title_id = $latestExperience['position_id'] ?? null;
+                $employee->work_start_date = $latestExperience['start_date'] ?? null;
+                $employee->work_end_date = ($latestExperience['currently_working'] ?? false) ? null : ($latestExperience['end_date'] ?? null);
+                $employee->currently_working = $latestExperience['currently_working'] ?? false;
+                $employee->notice_period = $latestExperience['notice_period'] ?? null;
+            }
+        } else {
+            $employee->experiences_json = json_encode([]);
         }
+        
+        if ($employee->profile_step < 7) {
+            $employee->profile_step = 7;
+        }
+        $employee->save();
+        
+        return response()->json([
+            'success' => true,
+            'next_step' => 7,
+            'message' => 'Work experience saved successfully',
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Step 6 Error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
     }
-    
+} 
     /**
      * Save Step 7: Availability & Complete
      */
